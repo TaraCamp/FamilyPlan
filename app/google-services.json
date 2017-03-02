@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1006668239393",
+    "firebase_url": "https://familyplan-f24ba.firebaseio.com",
+    "project_id": "familyplan-f24ba",
+    "storage_bucket": "familyplan-f24ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006668239393:android:a8a61b87ca943304",
+        "android_client_info": {
+          "package_name": "de.taracamp.familyplan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1006668239393-i575ngb1opgccjacu6q59bbgli871gul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.taracamp.familyplan",
+            "certificate_hash": "5436475ab124ce793bb29a5124c39c4681cb5a68"
+          }
+        },
+        {
+          "client_id": "1006668239393-8e5n18oq2srn99f9l15jh0d6gb50i1qs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADy0psu0e2_6cdPVxkn0YBxASUNqx9Cbg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006668239393-8e5n18oq2srn99f9l15jh0d6gb50i1qs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
