@@ -1,22 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    android:orientation="vertical"
     tools:context="de.taracamp.familyplan.MainActivity">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_logout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:padding="12dp"
-        android:text="Abmelden"/>
 
-</RelativeLayout>
+    <!--ROW-->
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:background="@color/tran_colorBlue"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/categoria_image_12"
+                android:src="@drawable/logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:text="Aufgaben"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_below="@+id/categoria_image_12"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:background="@color/tran_colorDark"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/categoria_image_22"
+                android:src="@drawable/logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:text="Profil"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_below="@+id/categoria_image_22"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--ROW-->
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:background="@color/tran_colorGreen"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/categoria_image_13"
+                android:src="@drawable/logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:text="Kalender"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_below="@+id/categoria_image_13"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:background="@color/tran_colorOrange"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/categoria_image_23"
+                android:src="@drawable/logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:text="Rundfunk"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_below="@+id/categoria_image_23"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--ROW-->
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:background="@color/tran_colorRed"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/categoria_image_1"
+                android:src="@drawable/logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:text="Einstellungen"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_below="@+id/categoria_image_1"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/menu_button_logout"
+            android:background="@color/tran_colorYellow"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/categoria_image_2"
+                android:src="@drawable/logo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+
+            <TextView
+                android:text="Abmelden"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center"
+                android:layout_below="@+id/categoria_image_2"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

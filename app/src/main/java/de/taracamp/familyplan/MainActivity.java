@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button buttonLogout;
+    private RelativeLayout relativeLayoutLogout;
 
     private FirebaseAuth mAuth;
 
@@ -19,13 +21,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        buttonLogout = (Button)findViewById(R.id.btn_logout);
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
+        relativeLayoutLogout = (RelativeLayout)findViewById(R.id.menu_button_logout);
+        relativeLayoutLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                startActivity(intent);
+                mAuth.getInstance().signOut();
             }
         });
 
