@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -30,13 +32,15 @@ public class SignupActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private void initialize(){
-        editTextNickname = (EditText)findViewById(R.id.input_name);
-        editTextEmail = (EditText)findViewById(R.id.input_email);
-        editTextPassword = (EditText)findViewById(R.id.input_password);
+        editTextNickname = (EditText)findViewById(R.id.txt_name);
+        editTextEmail = (EditText)findViewById(R.id.txt_Email);
+        editTextPassword = (EditText)findViewById(R.id.txt_Password);
         buttonSignup = (Button)findViewById(R.id.btn_signup);
         textViewLogin = (TextView)findViewById(R.id.link_login);
 
         mAuth = FirebaseAuth.getInstance();
+
+        // Regestrieren
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +48,8 @@ public class SignupActivity extends AppCompatActivity {
                 signUp();
             }
         });
+
+        /* Zurück zur Login Seite */
 
         textViewLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +83,8 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Account wird erstellt...");
         progressDialog.show();
 
+        /* Benutzerdaten zusammenfassen */
+
         String name = editTextNickname.getText().toString();
         String email = editTextEmail.getText().toString();
         String password = editTextPassword.getText().toString();
@@ -91,10 +99,17 @@ public class SignupActivity extends AppCompatActivity {
                             progressDialog.dismiss();
                         }else{
                             progressDialog.dismiss();
+
+                            onSaveInDatabase();
+
                             onSignupSuccess();
                         }
                     }
                 });
+    }
+
+    private void onSaveInDatabase() {
+     //// TODO: 05.03.2017 Das Speichern eines Benutzers in der Datenbank Knoten /users
     }
 
     /* Wenn die Anmeldung funktioniert */
