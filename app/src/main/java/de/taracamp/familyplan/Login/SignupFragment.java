@@ -1,4 +1,4 @@
-package de.taracamp.familyplan;
+package de.taracamp.familyplan.Login;
 
 
 import android.app.ProgressDialog;
@@ -19,6 +19,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import de.taracamp.familyplan.Login.LoginEmailFragment;
+import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.R;
 
 
 /**

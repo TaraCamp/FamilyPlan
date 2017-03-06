@@ -11,6 +11,10 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import de.taracamp.familyplan.Login.LoginFragment;
+import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.R;
+
 /*
 * Author: Wladimir Tarasov
 *

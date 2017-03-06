@@ -1,4 +1,4 @@
-package de.taracamp.familyplan;
+package de.taracamp.familyplan.Login;
 
 
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import de.taracamp.familyplan.R;
 
 
 public class LoginFragment extends android.support.v4.app.Fragment {

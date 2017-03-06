@@ -1,9 +1,7 @@
-package de.taracamp.familyplan;
+package de.taracamp.familyplan.Login;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -21,6 +19,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.R;
 
 
 public class LoginEmailFragment extends Fragment {
