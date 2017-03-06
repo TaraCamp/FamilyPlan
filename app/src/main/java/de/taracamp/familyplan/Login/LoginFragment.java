@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.common.SignInButton;
+
 import de.taracamp.familyplan.R;
 
 
@@ -21,7 +23,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
     private Button buttonEmail;
     private Button buttonFacebook;
-    private Button buttonGoogle;
+    private SignInButton buttonGoogle;
     private Button buttonGuest;
 
     private void init(){
@@ -50,7 +52,7 @@ public class LoginFragment extends android.support.v4.app.Fragment {
 
         /*  Google Login */
 
-        buttonGoogle = (Button)rootView.findViewById(R.id.btn_Googlelogin);
+        buttonGoogle = (SignInButton) rootView.findViewById(R.id.btn_Googlelogin);
         buttonGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

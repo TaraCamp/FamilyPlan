@@ -37,14 +37,15 @@
             android:padding="12dp"
             android:text="Facebook Login"/>
 
-        <android.support.v7.widget.AppCompatButton
+        <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_Googlelogin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Google Login"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_Guestlogin"
