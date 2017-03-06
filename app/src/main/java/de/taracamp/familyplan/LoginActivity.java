@@ -3,12 +3,15 @@ package de.taracamp.familyplan;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -48,31 +51,66 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends FragmentActivity{
 
     private static final String TAG = "LoginActivity";
+    private static final String LOG_INFO = "LOG_INFO";
     private static final String LOG_AUTH_FIREBASE = "LOG_AUTH_FIREBASE";
 
-    private Button buttonEmailLogin;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
-    private void initialize(){
-        buttonEmailLogin = (Button)findViewById(R.id.btn_Emaillogin);
-        buttonEmailLogin.setOnClickListener(new OnClickListener() {
+    /* Firebase wird initialisiert */
+    private void initFirebase(){
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),LoginEmailActivity.class);
-                startActivity(intent);
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    Log.d(LOG_AUTH_FIREBASE,"Firebase Benutzer ist bereits angemeldet.");
+
+                    /* Wenn Benutzer bereits angemeldet */
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
+                }else{
+                    Log.d(LOG_AUTH_FIREBASE,"Firebase Benutzer ist nicht angemeldet.");
+
+                    /* LoginFragment wird aktiviert */
+
+                    LoginFragment loginFragment = new  LoginFragment();
+
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.fragment_container,loginFragment)
+                            .commit();
+                }
             }
-        });
+        };
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d(LOG_INFO,TAG + " wurde gestartet");
 
-        initialize();
+        initFirebase();
+
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
 }
 
