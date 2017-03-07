@@ -6,11 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import de.taracamp.familyplan.Login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user!=null){
-                    Log.d(LOG_AUTH_FIREBASE,"Benutzer ist angemeldet");
+                    Log.d(LOG_AUTH_FIREBASE,TAG + ":Benutzer ist angemeldet");
                 }else{
-                    Log.d(LOG_AUTH_FIREBASE,"Benutzer ist nicht angemeldet");
+                    Log.d(LOG_AUTH_FIREBASE,TAG + ":Benutzer ist nicht angemeldet");
                 }
             }
         };
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
+
+                Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(loginIntent);
             }
         });
     }

@@ -1,15 +1,12 @@
 package de.taracamp.familyplan.Login;
 
-
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,69 +17,55 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import de.taracamp.familyplan.Login.LoginEmailFragment;
+import de.taracamp.familyplan.Login.LoginEmailActivity;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.R;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
-public class SignupFragment extends Fragment {
-    private static final String TAG = "SignupFragment";
+public class LoginSignupActivity extends AppCompatActivity {
+    private static final String TAG = "LoginSignupActivity";
     private static final String LOG_INFO = "LOG_INFO";
 
-    private View rootView;
-
-    private EditText editTextNickname;
-    private EditText editTextEmail;
-    private EditText editTextPassword;
-    private Button buttonSignup;
-    private TextView textViewLogin;
+    private EditText text_Signup_Name;
+    private EditText text_Signup_Email;
+    private EditText text_Signup_Password;
+    private Button button_Signup_Create;
+    private TextView button_Signup_GoToLogin;
 
     private FirebaseAuth mAuth;
 
     private void initialize(){
-        editTextNickname = (EditText)rootView.findViewById(R.id.txt_name);
-        editTextEmail = (EditText)rootView.findViewById(R.id.txt_Email);
-        editTextPassword = (EditText)rootView.findViewById(R.id.txt_Password);
-        buttonSignup = (Button)rootView.findViewById(R.id.btn_signup);
-        textViewLogin = (TextView)rootView.findViewById(R.id.link_login);
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Regestrieren
+        text_Signup_Name = (EditText)findViewById(R.id.text_Signup_Name);
+        text_Signup_Email = (EditText)findViewById(R.id.text_Signup_Email);
+        text_Signup_Password = (EditText)findViewById(R.id.text_Signup_Password);
 
-        buttonSignup.setOnClickListener(new View.OnClickListener() {
+        button_Signup_Create = (Button)findViewById(R.id.button_Signup_Create);
+        button_Signup_Create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp();
+                //signUp();
             }
         });
 
-        /* Zurück zur Login Seite */
-
-        textViewLogin.setOnClickListener(new View.OnClickListener() {
+        button_Signup_GoToLogin = (TextView)findViewById(R.id.button_Signup_GoToLogin);
+        button_Signup_GoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container,new LoginEmailFragment())
-                        .addToBackStack(null)
-                        .commit();
+               Intent emailIntent = new Intent(getApplicationContext(),LoginEmailActivity.class);
+                startActivity(emailIntent);
             }
         });
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_signup,container,false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_signup);
 
         initialize();
-
-        return rootView;
     }
 
 
@@ -93,21 +76,21 @@ public class SignupFragment extends Fragment {
             return;
         }
 
-        buttonSignup.setEnabled(false);
+        button_Signup_Create.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(rootView.getContext(),R.style.AppTheme_Dark_Dialog);
+        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext(),R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Account wird erstellt...");
         progressDialog.show();
 
         /* Benutzerdaten zusammenfassen */
 
-        String name = editTextNickname.getText().toString();
-        String email = editTextEmail.getText().toString();
-        String password = editTextPassword.getText().toString();
+        String name = text_Signup_Name.getText().toString();
+        String email = text_Signup_Email.getText().toString();
+        String password = text_Signup_Password.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
@@ -131,48 +114,47 @@ public class SignupFragment extends Fragment {
 
     /* Wenn die Anmeldung funktioniert */
     public void onSignupSuccess() {
-        buttonSignup.setEnabled(true);
-        Intent intent = new Intent(rootView.getContext(),MainActivity.class);
+        button_Signup_Create.setEnabled(true);
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         startActivity(intent);
     }
 
     /* Wenn die Anmeldung nicht funktioniert */
     private void onSignupFailed() {
-        Toast.makeText(rootView.getContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
 
-        buttonSignup.setEnabled(true);
+        button_Signup_Create.setEnabled(true);
     }
 
     /* Prüft die Eingaben */
     public boolean validate() {
         boolean valid = true;
 
-        String name = editTextNickname.getText().toString();
-        String email = editTextEmail.getText().toString();
-        String password = editTextPassword.getText().toString();
+        String name = text_Signup_Name.getText().toString();
+        String email = text_Signup_Email.getText().toString();
+        String password = text_Signup_Password.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
-            editTextNickname.setError("at least 3 characters");
+            text_Signup_Name.setError("at least 3 characters");
             valid = false;
         } else {
-            editTextNickname.setError(null);
+            text_Signup_Name.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("enter a valid email address");
+            text_Signup_Email.setError("enter a valid email address");
             valid = false;
         } else {
-            editTextEmail.setError(null);
+            text_Signup_Email.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            editTextPassword.setError("between 4 and 10 alphanumeric characters");
+            text_Signup_Password.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
-            editTextPassword.setError(null);
+            text_Signup_Password.setError(null);
         }
 
         return valid;
     }
-
 }

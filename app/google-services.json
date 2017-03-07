@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "636731232056-cbrtsjl5d3bhv77aqciihtu82sm20liv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.taracamp.familyplan",
+            "certificate_hash": "5436475ab124ce793bb29a5124c39c4681cb5a68"
+          }
+        },
+        {
           "client_id": "636731232056-63414a588h0lebh7fuabhgvpgm2e3mhe.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

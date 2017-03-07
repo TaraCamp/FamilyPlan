@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.taracamp.familyplan.LoginEmailActivity">
+    tools:context="de.taracamp.familyplan.Login.LoginEmailActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -26,11 +26,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
+
+            <EditText android:id="@+id/text_EmailLogin_Email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:hint="Email" />
+
         </android.support.design.widget.TextInputLayout>
 
         <!--  Password Label -->
@@ -39,15 +41,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+
+            <EditText android:id="@+id/text_EmailLogin_Password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Password"/>
+
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_login"
+            android:id="@+id/button_EmailLogin_Login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -55,11 +59,11 @@
             android:padding="12dp"
             android:text="Login"/>
 
-        <TextView android:id="@+id/link_signup"
+        <TextView android:id="@+id/button_EmailLogin_Signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="No account yet? Create one"
+            android:text="Noch kein Account? Erstelle einen"
             android:gravity="center"
             android:textSize="16dip"/>
 
