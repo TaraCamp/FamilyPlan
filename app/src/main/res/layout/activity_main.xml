@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:id="@+id/menu_tasks">
+            android:id="@+id/button_menu_task">
 
             <ImageView
                 android:id="@+id/categoria_image_12"
@@ -48,7 +48,8 @@
             android:layout_height="fill_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/button_menu_account">
 
             <ImageView
                 android:id="@+id/categoria_image_22"
@@ -83,7 +84,8 @@
             android:layout_height="fill_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/button_menu_3">
 
             <ImageView
                 android:id="@+id/categoria_image_13"
@@ -110,7 +112,8 @@
             android:layout_height="fill_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/button_menu_4">
 
             <ImageView
                 android:id="@+id/categoria_image_23"
@@ -145,7 +148,8 @@
             android:layout_height="fill_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:id="@+id/button_menu_5">
 
             <ImageView
                 android:id="@+id/categoria_image_1"
@@ -168,7 +172,7 @@
 
 
         <RelativeLayout
-            android:id="@+id/menu_button_logout"
+            android:id="@+id/button_menu_logout"
             android:background="@color/tran_colorYellow"
             android:layout_height="fill_parent"
             android:layout_width="0dp"

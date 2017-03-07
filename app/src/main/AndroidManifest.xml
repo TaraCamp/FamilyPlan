@@ -30,7 +30,9 @@
         <activity android:name=".Login.LoginFacebookActivity" />
         <activity android:name=".Login.LoginGuestActivity" />
         <activity android:name=".Login.LoginEmailActivity" />
-        <activity android:name=".Login.LoginSignupActivity"></activity>
+        <activity android:name=".Login.LoginSignupActivity" />
+        <activity android:name=".AccountActivity" />
+        <activity android:name=".TaskActivity"></activity>
     </application>
 
 </manifest>
