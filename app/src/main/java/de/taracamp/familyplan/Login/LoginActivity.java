@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.R;
 
+import com.facebook.FacebookSdk;
+
 public class LoginActivity extends FragmentActivity{
     private static final String TAG = "LoginActivity";
     private static final String LOG_INFO = "LOG_INFO";
@@ -57,6 +59,7 @@ public class LoginActivity extends FragmentActivity{
 
     private void init(){
         buttonEmailLogin = (Button) findViewById(R.id.button_EmailLogin);
+
         buttonEmailLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +69,7 @@ public class LoginActivity extends FragmentActivity{
         });
 
         buttonGoogleLogin = (SignInButton) findViewById(R.id.button_GoogleLogin);
+        buttonGoogleLogin.setAlpha(0.7f);
         buttonGoogleLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +79,7 @@ public class LoginActivity extends FragmentActivity{
         });
 
         buttonFacebookLogin = (Button) findViewById(R.id.button_FacebookLogin);
+        buttonFacebookLogin.setAlpha(0.7f);
         buttonFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,14 +88,6 @@ public class LoginActivity extends FragmentActivity{
             }
         });
 
-        buttonGuestLogin = (Button) findViewById(R.id.button_GuestLogin);
-        buttonGuestLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent guestIntent = new Intent(getApplicationContext(),LoginGuestActivity.class);
-                startActivity(guestIntent);
-            }
-        });
     }
 
     @Override

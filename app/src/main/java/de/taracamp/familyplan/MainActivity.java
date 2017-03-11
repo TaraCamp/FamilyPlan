@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
         button_menu_account.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent neI = new Intent(getApplicationContext(),transparentActivity.class);
+                startActivity(neI);
             }
         });
 
