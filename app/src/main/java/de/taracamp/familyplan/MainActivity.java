@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import de.taracamp.familyplan.Login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "familyplan.debug ";
     private static final String LOG_AUTH_FIREBASE = "LOG_AUTH_FIREBASE";
 
     private RelativeLayout button_menu_task;
@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if(user!=null){
-                    Log.d(LOG_AUTH_FIREBASE,TAG + ":Benutzer ist angemeldet");
+                    Log.d(TAG,LOG_AUTH_FIREBASE + ":Benutzer ist angemeldet");
                 }else{
-                    Log.d(LOG_AUTH_FIREBASE,TAG + ":Benutzer ist nicht angemeldet");
+                    Log.d(TAG,LOG_AUTH_FIREBASE + ":Benutzer ist nicht angemeldet");
                 }
             }
         };
