@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.taracamp.familyplan.Login.LoginActivity;
+import de.taracamp.familyplan.Task.TaskListActivity;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "familyplan.debug ";
@@ -48,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
         button_menu_task = (RelativeLayout)findViewById(R.id.button_menu_task);
         button_menu_task.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                Intent taskIntent = new Intent(getApplicationContext(),TaskActivity.class);
+                Intent taskIntent = new Intent(getApplicationContext(),TaskListActivity.class);
                 startActivity(taskIntent);
             }
+
         });
 
         button_menu_account = (RelativeLayout)findViewById(R.id.button_menu_account);

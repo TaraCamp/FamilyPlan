@@ -18,8 +18,6 @@ import com.google.firebase.auth.FirebaseUser;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.R;
 
-import com.facebook.FacebookSdk;
-
 public class LoginActivity extends FragmentActivity{
     private static final String TAG = "LoginActivity";
     private static final String LOG_INFO = "LOG_INFO";
