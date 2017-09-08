@@ -7,6 +7,7 @@
 package de.taracamp.familyplan.Models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,15 +15,39 @@ import java.util.List;
  */
 public class Task
 {
+	private int TaskId;
 	private int TaskNumber;
 	private String TaskName;
-	private User TaskAdmin;
-	private List<User> TaskUsers;
+	private String TaskDescription;
+	private User TaskCreator;
+	private List<User> TaskRelatedUsers;
+	private Date TaskCreatedOn;
 
 	public Task(String _taskName,User _taskAdmin)
 	{
 		this.TaskName = _taskName;
-		this.TaskAdmin = _taskAdmin;
+		this.TaskCreator = _taskAdmin;
+	}
+
+	public Task(int _taskNumber,String _taskName,String _taskDescription,User _taskCreator)
+	{
+		this.TaskNumber = _taskNumber;
+		this.TaskName = _taskName;
+		this.TaskDescription = _taskDescription;
+		this.TaskCreator = _taskCreator;
+	}
+
+	public void addRelatedUser(User _relatedUser)
+	{
+		this.TaskRelatedUsers.add(_relatedUser);
+	}
+
+	public void addRelatedUsersList(List<User> _relatedUsers)
+	{
+		for(User relatedUser : _relatedUsers)
+		{
+			this.TaskRelatedUsers.add(relatedUser);
+		}
 	}
 
 	public String getTaskName()
