@@ -6,6 +6,9 @@
  */
 package de.taracamp.familyplan.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
 /**
  * Repräsentiert eine Aufgabe.
  */
-public class Task
+public class Task implements Parcelable
 {
 	private int TaskId;
 	private int TaskNumber;
@@ -37,6 +40,25 @@ public class Task
 		this.TaskCreator = _taskCreator;
 	}
 
+	protected Task(Parcel in) {
+		TaskId = in.readInt();
+		TaskNumber = in.readInt();
+		TaskName = in.readString();
+		TaskDescription = in.readString();
+	}
+
+	public static final Creator<Task> CREATOR = new Creator<Task>() {
+		@Override
+		public Task createFromParcel(Parcel in) {
+			return new Task(in);
+		}
+
+		@Override
+		public Task[] newArray(int size) {
+			return new Task[size];
+		}
+	};
+
 	public void addRelatedUser(User _relatedUser)
 	{
 		this.TaskRelatedUsers.add(_relatedUser);
@@ -55,15 +77,36 @@ public class Task
 		return this.TaskName;
 	}
 
-	public static ArrayList<Task> createDummyTasksList(int numTasks)
+	public String getTaskDescription()
+	{
+		return this.TaskDescription;
+	}
+
+	/**
+	 * Dummy Funktion um eine Aufgabenliste zu simulieren
+	 */
+	public static ArrayList<Task> createDummyTasksList(int _numTasks)
 	{
 		ArrayList<Task> tasks = new ArrayList<>();
 
-		for(int i = 1;i<=numTasks;i++)
+		for(int i = 1;i<=_numTasks;i++)
 		{
 			tasks.add(new Task("Task - " + i,new User("wowa","wowa@tarasov")));
 		}
 
 		return tasks;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(TaskId);
+		dest.writeInt(TaskNumber);
+		dest.writeString(TaskName);
+		dest.writeString(TaskDescription);
 	}
 }

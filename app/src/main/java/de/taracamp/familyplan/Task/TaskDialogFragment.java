@@ -6,18 +6,22 @@
  */
 package de.taracamp.familyplan.Task;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -34,79 +38,101 @@ public class TaskDialogFragment extends DialogFragment
 
 	private EditText editTextTaskTitle = null;
 	private EditText editTextTaskDescription = null;
+	private EditText editTextTaskDate = null;
+	private EditText editTextTaskTime = null;
+
+	private Button buttonAddTask = null;
+	private Button buttonCloseDialog = null;
 
 	public TaskDialogFragment() {}
-
-	public static TaskDialogFragment newInstance(String _title)
-	{
-		TaskDialogFragment taskDialog = new TaskDialogFragment();
-		Bundle args = new Bundle();
-		args.putString("title",_title);
-		taskDialog.setArguments(args);
-		return taskDialog;
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater _inflater, ViewGroup _container,Bundle _saveInstanceState)
 	{
-		return _inflater.inflate(R.layout.dialog_task_add,_container);
+		Log.d(TAG,":TaskDialogFragment.onCreateView()");
+
+		View rootView = _inflater.inflate(R.layout.dialog_task_add,_container,false);
+		getDialog().setTitle("Aufgabe Erstellen");
+
+		return rootView;
 	}
 
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onViewCreated(View _view, @Nullable Bundle _savedInstanceState)
 	{
 		super.onViewCreated(_view, _savedInstanceState);
 
+		Log.d(TAG,":TaskDialogFragment.onViewCreated()");
+
 		// Die Steuerelemente werden hier  initialisiert.
 		editTextTaskTitle = (EditText) _view.findViewById(R.id.text_task_add_taskName);
-		editTextTaskDescription = (EditText) _view.findViewById(R.id.text_task_add_taskDescription);
-
-		// Show soft keyboard automatically and request focus to field
 		editTextTaskTitle.requestFocus();
-
-		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-	}
-
-	@Override
-	public Dialog onCreateDialog(Bundle _saveInstanceState)
-	{
-		Log.d(TAG,":TaskDialogFragment.onCreateDialog()");
-
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-		alertDialogBuilder.setTitle(getArguments().getString("title", "Enter Name"));
-		alertDialogBuilder.setView(inflater.inflate(R.layout.dialog_task_add,null));
-		alertDialogBuilder.setPositiveButton("Hinzufügen", new DialogInterface.OnClickListener() {
-
+		editTextTaskDescription = (EditText) _view.findViewById(R.id.text_task_add_taskDescription);
+		editTextTaskDate = (EditText) _view.findViewById(R.id.text_task_add_taskDate);
+		editTextTaskDate.setShowSoftInputOnFocus(false);
+		editTextTaskDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which)
+			public void onFocusChange(View _v, boolean _hasFocus)
 			{
-				Log.d(TAG,":TaskDialogFragment.PositiveButton()");
-
-				User creatorUser = new User("wowa","wowa@tarasov");
-				User relatedUser = new User("lisa","lisa@birk");
+				if (_hasFocus){
+					Log.d(TAG,":TaskDialogFragment.onFocusChange() -> open date dialog");
+				}
+			}
+		});
+		editTextTaskTime = (EditText) _view.findViewById(R.id.text_task_add_taskTime);
+		editTextTaskTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View _v, boolean _hasFocus)
+			{
+				if (_hasFocus){
+					Log.d(TAG,":TaskDialogFragment.onFocusChange() -> open time dialog");
+				}
+			}
+		});
+		buttonAddTask = (Button) _view.findViewById(R.id.button_task_add_addTask);
+		buttonAddTask.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v)
+			{
+				Log.d(TAG,":TaskDialogFragment.onClick() -> add task");
 
 				String taskTitle = editTextTaskTitle.getText().toString();
 				String taskDescription = editTextTaskDescription.getText().toString();
 
-				Task newTask = new Task(100,taskTitle,taskDescription,creatorUser);
-				//newTask.addRelatedUser(relatedUser); //// TODO: 08.09.2017 bug beim hinzufügen
+				User userA = new User("wowa","wowa@tarasov");
+				Task newTask = new Task(100,taskTitle,taskDescription,userA);
 
-				sendBackResult(newTask); //Callback an die Eltern Activity
+				sendBackResult(newTask);
+
+				dismiss();
 			}
 		});
-		alertDialogBuilder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-
+		buttonCloseDialog = (Button) _view.findViewById(R.id.button_task_add_closeDialog);
+		buttonCloseDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which)
+			public void onClick(View v)
 			{
-				Log.d(TAG,":TaskDialogFragment.NegativeButton()");
+				Log.d(TAG,":TaskDialogFragment.onClick() -> close dialog");
+
+				dismiss();
 			}
 		});
+	}
 
-		return alertDialogBuilder.create();
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+
+		Log.d(TAG,":TaskDialogFragment.onStart()");
+
+		Dialog dialog = getDialog();
+		if (dialog != null) {
+			int width = ViewGroup.LayoutParams.MATCH_PARENT;
+			int height = ViewGroup.LayoutParams.MATCH_PARENT;
+			dialog.getWindow().setLayout(width, height);
+		}
 	}
 
 	/**
@@ -117,6 +143,8 @@ public class TaskDialogFragment extends DialogFragment
 	 */
 	public void sendBackResult(Task _newTask)
 	{
+		Log.d(TAG,":TaskDialogFragment.sendBackResult()");
+
 		TaskDialogListener listener = (TaskDialogListener) getActivity();
 		listener.onFinishTaskDialog(_newTask);
 		dismiss();

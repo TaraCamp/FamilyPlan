@@ -6,12 +6,11 @@
  */
 package de.taracamp.familyplan.Task;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,13 +25,16 @@ import de.taracamp.familyplan.R;
 /**
  * Eine Liste von Aufgaben. Aufgaben können über einen Floating Button hinzugefügt werden.
  */
-public class TaskListActivity extends FragmentActivity implements TaskDialogListener /*implements TaskDialogFragment.TaskDialogListener*/
+public class TaskListActivity extends FragmentActivity /*implements TaskDialogFragment.TaskDialogListener*/
 {
 	private static final String TAG = "familyplan.debug";
 
 	private RecyclerView recyclerViewTasks = null;
-	private ArrayList<Task> taskList = null;
 	private FloatingActionButton floatingActionButtonOpenTaskDialog = null;
+
+
+	private android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+	private ArrayList<Task> taskList = null;
 
 	private void init()
 	{
@@ -45,11 +47,15 @@ public class TaskListActivity extends FragmentActivity implements TaskDialogList
 		this.floatingActionButtonOpenTaskDialog.setOnClickListener(new View.OnClickListener(){
 
 			@Override
-			public void onClick(View v)
+			public void onClick(View _v)
 			{
 				Log.d(TAG,":TaskListActivity.click()-> FloatingActionButton");
-				
-				showTaskDialog();
+
+				//TaskDialogFragment dialog = new TaskDialogFragment();
+				//dialog.show(fragmentManager,"Dialog");
+
+				Intent tasAddIntent = new Intent(getApplicationContext(),TaskAddActivity.class);
+				startActivity(tasAddIntent);
 			}
 
 		});
@@ -59,6 +65,9 @@ public class TaskListActivity extends FragmentActivity implements TaskDialogList
 	protected void onCreate(Bundle _savedInstanceState)
 	{
 		super.onCreate(_savedInstanceState);
+
+		Log.d(TAG,":TaskListActivity.onCreate()");
+
 		setContentView(R.layout.activity_task_list);
 
 		init();
@@ -68,17 +77,17 @@ public class TaskListActivity extends FragmentActivity implements TaskDialogList
 		recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this));
 	}
 
-	private void showTaskDialog()
-	{
-		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-		TaskDialogFragment taskDialog = TaskDialogFragment.newInstance("Neue Aufgabe");
-		taskDialog.show(fragmentManager,"fragment_task_add");
-	}
-
 	@Override
-	public void onFinishTaskDialog(Task _newTask)
+	protected void onStart()
 	{
-		Log.d(TAG,":TaskListActivity.onFinishTaskDialog()-> " + _newTask.getTaskName());
+		super.onStart();
+
+		Log.d(TAG,":TaskListActivity.onStart()");
+
+		Task newTask = (Task) getIntent().getParcelableExtra("NEW_TASK");
+
+		if (newTask!=null) taskList.add(newTask);
 	}
 }
+
 

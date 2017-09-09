@@ -49,6 +49,7 @@
             android:label="@string/title_activity_task_list"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".Task.TaskAddActivity"/>
     </application>
 
 </manifest>
