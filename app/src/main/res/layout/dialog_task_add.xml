@@ -136,6 +136,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginRight="10px"
+                android:background="@color/com_facebook_button_background_color_selected"
                 android:text="Hinzufügen"/>
 
             <Button
@@ -143,6 +145,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginLeft="10px"
+                android:background="@color/com_facebook_button_background_color_selected"
                 android:text="Abbrechen"/>
 
     </LinearLayout>

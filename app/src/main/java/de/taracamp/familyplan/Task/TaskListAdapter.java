@@ -37,7 +37,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			super(_itemView);
 
 			nameTextView = (TextView) _itemView.findViewById(R.id.item_task_name);
-			messageButton = (Button) _itemView.findViewById(R.id.item_task_button);
 		}
 	}
 
@@ -76,8 +75,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 		TextView textView = _holder.nameTextView;
 		textView.setText(task.getTaskName());
 
-		Button button = _holder.messageButton;
-		button.setText("Bearbeiten");
 	}
 
 	@Override

@@ -1,23 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:id="@+id/cardView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:foreground="?android:attr/selectableItemBackground"
+                                    app:cardCornerRadius="@dimen/activity_vertical_margin"
+                                    app:cardElevation="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:id="@+id/item_task_name"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/item_task_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="10sp"/>
-</LinearLayout>
+        <ImageView
+            android:id="@+id/imageView_taskItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_assignment_black_36dp"/>
+
+        <TextView
+            android:id="@+id/item_task_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/imageView_taskItem"
+            android:text="Title"/>
+
+        <TextView
+            android:id="@+id/item_task_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_task_name"
+            android:layout_toRightOf="@+id/imageView_taskItem"
+            android:text="Description"/>
+
+        <TextView
+            android:id="@+id/item_task_editors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_task_description"
+            android:layout_toRightOf="@+id/imageView_taskItem"
+            android:text="Wladimir Tarasov"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
