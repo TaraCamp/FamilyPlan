@@ -109,6 +109,21 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"/>
 
+            <TextView
+                android:id="@+id/lbl_task_add_taskEditors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bearbeiter"/>
+
+            <Spinner
+                android:id="@+id/spinner_task_add_taskEditors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30dp"/>
+
     </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -116,19 +131,19 @@
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/button_task_add_addTask"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Hinzufügen"/>
+            <Button
+                android:id="@+id/button_task_add_addTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Hinzufügen"/>
 
             <Button
-            android:id="@+id/button_task_add_closeDialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Abbrechen"/>
+                android:id="@+id/button_task_add_closeDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Abbrechen"/>
 
     </LinearLayout>
 

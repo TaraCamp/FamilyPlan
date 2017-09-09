@@ -1,3 +1,9 @@
+/**
+ * @file DialogDatePicker.java
+ * @version 0.1
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Dialogs;
 
 import android.app.Dialog;
@@ -11,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import de.taracamp.familyplan.R;
@@ -57,7 +64,14 @@ public class DialogDatePicker extends DialogFragment
 			{
 				Log.d(TAG,":DialogDatePicker.onClick() -> add date");
 
-				dismiss();
+				int year = datePicker.getYear();
+				int month = datePicker.getMonth();
+				int day = datePicker.getDayOfMonth();
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(year,month,day);
+
+				sendBackResult(calendar.getTime());
 			}
 		});
 		buttonCloseDialog = (Button) _view.findViewById(R.id.button_dialog_closeDialog);
@@ -72,12 +86,13 @@ public class DialogDatePicker extends DialogFragment
 		});
 	}
 
-	public void sendBackResult()
+	public void sendBackResult(Date _newDate)
 	{
 		Log.d(TAG,":DialogDatePicker.sendBackResult()");
 
 		DialogDateListener listener = (DialogDateListener) getActivity();
-		listener.onFinishDialog(new Date());
+		listener.onFinishDateDialog(_newDate);
+
 		dismiss();
 	}
 }

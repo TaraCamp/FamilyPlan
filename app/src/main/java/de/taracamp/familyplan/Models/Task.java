@@ -9,6 +9,7 @@ package de.taracamp.familyplan.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +24,15 @@ public class Task implements Parcelable
 	private String TaskName;
 	private String TaskDescription;
 	private User TaskCreator;
+	private Date TaskDate;
 	private List<User> TaskRelatedUsers;
 	private Date TaskCreatedOn;
+
+	public Task(String _taskName,String _taskDescription)
+	{
+		TaskName = _taskName;
+		TaskDescription = _taskDescription;
+	}
 
 	public Task(String _taskName,User _taskAdmin)
 	{
@@ -70,6 +78,26 @@ public class Task implements Parcelable
 		{
 			this.TaskRelatedUsers.add(relatedUser);
 		}
+	}
+
+	public void setTaskTitle(String _title)
+	{
+		TaskName = _title;
+	}
+
+	public void setTaskDescription(String _description)
+	{
+		TaskDescription = _description;
+	}
+
+	public void setTaskDate(Date _date)
+	{
+		TaskDate = _date;
+	}
+
+	public void setTaskCreator(User _user)
+	{
+		TaskCreator = _user;
 	}
 
 	public String getTaskName()

@@ -22,4 +22,15 @@
     <string name="title_activity_task_list">TaskListActivity</string>
     <string name="dialog_task_add_taskName">Titel</string>
     <string name="dialog_task_add_description">Beschreibung</string>
+
+    <string-array name="Task_Editors">
+        <item>Familie</item>
+        <item>Lisa</item>
+        <item>Christiane</item>
+        <item>Rainer</item>
+        <item>Timo</item>
+        <item>Wowa</item>
+        <item>Kira</item>
+    </string-array>
+
 </resources>

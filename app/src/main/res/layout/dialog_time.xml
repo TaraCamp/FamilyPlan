@@ -4,9 +4,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <TimePicker
-        android:id="@+id/timePicker_dialog_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:weightSum="1">
+
+            <TimePicker
+                android:id="@+id/timePicker_dialog_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:orientation="horizontal"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button_dialog_addTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Hinzufügen"/>
+
+            <Button
+                android:id="@+id/button_dialog_closeTimeDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Abbrechen"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>
