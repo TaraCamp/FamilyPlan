@@ -1,3 +1,9 @@
+/**
+ * @file TaskActivity.java
+ * @version 0.1
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Task;
 
 import android.os.Bundle;
@@ -8,10 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.TaskCreatorListTabFragment;
-import de.taracamp.familyplan.TaskNewListTabFragment;
-import de.taracamp.familyplan.TaskOwnListTabFragment;
+import de.taracamp.familyplan.Task.Fragmente.TaskCreatorListTabFragment;
+import de.taracamp.familyplan.Task.Fragmente.TaskNewListTabFragment;
+import de.taracamp.familyplan.Task.Fragmente.TaskOwnListTabFragment;
 
+/**
+ * Beinhaltet das Tab Menu für den Aufgaben Bereich
+ */
 public class TaskActivity extends AppCompatActivity
 {
 	private static final String TAG = "familyplan.debug";
@@ -59,7 +68,8 @@ public class TaskActivity extends AppCompatActivity
 		tabLayout.getTabAt(2).setIcon(tabIcons[2]);
 	}
 
-	private void setupViewPager(ViewPager _viewPager) {
+	private void setupViewPager(ViewPager _viewPager)
+	{
 		TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager());
 		adapter.addFragment(new TaskOwnListTabFragment(),"Eigene Aufgaben");
 		adapter.addFragment(new TaskCreatorListTabFragment(),"Erstellte Aufgaben");

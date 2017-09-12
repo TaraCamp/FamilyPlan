@@ -1,3 +1,9 @@
+/**
+ * @file TaskPagerAdapter.java
+ * @version 0.1
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Task;
 
 import android.support.v4.app.Fragment;

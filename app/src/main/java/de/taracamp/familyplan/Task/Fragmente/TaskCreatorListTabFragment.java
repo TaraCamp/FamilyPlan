@@ -4,7 +4,7 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan;
+package de.taracamp.familyplan.Task.Fragmente;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import de.taracamp.familyplan.R;
 
 /**
  * Created by wowa on 12.09.2017.

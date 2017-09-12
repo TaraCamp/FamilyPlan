@@ -13,9 +13,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import de.taracamp.familyplan.Login.LoginActivity;
 import de.taracamp.familyplan.Task.TaskActivity;
-import de.taracamp.familyplan.Task.TaskListActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private static final String TAG = "familyplan.debug ";
     private static final String LOG_AUTH_FIREBASE = "LOG_AUTH_FIREBASE";
 
@@ -31,35 +31,38 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    private void initFirebase(){
+    private void initFirebase()
+    {
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener()
+        {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+            {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user!=null){
+                if(user!=null)
+                {
                     Log.d(TAG,LOG_AUTH_FIREBASE + ":Benutzer ist angemeldet");
-                }else{
+                }
+                else
+                {
                     Log.d(TAG,LOG_AUTH_FIREBASE + ":Benutzer ist nicht angemeldet");
                 }
             }
         };
     }
 
-    private void initialize(){
+    private void initialize()
+    {
 
         button_menu_task = (RelativeLayout)findViewById(R.id.button_menu_task);
         button_menu_task.setOnClickListener(new View.OnClickListener() {
-
             @Override
-            public void onClick(View v) {
-                //Intent taskIntent = new Intent(getApplicationContext(),TaskListActivity.class);
-                //startActivity(taskIntent);
-
+            public void onClick(View v)
+            {
                 Intent taskIntent = new Intent(getApplicationContext(),TaskActivity.class);
                 startActivity(taskIntent);
             }
-
         });
 
         button_menu_account = (RelativeLayout)findViewById(R.id.button_menu_account);

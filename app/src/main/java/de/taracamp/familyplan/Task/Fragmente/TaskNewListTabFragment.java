@@ -4,7 +4,7 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan;
+package de.taracamp.familyplan.Task.Fragmente;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,11 +20,12 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import de.taracamp.familyplan.Models.Task;
+import de.taracamp.familyplan.R;
 import de.taracamp.familyplan.Task.TaskAddActivity;
 import de.taracamp.familyplan.Task.TaskListAdapter;
 
 /**
- * Created by wowa on 12.09.2017.
+ * Hier werden neue Aufgaben angelegt und anschließend in der Datenbank gesichert.
  */
 public class TaskNewListTabFragment extends Fragment
 {
@@ -33,10 +34,9 @@ public class TaskNewListTabFragment extends Fragment
 	private RecyclerView recyclerViewTasks = null;
 	private FloatingActionButton floatingActionButtonOpenTaskDialog = null;
 
-	private ArrayList<Task> taskList = null;
+	private ArrayList<Task> taskList = null; // Aufgabenliste
 
 	public TaskNewListTabFragment(){}
-
 
 	@Override
 	public void onCreate(Bundle _savedInstanceState)
@@ -63,15 +63,34 @@ public class TaskNewListTabFragment extends Fragment
 			{
 				Log.d(TAG,":TaskNewListTabFragment.click()-> FloatingActionButton");
 
+				// Startet eine neue Activity um eine neue Aufgabe anzulegen.
 				Intent tasAddIntent = new Intent(getActivity(),TaskAddActivity.class);
 				startActivity(tasAddIntent);
 			}
 		});
 
+		//Der Adapter läd die Aufgabenliste
 		TaskListAdapter adapter = new TaskListAdapter(view.getContext(),this.taskList);
 		recyclerViewTasks.setAdapter(adapter);
 		recyclerViewTasks.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
 		return view;
+	}
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+
+		Log.d(TAG,":TaskNewListTabFragment.onStart()");
+
+		Task newTask = (Task) getActivity().getIntent().getParcelableExtra("NEW_TASK");
+		if (newTask!=null)
+		{
+			Log.d(TAG,":TaskListActivity.onStart() -> new task with value taskName=" + newTask.getTaskName());
+
+			// Neue Aufgabe wird zur List hinzugefügt
+			taskList.add(newTask);
+		}
 	}
 }

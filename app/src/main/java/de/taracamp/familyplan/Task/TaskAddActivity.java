@@ -25,15 +25,16 @@ import java.util.List;
 
 import de.taracamp.familyplan.Dialogs.DialogDateListener;
 import de.taracamp.familyplan.Dialogs.DialogDatePicker;
+import de.taracamp.familyplan.Dialogs.DialogTimeListener;
 import de.taracamp.familyplan.Dialogs.DialogTimePicker;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
 /**
- * Created by wowa on 09.09.2017.
+ * Diese Klasse dient zum erstellen einer neuen Aufgabe.
  */
-public class TaskAddActivity extends FragmentActivity implements DialogDateListener
+public class TaskAddActivity extends FragmentActivity implements DialogDateListener, DialogTimeListener
 {
 	private static final String TAG = "familyplan.debug";
 
@@ -64,7 +65,8 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 			@Override
 			public void onFocusChange(View _v, boolean _hasFocus)
 			{
-				if (_hasFocus){
+				if (_hasFocus)
+				{
 					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open date dialog");
 
 					DialogDatePicker dialog = new DialogDatePicker();
@@ -78,7 +80,8 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 			@Override
 			public void onFocusChange(View _v, boolean _hasFocus)
 			{
-				if (_hasFocus){
+				if (_hasFocus)
+				{
 					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open time dialog");
 
 					DialogTimePicker dialog = new DialogTimePicker();
@@ -90,7 +93,7 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		buttonAddTask = (Button) findViewById(R.id.button_task_add_addTask);
 		buttonAddTask.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v)
+			public void onClick(View _v)
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> add task");
 
@@ -112,7 +115,7 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		buttonCloseDialog = (Button) findViewById(R.id.button_task_add_closeDialog);
 		buttonCloseDialog.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v)
+			public void onClick(View _v)
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> close dialog");
 
@@ -134,11 +137,12 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 
 		setContentView(R.layout.dialog_task_add);
 
-		init();
+		init(); // Initialisiert alle Komponenten
 
 		loadDummyEditorsList();
 	}
 
+	// Eine Dummyliste für eine Familie
 	private void loadDummyEditorsList()
 	{
 		editorsList = new ArrayList<>();
@@ -159,7 +163,7 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 	 *
 	 * Sendet die neue Aufgabe zurück an das Eltern Element
 	 *
-	 * @param _newTask {Task} - Die neue Aufgabe
+	 * @param _newTask {Task} - Neue Aufgabe
 	 */
 	public void sendBackResult(Task _newTask)
 	{
@@ -174,11 +178,18 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 	}
 
 	@Override
-	public void onFinishDateDialog(Date _date) {
+	public void onFinishDateDialog(Date _date)
+	{
 
 		Log.d(TAG,":TaskAddActivity.onFinishDateDialog() -> with new date: " + _date.toString());
 
 		taskDate = _date;
 		editTextTaskDate.setText(_date.toString());
+	}
+
+	@Override
+	public void onFinishDateDialog()
+	{
+		Log.d(TAG,":TaskAddActivity.onFinishDateDialog() -> with new date: ... ");
 	}
 }
