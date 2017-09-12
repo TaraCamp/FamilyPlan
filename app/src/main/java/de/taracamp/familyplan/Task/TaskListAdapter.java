@@ -8,6 +8,7 @@ package de.taracamp.familyplan.Task;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,14 @@ import de.taracamp.familyplan.R;
  */
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder>
 {
+	private static final String TAG = "familyplan.debug";
+
 	/**
 	 * Eine Adapter Klasse die eine einzelne Zeile beinhaltet.
 	 */
 	public class ViewHolder extends RecyclerView.ViewHolder
 	{
 		public TextView nameTextView;
-		public Button messageButton;
 
 		public ViewHolder(View _itemView)
 		{
@@ -70,11 +72,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	@Override
 	public void onBindViewHolder(ViewHolder _holder, int _position)
 	{
-		Task task = this.TaskList.get(_position);
+		Task task = this.TaskList.get(_position); //Ausgewählte Aufgabe wird zurückgegeben
 
-		TextView textView = _holder.nameTextView;
+		final TextView textView = _holder.nameTextView;
 		textView.setText(task.getTaskName());
 
+		_holder.itemView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _v)
+			{
+				Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textView.getText().toString());
+
+				//// TODO: 11.09.2017 Die Task Detail Ansicht muss gestartet werden.
+			}
+		});
 	}
 
 	@Override

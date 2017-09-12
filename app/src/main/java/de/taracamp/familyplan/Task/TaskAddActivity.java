@@ -116,8 +116,10 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> close dialog");
 
-				Intent taskListIntent = new Intent(getApplicationContext(),TaskListActivity.class);
-				startActivity(taskListIntent);
+				Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
+				startActivity(taskTabIntent);
+				
+				//// TODO: 12.09.2017 Beim Schließen soll der Tab 3 selektiert sein. 
 			}
 		});
 	}
@@ -163,9 +165,12 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 	{
 		Log.d(TAG,":TaskAddActivity.sendBackResult()");
 
-		Intent taskListIntent = new Intent(getApplicationContext(),TaskListActivity.class);
-		taskListIntent.putExtra("NEW_TASK",_newTask);
-		startActivity(taskListIntent);
+		//Intent taskListIntent = new Intent(getApplicationContext(),TaskListActivity.class);
+		//taskListIntent.putExtra("NEW_TASK",_newTask);
+
+		Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
+		taskTabIntent.putExtra("NEW_TASK",_newTask);
+		startActivity(taskTabIntent);
 	}
 
 	@Override

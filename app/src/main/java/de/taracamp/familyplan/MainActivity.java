@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.taracamp.familyplan.Login.LoginActivity;
+import de.taracamp.familyplan.Task.TaskActivity;
 import de.taracamp.familyplan.Task.TaskListActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent taskIntent = new Intent(getApplicationContext(),TaskListActivity.class);
+                //Intent taskIntent = new Intent(getApplicationContext(),TaskListActivity.class);
+                //startActivity(taskIntent);
+
+                Intent taskIntent = new Intent(getApplicationContext(),TaskActivity.class);
                 startActivity(taskIntent);
             }
 
