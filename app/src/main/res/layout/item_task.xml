@@ -1,6 +1,6 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                    android:id="@+id/cardView"
+                                    android:id="@+id/cardView_task"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -10,44 +10,64 @@
                                     app:cardCornerRadius="@dimen/activity_vertical_margin"
                                     app:cardElevation="@dimen/activity_vertical_margin">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imageView_taskItem"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_assignment_black_36dp"/>
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/item_task_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/imageView_taskItem"
-            android:text="Title"/>
+            <ImageView
+                android:id="@+id/imageView_taskItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_assignment_black_36dp"/>
 
-        <TextView
-            android:id="@+id/item_task_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/item_task_name"
-            android:layout_toRightOf="@+id/imageView_taskItem"
-            android:text="Description"/>
+            <TextView
+                android:id="@+id/item_task_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/imageView_taskItem"
+                android:text="Title"/>
 
-        <TextView
-            android:id="@+id/item_task_editors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/item_task_description"
-            android:layout_toRightOf="@+id/imageView_taskItem"
-            android:text="Wladimir Tarasov"/>
+            <TextView
+                android:id="@+id/item_task_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/item_task_name"
+                android:layout_toRightOf="@+id/imageView_taskItem"
+                android:text="Description"/>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/item_task_editors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/item_task_description"
+                android:layout_toRightOf="@+id/imageView_taskItem"
+                android:text="Wladimir Tarasov"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|right">
+
+            <CheckBox
+                android:id="@+id/checkBox_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginRight="20dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
