@@ -12,8 +12,18 @@ public class Dummy
 		ArrayList<Task> list = new ArrayList<>();
 		for(int i = 1;i<=_numTasks;i++)
 		{
-			list.add(new Task("Aufgabe-"+i,"Beschreibung-"+i));
+			list.add(getTask("Aufgabe-"+i,"Beschreibung-"+i));
 		}
 		return list;
+	}
+
+	public static Task getTask(String _name,String _description)
+	{
+		Task nTask = new Task();
+
+		nTask.setTaskTitle(_name);
+		nTask.setTaskDescription(_description);
+
+		return nTask;
 	}
 }

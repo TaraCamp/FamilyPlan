@@ -7,6 +7,7 @@
 package de.taracamp.familyplan.Task;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,10 +59,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	@Override
 	public void onBindViewHolder(final ViewHolder _holder, int _position)
 	{
-		Task task = this.TaskList.get(_position); //Ausgewählte Aufgabe wird zurückgegeben
+		final Task task = this.TaskList.get(_position); //Ausgewählte Aufgabe wird zurückgegeben
 
 		final TextView textViewName = _holder.nameTextView;
-		textViewName.setText(task.getTaskName());
+		textViewName.setText(task.getTaskTitle());
+
 		final TextView textViewDescription = _holder.descriptionTextView;
 		textViewDescription.setText(task.getTaskDescription());
 
@@ -82,6 +84,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 				if (_holder.checkBoxTaskDone.getVisibility()!=View.VISIBLE)
 				{
 					Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
+
+					Intent intentDetail = new Intent(taskActivity.getApplicationContext(),TaskDetailActivity.class);
+					//intentDetail.putExtra("DETAIL_TASK",task);
+					taskActivity.startActivity(intentDetail);
 				}
 			}
 		});

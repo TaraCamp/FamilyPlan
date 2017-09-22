@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import de.taracamp.familyplan.Models.Dummy;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 import de.taracamp.familyplan.Task.TaskAddActivity;
@@ -53,7 +54,7 @@ public class TaskNewListTabFragment extends Fragment
 
 		View view = _inflater.inflate(R.layout.tab_task_newlist, _container, false);
 
-		this.taskList = Task.createDummyTasksList(20); // Es werden Dummy Daten geladen
+		this.taskList = Dummy.getTaskList(20); // Es werden Dummy Daten geladen
 
 		this.recyclerViewTasks = (RecyclerView) view.findViewById(R.id.listview_task_tasklist_);
 		this.floatingActionButtonOpenTaskDialog = (FloatingActionButton) view.findViewById(R.id.floatingActionButton_task_openDialog_);
@@ -87,7 +88,7 @@ public class TaskNewListTabFragment extends Fragment
 		Task newTask = (Task) getActivity().getIntent().getParcelableExtra("NEW_TASK");
 		if (newTask!=null)
 		{
-			Log.d(TAG,":TaskListActivity.onStart() -> new task with value taskName=" + newTask.getTaskName());
+			Log.d(TAG,":TaskListActivity.onStart() -> new task with value taskName=" + newTask.getTaskTitle());
 
 			// Neue Aufgabe wird zur List hinzugefügt
 			taskList.add(newTask);

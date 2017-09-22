@@ -47,6 +47,8 @@
         <activity android:name=".Task.TaskAddActivity"/>
         <activity android:name=".Task.TaskActivity">
         </activity>
+        <activity android:name=".Task.TaskDetailActivity">
+        </activity>
     </application>
 
 </manifest>

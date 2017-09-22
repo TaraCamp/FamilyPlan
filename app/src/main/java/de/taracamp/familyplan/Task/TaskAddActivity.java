@@ -19,6 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +30,7 @@ import de.taracamp.familyplan.Dialogs.DialogDateListener;
 import de.taracamp.familyplan.Dialogs.DialogDatePicker;
 import de.taracamp.familyplan.Dialogs.DialogTimeListener;
 import de.taracamp.familyplan.Dialogs.DialogTimePicker;
+import de.taracamp.familyplan.Models.Enums.Status;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -49,6 +53,9 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 
 	private Date taskDate = null;
 	private List<String> editorsList = null;
+
+	private FirebaseDatabase database = null;
+	private DatabaseReference databaseReference = null;
 
 	private android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -97,19 +104,7 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> add task");
 
-				String taskTitle = editTextTaskTitle.getText().toString();
-				String taskDescription = editTextTaskDescription.getText().toString();
-
-				// Benutzer - Ersteller
-				User userA = new User(spinnerTaskEditors.getSelectedItem().toString(),"wowa@tarasov");
-
-				// Neue Aufgabe
-				Task newTask = new Task(taskTitle,taskDescription);
-				if (userA!=null) newTask.setTaskCreator(userA);
-				if (taskDate!=null) newTask.setTaskDate(taskDate);
-
-				// Daten werden zurück an die Aufgabenliste geschickt
-				sendBackResult(newTask);
+				saveTask(); // Speichert die neue Aufgabe in der Datenbank.
 			}
 		});
 		buttonCloseDialog = (Button) findViewById(R.id.button_task_add_closeDialog);
@@ -121,10 +116,14 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 
 				Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
 				startActivity(taskTabIntent);
-				
-				//// TODO: 12.09.2017 Beim Schließen soll der Tab 3 selektiert sein. 
 			}
 		});
+	}
+
+	private void initFirebase()
+	{
+		this.database = FirebaseDatabase.getInstance();
+		this.databaseReference = this.database.getReference("tasks");
 	}
 
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -138,6 +137,7 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		setContentView(R.layout.dialog_task_add);
 
 		init(); // Initialisiert alle Komponenten
+		initFirebase(); // Firebase wird initialisiert
 
 		loadDummyEditorsList();
 	}
@@ -159,28 +159,9 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		spinnerTaskEditors.setAdapter(dataAdapter);
 	}
 
-	/**
-	 *
-	 * Sendet die neue Aufgabe zurück an das Eltern Element
-	 *
-	 * @param _newTask {Task} - Neue Aufgabe
-	 */
-	public void sendBackResult(Task _newTask)
-	{
-		Log.d(TAG,":TaskAddActivity.sendBackResult()");
-
-		//Intent taskListIntent = new Intent(getApplicationContext(),TaskListActivity.class);
-		//taskListIntent.putExtra("NEW_TASK",_newTask);
-
-		Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
-		taskTabIntent.putExtra("NEW_TASK",_newTask);
-		startActivity(taskTabIntent);
-	}
-
 	@Override
 	public void onFinishDateDialog(Date _date)
 	{
-
 		Log.d(TAG,":TaskAddActivity.onFinishDateDialog() -> with new date: " + _date.toString());
 
 		taskDate = _date;
@@ -191,5 +172,36 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 	public void onFinishDateDialog()
 	{
 		Log.d(TAG,":TaskAddActivity.onFinishDateDialog() -> with new date: ... ");
+	}
+
+	private void saveTask()
+	{
+		/*Creating new task node, which returns the unique key value,
+		* new task node would be /tasks/$userid/
+		*/
+		String taskId  = databaseReference.push().getKey();
+
+		// Daten werden aus der UI übernommen.
+		String taskTitle = editTextTaskTitle.getText().toString();
+		String taskDescription = editTextTaskDescription.getText().toString();
+
+		// Benutzer - Ersteller
+		User userA = new User(spinnerTaskEditors.getSelectedItem().toString(),"wowa@tarasov");
+
+		// Create new task.
+		Task newTask = new Task();
+
+		// Set task fields
+		newTask.setTaskTitle(taskTitle);
+		newTask.setTaskDescription(taskDescription);
+		newTask.setTaskStatus(Status.OPEN);
+		if (userA!=null) newTask.setTaskCreator(userA);
+		if (taskDate!=null) newTask.setTaskDate(taskDate);
+
+		// pushing task to 'tasks' node using the taskId
+		databaseReference.child(taskId).setValue(newTask);
+
+		Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
+		startActivity(taskTabIntent);
 	}
 }

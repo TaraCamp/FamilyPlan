@@ -20,6 +20,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 import de.taracamp.familyplan.MainActivity;
@@ -34,6 +40,8 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 {
 	private static final String TAG = "familyplan.debug";
 
+	private TaskActivity thisActivity = null;
+
 	private Toolbar toolbar = null;
 	private RecyclerView recyclerView = null;
 	private FloatingActionButton floatingActionButton = null;
@@ -46,6 +54,9 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	public boolean isActionModeEnable = false;
 	private TaskListAdapter adapter = null;
 
+	private FirebaseDatabase database = null;
+	private DatabaseReference databaseReference = null;
+
 	@Override
 	protected void onCreate(Bundle _savedInstanceState)
 	{
@@ -54,10 +65,12 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 
 		Log.d(TAG,":TaskActivity.onCreate()");
 
-		this.list = Dummy.getTaskList(10); //Dummydaten //// TODO: 14.09.2017 muss noch dynamisch umgesetzt werden
-		this.selectedList = new ArrayList<>();
+		thisActivity = this;
 
-		this.adapter = new TaskListAdapter(this,this.list);
+		//this.list = Dummy.getTaskList(10); //Dummydaten //// TODO: 14.09.2017 muss noch dynamisch umgesetzt werden
+		this.list = new ArrayList<>();
+
+		this.selectedList = new ArrayList<>();
 
 		this.toolbar = (Toolbar) findViewById(R.id.toolbar_task);
 		setSupportActionBar(toolbar);
@@ -66,7 +79,6 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		this.textViewSelectedCounter.setVisibility(View.GONE);
 
 		this.recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
-		this.recyclerView.setAdapter(adapter);
 		this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		this.recyclerView.setHasFixedSize(true);
 
@@ -79,6 +91,36 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 
 				Intent intentAddTask = new Intent(getApplicationContext(),TaskAddActivity.class);
 				startActivity(intentAddTask);
+			}
+		});
+
+		this.database = FirebaseDatabase.getInstance();
+
+		// Der Datenbankknoten 'tasks' wird zurückgegeben.
+		this.databaseReference = this.database.getReference("tasks");
+		this.databaseReference.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot)
+			{
+				Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + dataSnapshot.getChildrenCount());
+
+				list.clear(); // Liste entleeren
+
+				// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+				for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+				{
+					Task readTask = taskSnap.getValue(Task.class);
+					list.add(readTask); // Aufgabe der Liste anhefeten
+				}
+
+				adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
+				recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError)
+			{
+				Log.d(TAG,":TaskActivity.readDatabase() -> onCancelled");
 			}
 		});
 	}
@@ -100,7 +142,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		Task newTask = getIntent().getParcelableExtra("NEW_TASK");
 		if (newTask!=null)
 		{
-			Log.d(TAG,":TaskActivity.onStart() -> new task with value taskName=" + newTask.getTaskName());
+			Log.d(TAG,":TaskActivity.onStart() -> new task with value taskName=" + newTask.getTaskTitle());
 
 			// Neue Aufgabe wird zur List hinzugefügt
 			list.add(newTask);
@@ -234,4 +276,5 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		this.selectedTasksCounter = 0; // Counter für Selektierte Aufgaben wird zurückgesetzt.
 		this.selectedList.clear(); // Selektierte Aufgabenliste wird geleert.
 	}
+
 }

@@ -9,132 +9,79 @@ package de.taracamp.familyplan.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.taracamp.familyplan.Models.Enums.Status;
+
 /**
  * Repräsentiert eine Aufgabe.
  */
-public class Task implements Parcelable
+@IgnoreExtraProperties
+public class Task
 {
-	private int TaskId;
-	private int TaskNumber;
-	private String TaskName;
-	private String TaskDescription;
-	private User TaskCreator;
-	private Date TaskDate;
-	private List<User> TaskRelatedUsers;
-	private Date TaskCreatedOn;
+	private String taskTitle = null;
+	private String taskDescription = null;
+	private Status taskStatus = null;
+	private User taskCreator = null;
+	private Date taskDate = null;
+	private List<User> taskRelatedUsers = null;
+	private Date taskCreatedOn = null;
 
-	public Task(String _taskName,String _taskDescription)
+	// Default constructor required for calls to
+	// DataSnapshot.getValue(User.class)
+	public Task(){}
+
+	public void setTaskTitle(String _title)
 	{
-		TaskName = _taskName;
-		TaskDescription = _taskDescription;
+		this.taskTitle = _title;
 	}
 
-	public Task(String _taskName,User _taskAdmin)
+	public void setTaskDescription(String _description)
 	{
-		this.TaskName = _taskName;
-		this.TaskCreator = _taskAdmin;
+		this.taskDescription = _description;
 	}
 
-	public Task(int _taskNumber,String _taskName,String _taskDescription,User _taskCreator)
+	public void setTaskDate(Date _date)
 	{
-		this.TaskNumber = _taskNumber;
-		this.TaskName = _taskName;
-		this.TaskDescription = _taskDescription;
-		this.TaskCreator = _taskCreator;
+		this.taskDate = _date;
 	}
 
-	protected Task(Parcel in) {
-		TaskId = in.readInt();
-		TaskNumber = in.readInt();
-		TaskName = in.readString();
-		TaskDescription = in.readString();
+	public void setTaskCreator(User _user)
+	{
+		this.taskCreator = _user;
 	}
 
-	public static final Creator<Task> CREATOR = new Creator<Task>() {
-		@Override
-		public Task createFromParcel(Parcel in) {
-			return new Task(in);
-		}
-
-		@Override
-		public Task[] newArray(int size) {
-			return new Task[size];
-		}
-	};
+	public void setTaskStatus(Status _status)
+	{
+		this.taskStatus = _status;
+	}
 
 	public void addRelatedUser(User _relatedUser)
 	{
-		this.TaskRelatedUsers.add(_relatedUser);
+		this.taskRelatedUsers.add(_relatedUser);
 	}
 
 	public void addRelatedUsersList(List<User> _relatedUsers)
 	{
 		for(User relatedUser : _relatedUsers)
 		{
-			this.TaskRelatedUsers.add(relatedUser);
+			this.taskRelatedUsers.add(relatedUser);
 		}
 	}
 
-	public void setTaskTitle(String _title)
+	public String getTaskTitle()
 	{
-		TaskName = _title;
-	}
-
-	public void setTaskDescription(String _description)
-	{
-		TaskDescription = _description;
-	}
-
-	public void setTaskDate(Date _date)
-	{
-		TaskDate = _date;
-	}
-
-	public void setTaskCreator(User _user)
-	{
-		TaskCreator = _user;
-	}
-
-	public String getTaskName()
-	{
-		return this.TaskName;
+		return this.taskTitle;
 	}
 
 	public String getTaskDescription()
 	{
-		return this.TaskDescription;
+		return this.taskDescription;
 	}
 
-	/**
-	 * Dummy Funktion um eine Aufgabenliste zu simulieren
-	 */
-	public static ArrayList<Task> createDummyTasksList(int _numTasks)
-	{
-		ArrayList<Task> tasks = new ArrayList<>();
-
-		for(int i = 1;i<=_numTasks;i++)
-		{
-			tasks.add(new Task("Task - " + i,new User("wowa","wowa@tarasov")));
-		}
-
-		return tasks;
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(TaskId);
-		dest.writeInt(TaskNumber);
-		dest.writeString(TaskName);
-		dest.writeString(TaskDescription);
-	}
 }

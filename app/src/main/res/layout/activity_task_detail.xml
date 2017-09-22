@@ -1,0 +1,142 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:weightSum="1">
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@color/com_facebook_button_background_color_selected"
+                android:contentDescription="@string/app_name"
+                android:scaleType="center"
+                android:src="@drawable/ic_note_add_white_36dp"/>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
+
+            <TextView
+                android:id="@+id/lbl_task_detail_taskName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aufgaben Titel"/>
+
+            <EditText
+                android:id="@+id/text_task_detail_taskName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="16dp"
+                android:enabled="false"
+                android:hint="@string/dialog_task_add_taskName"/>
+
+            <TextView
+                android:id="@+id/lbl_task_detail_taskDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Beschreibung"/>
+
+            <EditText
+                android:id="@+id/text_task_detail_taskDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:hint="@string/dialog_task_add_description"
+                android:inputType="textMultiLine"
+                android:enabled="false"/>
+
+            <TextView
+                android:id="@+id/lbl_task_detail_taskDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:text="Datum"/>
+
+            <EditText
+                android:id="@+id/text_task_detail_taskDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Datum"
+                android:enabled="false"/>
+
+            <TextView
+                android:id="@+id/lbl_task_detail_taskTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Uhrzeit"/>
+
+            <EditText
+                android:id="@+id/text_task_detail_taskTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Uhrzeit"
+                android:enabled="false"/>
+
+            <TextView
+                android:id="@+id/lbl_task_detail_taskEditors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bearbeiter"/>
+
+            <Spinner
+                android:id="@+id/spinner_task_detail_taskEditors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:orientation="horizontal"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button_task_detail_updateTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="10px"
+                android:background="@color/com_facebook_button_background_color_selected"
+                android:text="Ändern"
+                android:enabled="false"/>
+
+            <Button
+                android:id="@+id/button_task_detail_closeDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="10px"
+                android:background="@color/com_facebook_button_background_color_selected"
+                android:text="Schließen"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
