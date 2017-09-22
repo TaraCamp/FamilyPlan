@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.taracamp.familyplan.MainActivity;
@@ -55,7 +56,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	}
 
 	@Override
-	public void onBindViewHolder(ViewHolder _holder, int _position)
+	public void onBindViewHolder(final ViewHolder _holder, int _position)
 	{
 		Task task = this.TaskList.get(_position); //Ausgewählte Aufgabe wird zurückgegeben
 
@@ -78,9 +79,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			@Override
 			public void onClick(View _v)
 			{
-				Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
-
-				//// TODO: 11.09.2017 Die Task Detail Ansicht muss gestartet werden.
+				if (_holder.checkBoxTaskDone.getVisibility()!=View.VISIBLE)
+				{
+					Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
+				}
 			}
 		});
 	}
@@ -89,6 +91,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	public int getItemCount()
 	{
 		return this.TaskList.size();
+	}
+
+	public void updateAdapter(ArrayList<Task> _list)
+	{
+		for (Task task : _list)
+		{
+			TaskList.remove(task);
+		}
+
+		notifyDataSetChanged();
 	}
 
 	/**
@@ -126,4 +138,5 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			taskActivity.prepareSelection(v,getAdapterPosition());
 		}
 	}
+
 }

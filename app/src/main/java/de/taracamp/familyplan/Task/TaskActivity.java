@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -109,18 +110,29 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	@Override
 	public void onBackPressed()
 	{
-		super.onBackPressed();
+		// Es wird geprüft on der actio mode aktiviert ist
+		if (this.isActionModeEnable)
+		{
+			Log.d(TAG,":TaskActivity.onBackPressed() -> close action mode");
 
-		Log.d(TAG,":TaskActivity.onBackPressed()");
+			clearActionMode(); // Der Action Mode wird deaktiviert
+			this.adapter.notifyDataSetChanged();
+		}
+		else
+		{
+			Log.d(TAG,":TaskActivity.onBackPressed() -> close task menu");
 
-		Intent intentMain = new Intent(getApplicationContext(),MainActivity.class);
-		startActivity(intentMain);
+			super.onBackPressed();
+
+			Intent intentMain = new Intent(getApplicationContext(),MainActivity.class);
+			startActivity(intentMain);
+		}
 	}
 
 	@Override
 	public boolean onLongClick(View v)
 	{
-		Log.d(TAG,":TaskActivity.onLongClick()");
+		Log.d(TAG,":TaskActivity.onLongClick() -> action mode on");
 
 		this.toolbar.getMenu().clear();
 		this.toolbar.inflateMenu(R.menu.menu_task_action_mode);
@@ -149,6 +161,10 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		}
 	}
 
+	/**
+	 * Ausgabe 'Selektierte Aufgaben' wird aktualisiert.
+	 * @param _counter
+	 */
 	public void updateCounter(int _counter)
 	{
 		if (_counter==0)
@@ -163,5 +179,59 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		{
 			textViewSelectedCounter.setText(_counter + " Aufgaben ausgewählt");
 		}
+	}
+
+	/**
+	 *
+	 * Kontrolliert alle Elemente innerhalb des Menus.
+	 *
+	 * - Erledigt Funktion (onClick)
+	 * - Home Button (onClick)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem _item)
+	{
+		if (_item.getItemId()==R.id.item_task_done)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> Done");
+
+			TaskListAdapter taskListAdapter = this.adapter;
+			taskListAdapter.updateAdapter(selectedList);
+
+			clearActionMode();
+		}
+		else if (_item.getItemId()==android.R.id.home)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> home");
+
+			clearActionMode();
+			this.adapter.notifyDataSetChanged();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Deaktiviert den Action Mode
+	 */
+	public void clearActionMode()
+	{
+		Log.d(TAG,":TaskActivity -> action mode off");
+
+		this.isActionModeEnable = false; // Action Mode wird ausgeschaltet
+
+		this.toolbar.getMenu().clear(); // Das menu wird geleert
+		this.toolbar.inflateMenu(R.menu.menu_task); // Die Standart Actionbar menu wird geladen
+
+		this.floatingActionButton.setVisibility(View.VISIBLE); // FloatingActionButton wird aktiviert
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false); // Der Homebutton in der Actionbar wird deaktiviert
+
+		// Die Ausgabe für Anzahl selektierter Aufgaben wird zurückgesetzt und unsichtbar
+		this.textViewSelectedCounter.setVisibility(View.GONE);
+		this.textViewSelectedCounter.setText("0 Aufgaben ausgewählt");
+
+		this.selectedTasksCounter = 0; // Counter für Selektierte Aufgaben wird zurückgesetzt.
+		this.selectedList.clear(); // Selektierte Aufgabenliste wird geleert.
 	}
 }
