@@ -82,6 +82,7 @@ public class TaskDetailActivity extends AppCompatActivity
 		this.task = getIntent().getParcelableExtra("DETAIL_TASK");
 		if (this.task!=null)
 		{
+			Log.d(TAG,": Get task with value taskName=" + this.task.getTaskTitle());
 
 			this.fillViews(this.task); // Die Aufgabe wird an die Steuerelemente übergeben
 		}
@@ -95,6 +96,7 @@ public class TaskDetailActivity extends AppCompatActivity
 	 */
 	private void fillViews(Task _detailTask)
 	{
+		this.editTextTaskTitle.setText(_detailTask.getTaskTitle());
 		this.editTextTaskDescription.setText(_detailTask.getTaskDescription());
 	}
 }
