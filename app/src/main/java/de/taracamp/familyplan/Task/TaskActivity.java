@@ -6,75 +6,232 @@
  */
 package de.taracamp.familyplan.Task;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.Models.Dummy;
+import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.Fragmente.TaskCreatorListTabFragment;
-import de.taracamp.familyplan.Task.Fragmente.TaskNewListTabFragment;
-import de.taracamp.familyplan.Task.Fragmente.TaskOwnListTabFragment;
 
 /**
- * Beinhaltet das Tab Menu für den Aufgaben Bereich
+ * Aufgabenliste
  */
-public class TaskActivity extends AppCompatActivity
+public class TaskActivity extends AppCompatActivity implements View.OnLongClickListener
 {
 	private static final String TAG = "familyplan.debug";
 
-	private Toolbar toolbar;
-	private TabLayout tabLayout;
-	private ViewPager viewPager;
+	private Toolbar toolbar = null;
+	private RecyclerView recyclerView = null;
+	private FloatingActionButton floatingActionButton = null;
+	private TextView textViewSelectedCounter = null;
 
-	// Tab Icons
-	private int[] tabIcons = {
-			R.drawable.ic_add_black_36dp,
-			R.drawable.ic_add_black_36dp,
-			R.drawable.ic_add_black_36dp
-	};
+	private ArrayList<Task> list = null;
+	private ArrayList<Task> selectedList = null;
+
+	private int selectedTasksCounter = 0;
+	public boolean isActionModeEnable = false;
+	private TaskListAdapter adapter = null;
 
 	@Override
 	protected void onCreate(Bundle _savedInstanceState)
 	{
 		super.onCreate(_savedInstanceState);
-		setContentView(R.layout.activity_task);
+		setContentView(R.layout.activity_task_layout);
 
 		Log.d(TAG,":TaskActivity.onCreate()");
 
-		//Adding toolbar to the activity
-		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		this.list = Dummy.getTaskList(10); //Dummydaten //// TODO: 14.09.2017 muss noch dynamisch umgesetzt werden
+		this.selectedList = new ArrayList<>();
+
+		this.adapter = new TaskListAdapter(this,this.list);
+
+		this.toolbar = (Toolbar) findViewById(R.id.toolbar_task);
 		setSupportActionBar(toolbar);
+
+		this.textViewSelectedCounter = (TextView) findViewById(R.id.counter_task);
+		this.textViewSelectedCounter.setVisibility(View.GONE);
+
+		this.recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
+		this.recyclerView.setAdapter(adapter);
+		this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		this.recyclerView.setHasFixedSize(true);
+
+		this.floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_task_openDialog);
+		this.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v)
+			{
+				Log.d(TAG,":TaskActivity.click()-> open new task window");
+
+				Intent intentAddTask = new Intent(getApplicationContext(),TaskAddActivity.class);
+				startActivity(intentAddTask);
+			}
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		getMenuInflater().inflate(R.menu.menu_task,menu);
+		return true;
+	}
+
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+
+		Log.d(TAG,":TaskActivity.onStart()");
+
+		Task newTask = getIntent().getParcelableExtra("NEW_TASK");
+		if (newTask!=null)
+		{
+			Log.d(TAG,":TaskActivity.onStart() -> new task with value taskName=" + newTask.getTaskName());
+
+			// Neue Aufgabe wird zur List hinzugefügt
+			list.add(newTask);
+		}
+	}
+
+	@Override
+	public void onBackPressed()
+	{
+		// Es wird geprüft on der actio mode aktiviert ist
+		if (this.isActionModeEnable)
+		{
+			Log.d(TAG,":TaskActivity.onBackPressed() -> close action mode");
+
+			clearActionMode(); // Der Action Mode wird deaktiviert
+			this.adapter.notifyDataSetChanged();
+		}
+		else
+		{
+			Log.d(TAG,":TaskActivity.onBackPressed() -> close task menu");
+
+			super.onBackPressed();
+
+			Intent intentMain = new Intent(getApplicationContext(),MainActivity.class);
+			startActivity(intentMain);
+		}
+	}
+
+	@Override
+	public boolean onLongClick(View v)
+	{
+		Log.d(TAG,":TaskActivity.onLongClick() -> action mode on");
+
+		this.toolbar.getMenu().clear();
+		this.toolbar.inflateMenu(R.menu.menu_task_action_mode);
+		this.textViewSelectedCounter.setVisibility(View.VISIBLE);
+		this.floatingActionButton.setVisibility(View.GONE);
+		this.isActionModeEnable = true;
+		this.adapter.notifyDataSetChanged();
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		//Initializing viewPager
-		this.viewPager = (ViewPager) findViewById(R.id.pager);
-		setupViewPager(this.viewPager);
-
-		//Initializing the tablayout
-		tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-
-		//Adding the tabs using addTab() method
-		tabLayout.setupWithViewPager(viewPager);
-		//setupTabIcons();
+		return true;
 	}
 
-	private void setupTabIcons()
+	public void prepareSelection(View _view,int _position)
 	{
-		tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-		tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-		tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+		if (((CheckBox)_view).isChecked())
+		{
+			this.selectedList.add(list.get(_position));
+			selectedTasksCounter++;
+			updateCounter(selectedTasksCounter);
+		}
+		else
+		{
+			this.selectedList.remove(list.get(_position));
+			selectedTasksCounter--;
+			updateCounter(selectedTasksCounter);
+		}
 	}
 
-	private void setupViewPager(ViewPager _viewPager)
+	/**
+	 * Ausgabe 'Selektierte Aufgaben' wird aktualisiert.
+	 * @param _counter
+	 */
+	public void updateCounter(int _counter)
 	{
-		TaskPagerAdapter adapter = new TaskPagerAdapter(getSupportFragmentManager());
-		adapter.addFragment(new TaskOwnListTabFragment(),"Eigene Aufgaben");
-		adapter.addFragment(new TaskCreatorListTabFragment(),"Erstellte Aufgaben");
-		adapter.addFragment(new TaskNewListTabFragment(),"Neue Aufgaben");
-		_viewPager.setAdapter(adapter);
+		if (_counter==0)
+		{
+			textViewSelectedCounter.setText("0 Aufgaben ausgewählt");
+		}
+		if (_counter==1)
+		{
+			textViewSelectedCounter.setText("1 Aufgabe ausgewählt");
+		}
+		else
+		{
+			textViewSelectedCounter.setText(_counter + " Aufgaben ausgewählt");
+		}
 	}
 
+	/**
+	 *
+	 * Kontrolliert alle Elemente innerhalb des Menus.
+	 *
+	 * - Erledigt Funktion (onClick)
+	 * - Home Button (onClick)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem _item)
+	{
+		if (_item.getItemId()==R.id.item_task_done)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> Done");
+
+			TaskListAdapter taskListAdapter = this.adapter;
+			taskListAdapter.updateAdapter(selectedList);
+
+			clearActionMode();
+		}
+		else if (_item.getItemId()==android.R.id.home)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> home");
+
+			clearActionMode();
+			this.adapter.notifyDataSetChanged();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Deaktiviert den Action Mode
+	 */
+	public void clearActionMode()
+	{
+		Log.d(TAG,":TaskActivity -> action mode off");
+
+		this.isActionModeEnable = false; // Action Mode wird ausgeschaltet
+
+		this.toolbar.getMenu().clear(); // Das menu wird geleert
+		this.toolbar.inflateMenu(R.menu.menu_task); // Die Standart Actionbar menu wird geladen
+
+		this.floatingActionButton.setVisibility(View.VISIBLE); // FloatingActionButton wird aktiviert
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false); // Der Homebutton in der Actionbar wird deaktiviert
+
+		// Die Ausgabe für Anzahl selektierter Aufgaben wird zurückgesetzt und unsichtbar
+		this.textViewSelectedCounter.setVisibility(View.GONE);
+		this.textViewSelectedCounter.setText("0 Aufgaben ausgewählt");
+
+		this.selectedTasksCounter = 0; // Counter für Selektierte Aufgaben wird zurückgesetzt.
+		this.selectedList.clear(); // Selektierte Aufgabenliste wird geleert.
+	}
 }
