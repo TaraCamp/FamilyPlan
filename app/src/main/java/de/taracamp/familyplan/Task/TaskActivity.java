@@ -30,6 +30,8 @@ import java.util.ArrayList;
 
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.Dummy;
+import de.taracamp.familyplan.Models.Enums.Status;
+import de.taracamp.familyplan.Models.Enums.TaskState;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
@@ -46,6 +48,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	private RecyclerView recyclerView = null;
 	private FloatingActionButton floatingActionButton = null;
 	private TextView textViewSelectedCounter = null;
+	private TextView textViewInformation = null;
 
 	private ArrayList<Task> list = null;
 	private ArrayList<Task> selectedList = null;
@@ -55,7 +58,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	private TaskListAdapter adapter = null;
 
 	private FirebaseDatabase database = null;
-	private DatabaseReference databaseReference = null;
+	private DatabaseReference tasksReference = null;
 
 	@Override
 	protected void onCreate(Bundle _savedInstanceState)
@@ -78,6 +81,8 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		this.textViewSelectedCounter = (TextView) findViewById(R.id.counter_task);
 		this.textViewSelectedCounter.setVisibility(View.GONE);
 
+		this.textViewInformation = (TextView) findViewById(R.id.textView_task_noWork);
+
 		this.recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
 		this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		this.recyclerView.setHasFixedSize(true);
@@ -97,12 +102,18 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		this.database = FirebaseDatabase.getInstance();
 
 		// Der Datenbankknoten 'tasks' wird zurückgegeben.
-		this.databaseReference = this.database.getReference("tasks");
-		this.databaseReference.addValueEventListener(new ValueEventListener() {
+		this.tasksReference = this.database.getReference("tasks");
+		this.tasksReference.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
-				Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + dataSnapshot.getChildrenCount());
+				long foundTasks = dataSnapshot.getChildrenCount();
+
+				Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + foundTasks);
+
+				// Sollten noch keine Aufgaben erstellt sein wird eine Information zurückgegeben
+				if (foundTasks==0) textViewInformation.setVisibility(View.VISIBLE);
+					else textViewInformation.setVisibility(View.GONE);
 
 				list.clear(); // Liste entleeren
 
@@ -240,6 +251,13 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 			TaskListAdapter taskListAdapter = this.adapter;
 			taskListAdapter.updateAdapter(selectedList);
 
+			for (Task task : selectedList)
+			{
+				tasksReference.child(task.getId()).child("taskState").setValue("FINISH");
+			}
+			
+			//// TODO: 22.09.2017 liste wird nicht entleert
+			
 			clearActionMode();
 		}
 		else if (_item.getItemId()==android.R.id.home)

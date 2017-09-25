@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import de.taracamp.familyplan.Task.TaskActivity;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -11,7 +13,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(this,TaskActivity.class);
         startActivity(intent);
         finish();
     }

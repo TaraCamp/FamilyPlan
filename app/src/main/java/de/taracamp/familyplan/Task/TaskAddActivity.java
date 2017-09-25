@@ -31,6 +31,7 @@ import de.taracamp.familyplan.Dialogs.DialogDatePicker;
 import de.taracamp.familyplan.Dialogs.DialogTimeListener;
 import de.taracamp.familyplan.Dialogs.DialogTimePicker;
 import de.taracamp.familyplan.Models.Enums.Status;
+import de.taracamp.familyplan.Models.Enums.TaskState;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -194,7 +195,8 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		// Set task fields
 		newTask.setTaskTitle(taskTitle);
 		newTask.setTaskDescription(taskDescription);
-		newTask.setTaskStatus(Status.OPEN);
+		newTask.setTaskState("OPEN");
+		newTask.setId(taskId);
 		if (userA!=null) newTask.setTaskCreator(userA);
 		if (taskDate!=null) newTask.setTaskDate(taskDate);
 

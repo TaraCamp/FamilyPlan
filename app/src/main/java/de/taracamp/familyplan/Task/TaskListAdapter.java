@@ -86,7 +86,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 					Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
 
 					Intent intentDetail = new Intent(taskActivity.getApplicationContext(),TaskDetailActivity.class);
-					//intentDetail.putExtra("DETAIL_TASK",task);
+					intentDetail.putExtra("TASK_ID",task.getId());
 					taskActivity.startActivity(intentDetail);
 				}
 			}

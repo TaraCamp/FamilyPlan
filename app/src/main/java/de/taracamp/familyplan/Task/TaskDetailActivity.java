@@ -15,6 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
@@ -29,6 +35,9 @@ public class TaskDetailActivity extends AppCompatActivity
 	private Spinner spinnerTaskEditors 	= null;
 	private Button 	buttonUpdateTask 	= null;
 	private Button 	buttonCloseDialog 	= null;
+
+	private FirebaseDatabase database = null;
+	private DatabaseReference tasksReference = null;
 
 	private Task task = null;
 
@@ -58,6 +67,7 @@ public class TaskDetailActivity extends AppCompatActivity
 				startActivity(IntentTask);
 			}
 		});
+
 	}
 
 	@Override
@@ -79,12 +89,36 @@ public class TaskDetailActivity extends AppCompatActivity
 		Log.d(TAG,":TaskDetailActivity.onStart()");
 
 		// Es wird geprüft ob eine Aufgabe aus der Liste übergeben wurde.
-		this.task = getIntent().getParcelableExtra("DETAIL_TASK");
-		if (this.task!=null)
-		{
-			Log.d(TAG,": Get task with value taskName=" + this.task.getTaskTitle());
+		//this.task = getIntent().getExtras("TASK_ID");
 
-			this.fillViews(this.task); // Die Aufgabe wird an die Steuerelemente übergeben
+		Bundle extras = getIntent().getExtras();
+		if (extras != null)
+		{
+			//Log.d(TAG,": Get task with value taskName=" + this.task.getTaskTitle());
+
+			final String id = extras.getString("TASK_ID");
+
+			this.database = FirebaseDatabase.getInstance();
+			// Der Datenbankknoten 'tasks' wird zurückgegeben.
+			this.tasksReference = this.database.getReference("tasks");
+			this.tasksReference.addValueEventListener(new ValueEventListener() {
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot)
+				{
+					Log.d(TAG,":TaskActivity.readDatabase() -> with id=" + id);
+
+					DataSnapshot taskSnap = dataSnapshot.child(id);
+					task = taskSnap.getValue(Task.class);
+
+					fillViews(task);
+				}
+
+				@Override
+				public void onCancelled(DatabaseError databaseError)
+				{
+					Log.d(TAG,":TaskActivity.readDatabase() -> onCancelled");
+				}
+			});
 		}
 	}
 

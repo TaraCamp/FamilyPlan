@@ -1,5 +1,6 @@
 package de.taracamp.familyplan.Models;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -25,5 +26,17 @@ public class Dummy
 		nTask.setTaskDescription(_description);
 
 		return nTask;
+	}
+
+	public static ArrayList<User> getUserList()
+	{
+		User a = new User("Wowa","wowa@tarasov");
+		User b = new User("Lisa","lisa@birk");
+
+		ArrayList<User> uList = new ArrayList<>();
+		uList.add(a);
+		uList.add(b);
+
+		return uList;
 	}
 }

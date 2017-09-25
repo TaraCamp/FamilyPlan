@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.taracamp.familyplan.Models.Enums.Status;
+import de.taracamp.familyplan.Models.Enums.TaskState;
 
 /**
  * Repräsentiert eine Aufgabe.
@@ -24,9 +25,11 @@ import de.taracamp.familyplan.Models.Enums.Status;
 @IgnoreExtraProperties
 public class Task
 {
+	private String taskId = null;
 	private String taskTitle = null;
 	private String taskDescription = null;
-	private Status taskStatus = null;
+	private String taskState = null;
+	private TaskState state = null;
 	private User taskCreator = null;
 	private Date taskDate = null;
 	private List<User> taskRelatedUsers = null;
@@ -36,9 +39,29 @@ public class Task
 	// DataSnapshot.getValue(User.class)
 	public Task(){}
 
+	public void setTaskState(String _state)
+	{
+		this.taskState = _state;
+	}
+
+	public String getTaskState()
+	{
+		return this.taskState;
+	}
+
 	public void setTaskTitle(String _title)
 	{
 		this.taskTitle = _title;
+	}
+
+	public void setId(String _key)
+	{
+		this.taskId = _key;
+	}
+
+	public String getId()
+	{
+		return this.taskId;
 	}
 
 	public void setTaskDescription(String _description)
@@ -56,9 +79,9 @@ public class Task
 		this.taskCreator = _user;
 	}
 
-	public void setTaskStatus(Status _status)
+	public void setTaskStatus(TaskState _state)
 	{
-		this.taskStatus = _status;
+		this.state = _state;
 	}
 
 	public void addRelatedUser(User _relatedUser)
