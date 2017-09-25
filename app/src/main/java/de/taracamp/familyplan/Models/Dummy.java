@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 public class Dummy
 {
+	// Gibt eine Liste von Dummy Aufgaben zurück
 	public static ArrayList<Task> getTaskList(int _numTasks)
 	{
 		ArrayList<Task> list = new ArrayList<>();
@@ -18,6 +19,7 @@ public class Dummy
 		return list;
 	}
 
+	// Gibt eine Aufgabe zurück
 	public static Task getTask(String _name,String _description)
 	{
 		Task nTask = new Task();
@@ -28,6 +30,7 @@ public class Dummy
 		return nTask;
 	}
 
+	// Gibt eine Liste von Benutzern zurück
 	public static ArrayList<User> getUserList()
 	{
 		User a = new User("Wowa","wowa@tarasov");
@@ -38,5 +41,17 @@ public class Dummy
 		uList.add(b);
 
 		return uList;
+	}
+
+	// Gibt einen Benutzer zurück
+	public static User getUser(String _name,String _email)
+	{
+		User user = new User(_name,_email);
+		user.setUserFamily("Tarasov/Birk");
+		user.setUserFirstname("Wladimir");
+		user.setUserLastname("Tarasov");
+		user.setUserId(9999);
+
+		return user;
 	}
 }

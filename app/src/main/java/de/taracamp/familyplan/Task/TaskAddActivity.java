@@ -30,6 +30,7 @@ import de.taracamp.familyplan.Dialogs.DialogDateListener;
 import de.taracamp.familyplan.Dialogs.DialogDatePicker;
 import de.taracamp.familyplan.Dialogs.DialogTimeListener;
 import de.taracamp.familyplan.Dialogs.DialogTimePicker;
+import de.taracamp.familyplan.Models.Dummy;
 import de.taracamp.familyplan.Models.Enums.Status;
 import de.taracamp.familyplan.Models.Enums.TaskState;
 import de.taracamp.familyplan.Models.Task;
@@ -37,7 +38,15 @@ import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
 /**
- * Diese Klasse dient zum erstellen einer neuen Aufgabe.
+ * Diese Activity wird genutzt eine neue Aufgabe zu erstellen. Folgende Felder sind anzugeben:
+ *
+ * - Aufgabentitel: Kurzbeschreibung der Aufgabe (Pflicht)
+ * - Aufgabenbeschreibung: (Optional)
+ * - Aufgabendatum: Wird bei nicht auswahl automatisch auf den nächsten Tag gesetzt.
+ * - Aufgabenuhrzeit: (Optional)
+ * - Aufgaben Verantwrtliche: Mindestens einer muss gewählt werden. (Pflicht)
+ * - Weitere Angaben -> ....
+ *
  */
 public class TaskAddActivity extends FragmentActivity implements DialogDateListener, DialogTimeListener
 {
@@ -186,19 +195,18 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		String taskTitle = editTextTaskTitle.getText().toString();
 		String taskDescription = editTextTaskDescription.getText().toString();
 
-		// Benutzer - Ersteller
-		User userA = new User(spinnerTaskEditors.getSelectedItem().toString(),"wowa@tarasov");
+		User userA = new User(spinnerTaskEditors.getSelectedItem().toString(),"test@tarasov");
+		User creator = Dummy.getUser("Wowa","wowa@tarasov");
 
 		// Create new task.
-		Task newTask = new Task();
+		Task newTask = new Task(creator);
 
 		// Set task fields
-		newTask.setTaskTitle(taskTitle);
-		newTask.setTaskDescription(taskDescription);
-		newTask.setTaskState("OPEN");
-		newTask.setId(taskId);
-		if (userA!=null) newTask.setTaskCreator(userA);
-		if (taskDate!=null) newTask.setTaskDate(taskDate);
+		newTask.setId(taskId); // Setze Aufgaben ID
+		newTask.setTaskTitle(taskTitle); // Setze Aufgabentitel
+		newTask.setTaskDescription(taskDescription); // Setze Aufgabenbeschreibung
+		newTask.setTaskState("OPEN"); // Setze Aufgaben Status
+		if (taskDate!=null) newTask.setTaskDate(taskDate); // Setze Aufgaben Datum
 
 		// pushing task to 'tasks' node using the taskId
 		databaseReference.child(taskId).setValue(newTask);

@@ -20,7 +20,7 @@ import de.taracamp.familyplan.Models.Enums.Status;
 import de.taracamp.familyplan.Models.Enums.TaskState;
 
 /**
- * Repräsentiert eine Aufgabe.
+ * Represent a task.
  */
 @IgnoreExtraProperties
 public class Task
@@ -29,7 +29,7 @@ public class Task
 	private String taskTitle = null;
 	private String taskDescription = null;
 	private String taskState = null;
-	private TaskState state = null;
+	private TaskState state = null; //// TODO: 25.09.2017 Status als enum nutzen
 	private User taskCreator = null;
 	private Date taskDate = null;
 	private List<User> taskRelatedUsers = null;
@@ -39,29 +39,41 @@ public class Task
 	// DataSnapshot.getValue(User.class)
 	public Task(){}
 
-	public void setTaskState(String _state)
+	public Task(User _creator)
 	{
-		this.taskState = _state;
+		this.taskCreator = _creator;
 	}
 
-	public String getTaskState()
+	public void addRelatedUser(User _relatedUser)
 	{
-		return this.taskState;
+		this.taskRelatedUsers.add(_relatedUser);
 	}
 
-	public void setTaskTitle(String _title)
+	public void addRelatedUsersList(List<User> _relatedUsers)
 	{
-		this.taskTitle = _title;
+		for(User relatedUser : _relatedUsers)
+		{
+			this.taskRelatedUsers.add(relatedUser);
+		}
 	}
+
+	/*
+	* Setter
+	* */
 
 	public void setId(String _key)
 	{
 		this.taskId = _key;
 	}
 
-	public String getId()
+	public void setTaskState(String _state)
 	{
-		return this.taskId;
+		this.taskState = _state;
+	}
+
+	public void setTaskTitle(String _title)
+	{
+		this.taskTitle = _title;
 	}
 
 	public void setTaskDescription(String _description)
@@ -84,17 +96,18 @@ public class Task
 		this.state = _state;
 	}
 
-	public void addRelatedUser(User _relatedUser)
+	/*
+	* Getter
+	* */
+
+	public String getTaskState()
 	{
-		this.taskRelatedUsers.add(_relatedUser);
+		return this.taskState;
 	}
 
-	public void addRelatedUsersList(List<User> _relatedUsers)
+	public String getId()
 	{
-		for(User relatedUser : _relatedUsers)
-		{
-			this.taskRelatedUsers.add(relatedUser);
-		}
+		return this.taskId;
 	}
 
 	public String getTaskTitle()
@@ -105,6 +118,11 @@ public class Task
 	public String getTaskDescription()
 	{
 		return this.taskDescription;
+	}
+
+	public User getCreator()
+	{
+		return this.taskCreator;
 	}
 
 }

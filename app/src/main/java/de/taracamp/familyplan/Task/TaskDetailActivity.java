@@ -67,7 +67,6 @@ public class TaskDetailActivity extends AppCompatActivity
 				startActivity(IntentTask);
 			}
 		});
-
 	}
 
 	@Override

@@ -29,14 +29,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import de.taracamp.familyplan.MainActivity;
-import de.taracamp.familyplan.Models.Dummy;
-import de.taracamp.familyplan.Models.Enums.Status;
-import de.taracamp.familyplan.Models.Enums.TaskState;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
 /**
- * Aufgabenliste
+ * In dieser Activity wird die Aufgabenliste gezeigt. Zudem kann man folgende Optionen nutzen:
+ *
+ * - Eine neue Aufgabe erstellen, über einen FloatingActionButton -> TaskAddActivity.
+ * - Eigene Aufgaben anzeigen, über den ActionBarButton wird die Liste gefiltert.
+ * - Erstellte Aufgaben anzeigen, über den ActionBarButton wird die Liste gefiltert.
+ * - Nach Aufgaben suchen, über die Suche kann man die Liste filtern.
+ * - ActionMode aktivieren. Über einen LongPress auf einem Item aktiviert man den ActionMode:
+ * 	-> ActionMode: Aufgaben als Erledigt setzen. Über die gewählten Aufgaben.
+ * 	-> ActionMode: ...
+ * - Aufgaben Bearbeiten, über einen Klick auf ein Item -> TaskDetailActivity.
+ *
+ * Information: Die Liste ist eine RecyclerView und wird über einen Adapter (TaskListAdapter) geladen.
  */
 public class TaskActivity extends AppCompatActivity implements View.OnLongClickListener
 {
@@ -70,23 +78,26 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 
 		thisActivity = this;
 
-		//this.list = Dummy.getTaskList(10); //Dummydaten //// TODO: 14.09.2017 muss noch dynamisch umgesetzt werden
-		this.list = new ArrayList<>();
+		this.list = new ArrayList<>(); // Leere Aufgabenliste wird erstellt.
+		this.selectedList = new ArrayList<>(); // Leere Selektierte Aufgabenliste wird erstellt.
 
-		this.selectedList = new ArrayList<>();
-
+		// Die Toolbar wird geladen.
 		this.toolbar = (Toolbar) findViewById(R.id.toolbar_task);
 		setSupportActionBar(toolbar);
 
+		// Anzeige für die Anzahl der selektierten Aufgaben
 		this.textViewSelectedCounter = (TextView) findViewById(R.id.counter_task);
 		this.textViewSelectedCounter.setVisibility(View.GONE);
 
+		// Anzeige für die Information wenn keine AUfgaben vorhanden sind.
 		this.textViewInformation = (TextView) findViewById(R.id.textView_task_noWork);
 
+		// Die Liste mit den Aufgaben.
 		this.recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
 		this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		this.recyclerView.setHasFixedSize(true);
 
+		// Der Runde Button um eine neue Aufgabe anzulegen
 		this.floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_task_openDialog);
 		this.floatingActionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -99,6 +110,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 			}
 		});
 
+		// Dei Datenbank wird initialisiert.
 		this.database = FirebaseDatabase.getInstance();
 
 		// Der Datenbankknoten 'tasks' wird zurückgegeben.
@@ -144,23 +156,6 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	}
 
 	@Override
-	public void onStart()
-	{
-		super.onStart();
-
-		Log.d(TAG,":TaskActivity.onStart()");
-
-		Task newTask = getIntent().getParcelableExtra("NEW_TASK");
-		if (newTask!=null)
-		{
-			Log.d(TAG,":TaskActivity.onStart() -> new task with value taskName=" + newTask.getTaskTitle());
-
-			// Neue Aufgabe wird zur List hinzugefügt
-			list.add(newTask);
-		}
-	}
-
-	@Override
 	public void onBackPressed()
 	{
 		// Es wird geprüft on der actio mode aktiviert ist
@@ -187,11 +182,11 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	{
 		Log.d(TAG,":TaskActivity.onLongClick() -> action mode on");
 
-		this.toolbar.getMenu().clear();
-		this.toolbar.inflateMenu(R.menu.menu_task_action_mode);
+		this.toolbar.getMenu().clear(); // Das normale menu wird deaktiviert.
+		this.toolbar.inflateMenu(R.menu.menu_task_action_mode); // Action mode menu wird angezeigt
 		this.textViewSelectedCounter.setVisibility(View.VISIBLE);
-		this.floatingActionButton.setVisibility(View.GONE);
-		this.isActionModeEnable = true;
+		this.floatingActionButton.setVisibility(View.GONE); // Floatingbutton wird unsichtbar
+		this.isActionModeEnable = true; // ActionMode wird aktiviert
 		this.adapter.notifyDataSetChanged();
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -238,27 +233,21 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	 *
 	 * Kontrolliert alle Elemente innerhalb des Menus.
 	 *
-	 * - Erledigt Funktion (onClick)
-	 * - Home Button (onClick)
+	 * - Erledigt Funktion - Ändert den Status aller ausgewählten Aufgaben (onClick)
+	 * - Home Button - Beendet das Auswahlmenü (onClick)
+	 * - Suche - In der Liste kann nach Aufgaben gesucht werden. (onClick)
+	 * - Eigene Aufgaben - Zeigt Aufgaben an die man bearbeiten muss (onClick)
+	 * - Erstellte Aufgaben - Zeigt Aufgaben an die Erstellt wurden (onClick)
+	 *
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem _item)
 	{
 		if (_item.getItemId()==R.id.item_task_done)
 		{
-			Log.d(TAG,":TaskActivity.onClick() -> Done");
+			Log.d(TAG,":TaskActivity.onClick() -> finish tasks");
 
-			TaskListAdapter taskListAdapter = this.adapter;
-			taskListAdapter.updateAdapter(selectedList);
-
-			for (Task task : selectedList)
-			{
-				tasksReference.child(task.getId()).child("taskState").setValue("FINISH");
-			}
-			
-			//// TODO: 22.09.2017 liste wird nicht entleert
-			
-			clearActionMode();
+			finishTasks();
 		}
 		else if(_item.getItemId()==R.id.item_task_search)
 		{
@@ -281,6 +270,24 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		}
 
 		return true;
+	}
+
+	/**
+	 * Beendet alle ausgewählten Aufgaben und setzt den Status auf FINISH.
+	 */
+	private void finishTasks()
+	{
+		TaskListAdapter taskListAdapter = this.adapter;
+		taskListAdapter.updateAdapter(selectedList);
+
+		for (Task task : selectedList)
+		{
+			tasksReference.child(task.getId()).child("taskState").setValue("FINISH"); // Aufgabe wird als finish markiert.
+		}
+
+		//// TODO: 22.09.2017 liste wird nicht entleert
+
+		clearActionMode();
 	}
 
 	/**
