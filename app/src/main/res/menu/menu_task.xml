@@ -9,4 +9,18 @@
         app:showAsAction="always">
     </item>
 
+    <item
+        android:id="@+id/item_task_ownTasks"
+        android:title="Eigene Aufgaben"
+        android:icon="@drawable/ic_action_owntasks"
+        app:showAsAction="always">
+    </item>
+
+    <item
+        android:id="@+id/item_task_createTasks"
+        android:title="Erstellte Aufgaben"
+        android:icon="@drawable/ic_action_createtasks"
+        app:showAsAction="always">
+    </item>
+
 </menu>

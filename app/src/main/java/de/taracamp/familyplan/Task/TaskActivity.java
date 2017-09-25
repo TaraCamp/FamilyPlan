@@ -260,6 +260,18 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 			
 			clearActionMode();
 		}
+		else if(_item.getItemId()==R.id.item_task_search)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> search tasks");
+		}
+		else if(_item.getItemId()==R.id.item_task_ownTasks)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> own tasks");
+		}
+		else if(_item.getItemId()==R.id.item_task_createTasks)
+		{
+			Log.d(TAG,":TaskActivity.onClick() -> created tasks");
+		}
 		else if (_item.getItemId()==android.R.id.home)
 		{
 			Log.d(TAG,":TaskActivity.onClick() -> home");

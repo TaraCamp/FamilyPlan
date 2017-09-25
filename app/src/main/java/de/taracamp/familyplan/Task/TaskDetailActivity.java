@@ -105,7 +105,7 @@ public class TaskDetailActivity extends AppCompatActivity
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot)
 				{
-					Log.d(TAG,":TaskActivity.readDatabase() -> with id=" + id);
+					Log.d(TAG,":TaskDetailActivity.readDatabase() -> onDataChange with id=" + id);
 
 					DataSnapshot taskSnap = dataSnapshot.child(id);
 					task = taskSnap.getValue(Task.class);
@@ -116,7 +116,7 @@ public class TaskDetailActivity extends AppCompatActivity
 				@Override
 				public void onCancelled(DatabaseError databaseError)
 				{
-					Log.d(TAG,":TaskActivity.readDatabase() -> onCancelled");
+					Log.d(TAG,":TaskDetailActivity.readDatabase() -> onCancelled");
 				}
 			});
 		}
