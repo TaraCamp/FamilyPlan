@@ -13,56 +13,71 @@ public class User
     private String UserEmail;
     private String userFamily;
 
-    public User(String _userName,String _userEmail){
+    public User(){}
+
+    public User(String _userName,String _userEmail)
+    {
         this.UserName = _userName;
         this.UserEmail = _userEmail;
     }
 
-    public int getUserId() {
+    public int getUserId()
+    {
         return UserId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(int userId)
+    {
         UserId = userId;
     }
 
-    public String getUserName() {
+    public String getUserName()
+    {
         return UserName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(String userName)
+    {
         UserName = userName;
     }
 
-    public String getUserFirstname() {
+    public String getUserFirstname()
+    {
         return UserFirstname;
     }
 
-    public void setUserFirstname(String userFirstname) {
+    public void setUserFirstname(String userFirstname)
+    {
         UserFirstname = userFirstname;
     }
 
-    public String getUserLastname() {
+    public String getUserLastname()
+    {
         return UserLastname;
     }
 
-    public void setUserLastname(String userLastname) {
+    public void setUserLastname(String userLastname)
+    {
         UserLastname = userLastname;
     }
 
-    public String getUserEmail() {
+    public String getUserEmail()
+    {
         return UserEmail;
     }
 
-    public void setUserEmail(String userEmail) {
+    public void setUserEmail(String userEmail)
+    {
         UserEmail = userEmail;
     }
 
-    public String getUserFamily() {
+    public String getUserFamily()
+    {
         return userFamily;
     }
 
-    public void setUserFamily(String userFamily) {
+    public void setUserFamily(String userFamily)
+    {
         this.userFamily = userFamily;
     }
 }

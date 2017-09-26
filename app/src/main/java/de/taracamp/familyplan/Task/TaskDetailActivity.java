@@ -88,25 +88,22 @@ public class TaskDetailActivity extends AppCompatActivity
 		Log.d(TAG,":TaskDetailActivity.onStart()");
 
 		// Es wird geprüft ob eine Aufgabe aus der Liste übergeben wurde.
-		//this.task = getIntent().getExtras("TASK_ID");
-
 		Bundle extras = getIntent().getExtras();
 		if (extras != null)
 		{
-			//Log.d(TAG,": Get task with value taskName=" + this.task.getTaskTitle());
-
-			final String id = extras.getString("TASK_ID");
+			final String taskKey = extras.getString("TASK_KEY");
+			final String familyKey = extras.getString("FAMILY_KEY");
 
 			this.database = FirebaseDatabase.getInstance();
-			// Der Datenbankknoten 'tasks' wird zurückgegeben.
-			this.tasksReference = this.database.getReference("tasks");
+
+			this.tasksReference = this.database.getReference("families").child(familyKey).child("familyTasks").getRef();
 			this.tasksReference.addValueEventListener(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot)
 				{
-					Log.d(TAG,":TaskDetailActivity.readDatabase() -> onDataChange with id=" + id);
+					Log.d(TAG,":TaskDetailActivity.readDatabase() -> onDataChange with id=" + taskKey);
 
-					DataSnapshot taskSnap = dataSnapshot.child(id);
+					DataSnapshot taskSnap = dataSnapshot.child(taskKey);
 					task = taskSnap.getValue(Task.class);
 
 					fillViews(task);

@@ -1,20 +1,43 @@
 package de.taracamp.familyplan.Models;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represent a task.
+ */
+@IgnoreExtraProperties
 public class Family
 {
-	String familyId = null;
-	String familyName = null;
-	List<User> familyMembers = null;
+	private String familyId = null;
+	private String familyName = null;
+	private List<User> familyMembers = null;
 
-	public Family(String _familyName,User _creator)
+	public Family()
 	{
-		this.familyName = _familyName;
 		this.familyMembers = new ArrayList<>();
-		this.familyMembers.add(_creator);
 	}
+
+	public void setKey(String familyId)
+	{
+		this.familyId = familyId;
+	}
+
+	public String getFamilyName() {
+		return this.familyName;
+	}
+
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
+
+	public String getKey()
+	{
+		return this.familyId;
+	}
+
 
 	public void addMember(User _member)
 	{
@@ -29,8 +52,9 @@ public class Family
 		}
 	}
 
-	public List<User> getMembers()
+	public List<User> getFamilyMembers()
 	{
 		return this.familyMembers;
 	}
+
 }

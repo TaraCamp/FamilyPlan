@@ -19,10 +19,6 @@ import java.util.List;
 import de.taracamp.familyplan.Models.Enums.Status;
 import de.taracamp.familyplan.Models.Enums.TaskState;
 
-/**
- * Represent a task.
- */
-@IgnoreExtraProperties
 public class Task
 {
 	private String taskId = null;

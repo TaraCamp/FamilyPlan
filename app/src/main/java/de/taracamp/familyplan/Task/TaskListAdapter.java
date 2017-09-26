@@ -14,16 +14,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
@@ -86,7 +82,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 					Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
 
 					Intent intentDetail = new Intent(taskActivity.getApplicationContext(),TaskDetailActivity.class);
-					intentDetail.putExtra("TASK_ID",task.getId());
+					intentDetail.putExtra("TASK_KEY",task.getId());
+					intentDetail.putExtra("FAMILY_KEY",_holder.taskActivity.family.getKey());
 					taskActivity.startActivity(intentDetail);
 				}
 			}
@@ -109,8 +106,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 		notifyDataSetChanged();
 	}
 
+
 	/**
-	 * Eine Adapter Klasse die eine einzelne Zeile beinhaltet.
+	 * Ein Holder für eine einzelne Zeile in  der Liste
 	 */
 	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 	{
@@ -135,7 +133,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			cardViewListItem = (CardView) _itemView.findViewById(R.id.cardView_task);
 			cardViewListItem.setOnLongClickListener(taskActivity);
 			checkBoxTaskDone.setOnClickListener(this);
-
 		}
 
 		@Override

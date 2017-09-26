@@ -44,14 +44,26 @@ public class Dummy
 	}
 
 	// Gibt einen Benutzer zurück
-	public static User getUser(String _name,String _email)
+	public static User newUser(String _name,String _email)
 	{
 		User user = new User(_name,_email);
-		user.setUserFamily("Tarasov/Birk");
-		user.setUserFirstname("Wladimir");
+		user.setUserFirstname("Wowa");
 		user.setUserLastname("Tarasov");
-		user.setUserId(9999);
 
 		return user;
 	}
+
+	// Erstellt eine Familie und gibt diese mit Testbenutzern zurück
+	public static Family newFamily(String _key)
+	{
+		Family family = new Family();
+		family.setKey(_key);
+		family.setFamilyName("Tara/Birk");
+		family.addMember(newUser("Wowa","wowa@tara"));
+		family.addMember(newUser("Lisa","lisa@birk"));
+		family.addMember(newUser("Rainer","rainer@birk"));
+
+		return family;
+	}
 }
+

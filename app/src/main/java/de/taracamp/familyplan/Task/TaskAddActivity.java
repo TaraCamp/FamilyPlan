@@ -19,8 +19,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +36,7 @@ import de.taracamp.familyplan.Dialogs.DialogTimePicker;
 import de.taracamp.familyplan.Models.Dummy;
 import de.taracamp.familyplan.Models.Enums.Status;
 import de.taracamp.familyplan.Models.Enums.TaskState;
+import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -66,8 +70,12 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 
 	private FirebaseDatabase database = null;
 	private DatabaseReference databaseReference = null;
+	private DatabaseReference familyReference = null;
+	private DatabaseReference taskReference = null;
 
 	private android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+
+	private Family family = null;
 
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	public void init()
@@ -130,10 +138,28 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		});
 	}
 
-	private void initFirebase()
+	private void load()
 	{
-		this.database = FirebaseDatabase.getInstance();
-		this.databaseReference = this.database.getReference("tasks");
+		Bundle extras = getIntent().getExtras();
+		if (extras != null)
+		{
+			final String key = extras.getString("FAMILY_KEY");
+
+			this.database = FirebaseDatabase.getInstance();
+
+			this.databaseReference = this.database.getReference("families");
+			this.databaseReference.addValueEventListener(new ValueEventListener() {
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot)
+				{
+					DataSnapshot snap = dataSnapshot.child(key);
+					family = snap.getValue(Family.class);
+				}
+
+				@Override
+				public void onCancelled(DatabaseError databaseError) {}
+			});
+		}
 	}
 
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -146,8 +172,8 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 
 		setContentView(R.layout.dialog_task_add);
 
+		load(); // Familie wird geladen
 		init(); // Initialisiert alle Komponenten
-		initFirebase(); // Firebase wird initialisiert
 
 		loadDummyEditorsList();
 	}
@@ -189,27 +215,31 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 		/*Creating new task node, which returns the unique key value,
 		* new task node would be /tasks/$userid/
 		*/
-		String taskId  = databaseReference.push().getKey();
+		this.taskReference = this.databaseReference.child(this.family.getKey()).child("familyTasks").getRef();
+		String taskKey = this.taskReference.push().getKey();
 
 		// Daten werden aus der UI übernommen.
 		String taskTitle = editTextTaskTitle.getText().toString();
 		String taskDescription = editTextTaskDescription.getText().toString();
 
 		User userA = new User(spinnerTaskEditors.getSelectedItem().toString(),"test@tarasov");
-		User creator = Dummy.getUser("Wowa","wowa@tarasov");
+		User creator = Dummy.newUser("Wowa","wowa@tarasov");
 
 		// Create new task.
 		Task newTask = new Task(creator);
 
 		// Set task fields
-		newTask.setId(taskId); // Setze Aufgaben ID
+		newTask.setId(taskKey); // Setze Aufgaben ID
 		newTask.setTaskTitle(taskTitle); // Setze Aufgabentitel
 		newTask.setTaskDescription(taskDescription); // Setze Aufgabenbeschreibung
 		newTask.setTaskState("OPEN"); // Setze Aufgaben Status
 		if (taskDate!=null) newTask.setTaskDate(taskDate); // Setze Aufgaben Datum
 
-		// pushing task to 'tasks' node using the taskId
-		databaseReference.child(taskId).setValue(newTask);
+		this.taskReference.child(taskKey).setValue(newTask);
+
+		//this.family.addTask(newTask);
+		//databaseReference.child(this.family.getKey()).setValue(this.family);
+		//this.familyReference.setValue(this.family);
 
 		Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
 		startActivity(taskTabIntent);

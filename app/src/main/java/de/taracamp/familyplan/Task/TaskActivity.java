@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.Models.Dummy;
+import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
@@ -66,7 +68,10 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 	private TaskListAdapter adapter = null;
 
 	private FirebaseDatabase database = null;
+	private DatabaseReference familiesReference = null;
 	private DatabaseReference tasksReference = null;
+
+	public Family family = null;
 
 	@Override
 	protected void onCreate(Bundle _savedInstanceState)
@@ -75,6 +80,11 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		setContentView(R.layout.activity_task_layout);
 
 		Log.d(TAG,":TaskActivity.onCreate()");
+
+		// Dei Datenbank wird initialisiert.
+		this.database = FirebaseDatabase.getInstance();
+
+		this.load(); // Familie wird geladen oder erstellt //// TODO: 26.09.2017 muss an einer anderen stelle laufen.
 
 		thisActivity = this;
 
@@ -106,45 +116,70 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 				Log.d(TAG,":TaskActivity.click()-> open new task window");
 
 				Intent intentAddTask = new Intent(getApplicationContext(),TaskAddActivity.class);
+				intentAddTask.putExtra("FAMILY_KEY",family.getKey());
 				startActivity(intentAddTask);
 			}
 		});
+	}
 
-		// Dei Datenbank wird initialisiert.
-		this.database = FirebaseDatabase.getInstance();
+	private void load()
+	{
+		// // TODO: 25.09.2017 muss im Realeinsatz deaktiviert werden
 
-		// Der Datenbankknoten 'tasks' wird zurückgegeben.
-		this.tasksReference = this.database.getReference("tasks");
-		this.tasksReference.addValueEventListener(new ValueEventListener() {
+		this.familiesReference = this.database.getReference("families");
+		this.familiesReference.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
-				long foundTasks = dataSnapshot.getChildrenCount();
+				long foundFamiles = dataSnapshot.getChildrenCount();
 
-				Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + foundTasks);
-
-				// Sollten noch keine Aufgaben erstellt sein wird eine Information zurückgegeben
-				if (foundTasks==0) textViewInformation.setVisibility(View.VISIBLE);
-					else textViewInformation.setVisibility(View.GONE);
-
-				list.clear(); // Liste entleeren
-
-				// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
-				for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+				if (foundFamiles==0)
 				{
-					Task readTask = taskSnap.getValue(Task.class);
-					list.add(readTask); // Aufgabe der Liste anhefeten
+					Log.d(TAG,":TaskActivity.onDataChange()-> create new family");
+
+					family = Dummy.newFamily(familiesReference.push().getKey());
+					familiesReference.child(family.getKey()).setValue(family);
+				}
+				else
+				{
+					Log.d(TAG,":TaskActivity.onDataChange()-> load family");
+
+					family = dataSnapshot.child("-Kux_ITnsJUDHqqQdZXU").getValue(Family.class);
 				}
 
-				adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
-				recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+				tasksReference = familiesReference.child(family.getKey()).child("familyTasks").getRef();
+				tasksReference.addValueEventListener(new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot)
+					{
+						long foundTasks = dataSnapshot.getChildrenCount();
+
+						Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + foundTasks);
+
+						// Sollten noch keine Aufgaben erstellt sein wird eine Information zurückgegeben
+						if (foundTasks==0) textViewInformation.setVisibility(View.VISIBLE);
+						else textViewInformation.setVisibility(View.GONE);
+
+						list.clear(); // Liste entleeren
+
+						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+						{
+							Task readTask = taskSnap.getValue(Task.class);
+							if (readTask.getTaskState().equals("OPEN")) list.add(readTask); // Aufgabe der Liste anhefeten
+						}
+
+						adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
+						recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {}
+				});
 			}
 
 			@Override
-			public void onCancelled(DatabaseError databaseError)
-			{
-				Log.d(TAG,":TaskActivity.readDatabase() -> onCancelled");
-			}
+			public void onCancelled(DatabaseError databaseError) {}
 		});
 	}
 
@@ -282,10 +317,8 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 
 		for (Task task : selectedList)
 		{
-			tasksReference.child(task.getId()).child("taskState").setValue("FINISH"); // Aufgabe wird als finish markiert.
+			tasksReference.child(task.getId()).child("taskState").setValue("FINISH"); // Aufgabe wird als erledigt markiert
 		}
-
-		//// TODO: 22.09.2017 liste wird nicht entleert
 
 		clearActionMode();
 	}
