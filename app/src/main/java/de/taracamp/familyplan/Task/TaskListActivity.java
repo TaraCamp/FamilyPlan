@@ -6,15 +6,13 @@
  */
 package de.taracamp.familyplan.Task;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,15 +25,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import java.util.ArrayList;
 
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.Dummy;
 import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
+
+import java.util.ArrayList;
 
 /**
  * In dieser Activity wird die Aufgabenliste gezeigt. Zudem kann man folgende Optionen nutzen:
@@ -50,25 +47,27 @@ import de.taracamp.familyplan.R;
  * - Aufgaben Bearbeiten, über einen Klick auf ein Item -> TaskDetailActivity.
  *
  * Information: Die Liste ist eine RecyclerView und wird über einen Adapter (TaskListAdapter) geladen.
+ * 				Je nach Gerät wird die Master/Detail Ansicht genutzt.
+ *
  */
-public class TaskActivity extends AppCompatActivity implements View.OnLongClickListener
+public class TaskListActivity extends AppCompatActivity implements View.OnLongClickListener
 {
 	private static final String TAG = "familyplan.debug";
 
-	private TaskActivity thisActivity = null;
+	private TaskListActivity thisActivity = null;
 
 	private Toolbar toolbar = null;
-	private RecyclerView recyclerView = null;
 	private FloatingActionButton floatingActionButton = null;
+	private RecyclerView recyclerView = null;
 	private TextView textViewSelectedCounter = null;
 	private TextView textViewInformation = null;
 
 	private ArrayList<Task> list = null;
 	private ArrayList<Task> selectedList = null;
 
+	private TaskListAdapter adapter = null;
 	private int selectedTasksCounter = 0;
 	public boolean isActionModeEnable = false;
-	private TaskListAdapter adapter = null;
 
 	private FirebaseDatabase database = null;
 	private DatabaseReference familiesReference = null;
@@ -76,34 +75,19 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 
 	public Family family = null;
 
-	@TargetApi(Build.VERSION_CODES.M)
+	/**
+	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
+	 * device.
+	 */
+	public boolean isMasterDetailEnable;
+
 	@Override
-	protected void onCreate(Bundle _savedInstanceState)
+	protected void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(_savedInstanceState);
-		setContentView(R.layout.activity_task_layout);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_item_list);
 
-		Log.d(TAG,":TaskActivity.onCreate()");
-
-		// Dei Datenbank wird initialisiert.
-		this.database = FirebaseDatabase.getInstance();
-
-		this.load(); // Familie wird geladen oder erstellt //// TODO: 26.09.2017 muss an einer anderen stelle laufen.
-		this.init();
-
-		String token = FirebaseInstanceId.getInstance().getToken();
-		Log.d(TAG,":token:" + token);
-	}
-
-	private void init()
-	{
-		this.thisActivity = this;
-
-		this.list = new ArrayList<>(); // Leere Aufgabenliste wird erstellt.
-		this.selectedList = new ArrayList<>(); // Leere Selektierte Aufgabenliste wird erstellt.
-
-		// Die Toolbar wird geladen.
-		this.toolbar = (Toolbar) findViewById(R.id.toolbar_task);
+		toolbar = (Toolbar) findViewById(R.id.toolbar_task);
 		setSupportActionBar(toolbar);
 
 		// Anzeige für die Anzahl der selektierten Aufgaben
@@ -111,12 +95,15 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		this.textViewSelectedCounter.setVisibility(View.GONE);
 
 		// Anzeige für die Information wenn keine AUfgaben vorhanden sind.
-		this.textViewInformation = (TextView) findViewById(R.id.textView_task_noWork);
+		this.textViewInformation = (TextView) findViewById(R.id.textView_task_noWork2);
 
-		// Die Liste mit den Aufgaben.
-		this.recyclerView = (RecyclerView) findViewById(R.id.recyclerView_task);
-		this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		this.recyclerView.setHasFixedSize(true);
+		this.thisActivity = this;
+
+		// Dei Datenbank wird initialisiert.
+		this.database = FirebaseDatabase.getInstance();
+
+		this.list = new ArrayList<>(); // Leere Aufgabenliste wird erstellt.
+		this.selectedList = new ArrayList<>(); // Leere Selektierte Aufgabenliste wird erstellt.
 
 		// Der Runde Button um eine neue Aufgabe anzulegen
 		this.floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_task_openDialog);
@@ -131,64 +118,18 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 				startActivity(intentAddTask);
 			}
 		});
-	}
 
-	private void load()
-	{
-		// // TODO: 25.09.2017 muss im Realeinsatz deaktiviert werden
+		this.recyclerView = (RecyclerView) findViewById(R.id.item_list);
+		this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		this.recyclerView.setHasFixedSize(true);
 
-		this.familiesReference = this.database.getReference("families");
-		this.familiesReference.addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(DataSnapshot dataSnapshot)
-			{
-				long foundFamiles = dataSnapshot.getChildrenCount();
+		load();
 
-				if (foundFamiles==0)
-				{
-					family = Dummy.newFamily(familiesReference.push().getKey());
-					familiesReference.child(family.getKey()).setValue(family);
-				}
-				else
-				{
-					//// TODO: 26.09.2017 muss noch dynamisch implementiert werden
-					family = dataSnapshot.child("-Kux_ITnsJUDHqqQdZXU").getValue(Family.class);
-				}
+		if (findViewById(R.id.item_detail_container) != null)
+		{
+			isMasterDetailEnable = true;
+		}
 
-				tasksReference = familiesReference.child(family.getKey()).child("familyTasks").getRef();
-				tasksReference.addValueEventListener(new ValueEventListener() {
-					@Override
-					public void onDataChange(DataSnapshot dataSnapshot)
-					{
-						long foundTasks = dataSnapshot.getChildrenCount();
-
-						Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + foundTasks);
-
-						// Sollten noch keine Aufgaben erstellt sein wird eine Information zurückgegeben
-						if (foundTasks==0) textViewInformation.setVisibility(View.VISIBLE);
-						else textViewInformation.setVisibility(View.GONE);
-
-						list.clear(); // Liste entleeren
-
-						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
-						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
-						{
-							Task readTask = taskSnap.getValue(Task.class);
-							if (readTask.getTaskState().equals("OPEN")) list.add(readTask); // Aufgabe der Liste anhefeten
-						}
-
-						adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
-						recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
-					}
-
-					@Override
-					public void onCancelled(DatabaseError databaseError) {}
-				});
-			}
-
-			@Override
-			public void onCancelled(DatabaseError databaseError) {}
-		});
 	}
 
 	@Override
@@ -220,20 +161,75 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		}
 	}
 
-	@Override
-	public boolean onLongClick(View v)
+
+	private void load()
 	{
-		Log.d(TAG,":TaskActivity.onLongClick() -> action mode on");
+		this.familiesReference = this.database.getReference("families");
+		this.familiesReference.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot)
+			{
+				long foundFamiles = dataSnapshot.getChildrenCount();
 
-		this.toolbar.getMenu().clear(); // Das normale menu wird deaktiviert.
-		this.toolbar.inflateMenu(R.menu.menu_task_action_mode); // Action mode menu wird angezeigt
-		this.textViewSelectedCounter.setVisibility(View.VISIBLE);
-		this.floatingActionButton.setVisibility(View.GONE); // Floatingbutton wird unsichtbar
-		this.isActionModeEnable = true; // ActionMode wird aktiviert
-		this.adapter.notifyDataSetChanged();
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+				if (foundFamiles==0)
+				{
+					family = Dummy.newFamily(familiesReference.push().getKey());
+					familiesReference.child(family.getKey()).setValue(family);
+				}
+				else
+				{
+					//// TODO: 26.09.2017 muss noch dynamisch implementiert werden
+					family = dataSnapshot.child("-Kux_ITnsJUDHqqQdZXU").getValue(Family.class);
+				}
 
-		return true;
+				tasksReference = familiesReference.child(family.getKey()).child("familyTasks").getRef();
+				tasksReference.addValueEventListener(new ValueEventListener() {
+					@Override
+					public void onDataChange(DataSnapshot dataSnapshot)
+					{
+						long foundTasks = dataSnapshot.getChildrenCount();
+
+						Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + foundTasks);
+
+						list.clear(); // Liste entleeren
+
+						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+						{
+							Task readTask = taskSnap.getValue(Task.class);
+							if (readTask.getTaskState().equals("OPEN")) list.add(readTask); // Aufgabe der Liste anhefeten
+						}
+
+						adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
+						recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+
+						if (list.size()!=0 && isMasterDetailEnable)
+						{
+							Bundle arguments = new Bundle();
+							arguments.putString(TaskDetailFragment.TASK_KEY,list.get(0).getId());
+							arguments.putString(TaskDetailFragment.FAMILY_KEY,family.getKey());
+
+							TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
+							taskDetailFragment.setArguments(arguments);
+
+							getSupportFragmentManager()
+									.beginTransaction()
+									.replace(R.id.item_detail_container,taskDetailFragment)
+									.commit();
+
+							textViewInformation.setVisibility(View.GONE);
+						}
+
+					}
+
+					@Override
+					public void onCancelled(DatabaseError databaseError) {}
+				});
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {}
+		});
 	}
 
 	public void prepareSelection(View _view,int _position)
@@ -250,6 +246,22 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 			selectedTasksCounter--;
 			updateCounter(selectedTasksCounter);
 		}
+	}
+
+	@Override
+	public boolean onLongClick(View v)
+	{
+		Log.d(TAG,":TaskActivity.onLongClick() -> action mode on");
+
+		this.toolbar.getMenu().clear(); // Das normale menu wird deaktiviert.
+		this.toolbar.inflateMenu(R.menu.menu_task_action_mode); // Action mode menu wird angezeigt
+		this.textViewSelectedCounter.setVisibility(View.VISIBLE);
+		this.floatingActionButton.setVisibility(View.GONE); // Floatingbutton wird unsichtbar
+		this.isActionModeEnable = true; // ActionMode wird aktiviert
+		this.adapter.notifyDataSetChanged();
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+		return true;
 	}
 
 	/**
@@ -354,5 +366,4 @@ public class TaskActivity extends AppCompatActivity implements View.OnLongClickL
 		this.selectedTasksCounter = 0; // Counter für Selektierte Aufgaben wird zurückgesetzt.
 		this.selectedList.clear(); // Selektierte Aufgabenliste wird geleert.
 	}
-
 }

@@ -48,9 +48,6 @@
             android:layout_marginTop="16dp"
             android:hint="@string/dialog_task_add_taskName"/>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="30dp"/>
 
         <TextView
             android:id="@+id/lbl_task_add_taskDescription"
@@ -70,10 +67,6 @@
             android:hint="@string/dialog_task_add_description"
             android:inputType="textMultiLine"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="30dp"/>
-
         <TextView
             android:id="@+id/lbl_task_add_taskDate"
             android:layout_width="wrap_content"
@@ -88,9 +81,6 @@
             android:ems="10"
             android:hint="Datum"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="30dp"/>
 
         <TextView
             android:id="@+id/lbl_task_add_taskTime"
@@ -105,9 +95,6 @@
             android:ems="10"
             android:hint="Uhrzeit"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="30dp"/>
 
             <TextView
                 android:id="@+id/lbl_task_add_taskEditors"
@@ -115,13 +102,13 @@
                 android:layout_height="wrap_content"
                 android:text="Bearbeiter"/>
 
-            <Spinner
-                android:id="@+id/spinner_task_add_taskEditors"
+            <de.taracamp.familyplan.Controls.MultiSelectionSpinner
+                android:id="@+id/multiSpinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <Space
-                android:layout_width="match_parent"
+                android:layout_width="1dp"
                 android:layout_height="30dp"/>
 
     </LinearLayout>

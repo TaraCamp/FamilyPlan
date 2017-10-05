@@ -25,6 +25,16 @@
             android:layout_marginBottom="24dp"
             android:layout_gravity="center_horizontal" />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/button_GoogleLogin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:padding="12dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true"/>
+
         <!--  Email Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -81,15 +91,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp" />
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/button_GoogleLogin"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_centerInParent="true"/>
+
 
 
 

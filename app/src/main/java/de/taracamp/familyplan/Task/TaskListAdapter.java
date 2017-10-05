@@ -8,6 +8,7 @@ package de.taracamp.familyplan.Task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,22 +33,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
 	private List<Task> TaskList = null;
 	private Context ThisContext = null;
-
-	private TaskActivity taskActivity = null;
+	private TaskListActivity taskListActivity = null;
 
 	public TaskListAdapter(Context _thisContext,List<Task> _taskList)
 	{
 		this.TaskList = _taskList;
 		this.ThisContext = _thisContext;
 
-		this.taskActivity = (TaskActivity) this.ThisContext;
+		this.taskListActivity = (TaskListActivity) this.ThisContext;
 	}
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup _parent, int _viewType)
 	{
 		View view = LayoutInflater.from(_parent.getContext()).inflate(R.layout.item_task,_parent,false);
-		ViewHolder viewHolder = new ViewHolder(view,taskActivity);
+		ViewHolder viewHolder = new ViewHolder(view, taskListActivity);
 
 		return viewHolder;
 	}
@@ -63,7 +63,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 		final TextView textViewDescription = _holder.descriptionTextView;
 		textViewDescription.setText(task.getTaskDescription());
 
-		if (!_holder.taskActivity.isActionModeEnable)
+		// Status TextView wrd geladen
+		this.setStatusViev(_holder.cardViewListItem,task.getTaskState());
+
+		if (!_holder.taskListActivity.isActionModeEnable)
 		{
 			_holder.checkBoxTaskDone.setVisibility(View.GONE);
 		}
@@ -81,13 +84,57 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 				{
 					Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
 
-					Intent intentDetail = new Intent(taskActivity.getApplicationContext(),TaskDetailActivity.class);
-					intentDetail.putExtra("TASK_KEY",task.getId());
-					intentDetail.putExtra("FAMILY_KEY",_holder.taskActivity.family.getKey());
-					taskActivity.startActivity(intentDetail);
+					if(taskListActivity.isMasterDetailEnable)
+					{
+						Log.d(TAG,":TaskListAdapter.onClick() -> tablet mode");
+
+						Bundle arguments = new Bundle();
+						arguments.putString(TaskDetailFragment.TASK_KEY,task.getId());
+						arguments.putString(TaskDetailFragment.FAMILY_KEY,_holder.taskListActivity.family.getKey());
+
+						TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
+						taskDetailFragment.setArguments(arguments);
+
+						taskListActivity.getSupportFragmentManager()
+								.beginTransaction()
+								.replace(R.id.item_detail_container,taskDetailFragment)
+								.commit();
+
+					}
+					else
+					{
+						Log.d(TAG,":TaskListAdapter.onClick() -> smart mode");
+
+						Intent intentDetail = new Intent(taskListActivity.getApplicationContext(),TaskDetailActivity.class);
+						intentDetail.putExtra("TASK_KEY",task.getId());
+						intentDetail.putExtra("FAMILY_KEY",_holder.taskListActivity.family.getKey());
+						taskListActivity.startActivity(intentDetail);
+					}
+
+
+
 				}
 			}
 		});
+	}
+
+	/**
+	 * Die Status TextView wird initialisiert und angepasst.
+	 */
+	private void setStatusViev(CardView _view, String _state)
+	{
+		if (_state.equals("OPEN"))
+		{
+			//_view.setCardBackgroundColor(Color.argb(255, 193,255,193));
+		}
+		else if (_state.equals("IN_PROCESS"))
+		{
+			//_view.setCardBackgroundColor(Color.argb(255,224,255,255));
+		}
+		else if (_state.equals("FINISH"))
+		{
+			//_view.setCardBackgroundColor(Color.argb(255,224,255,255));
+		}
 	}
 
 	@Override
@@ -108,38 +155,35 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
 
 	/**
-	 * Ein Holder für eine einzelne Zeile in  der Liste
+	 * Eine Innere Klasse, mit dieser wird ein Behälter für die Steuerelemente eines Items definiert.
 	 */
 	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 	{
-		public TaskActivity taskActivity;
+		private TaskListActivity taskListActivity;
+		private TextView nameTextView;
+		private TextView descriptionTextView;
+		private CheckBox checkBoxTaskDone;
+		private CardView cardViewListItem;
 
-		public TextView nameTextView;
-		public TextView descriptionTextView;
-		public CheckBox checkBoxTaskDone;
-
-		public CardView cardViewListItem;
-
-		public ViewHolder(View _itemView, TaskActivity _taskActivity)
+		public ViewHolder(View _itemView, TaskListActivity taskListActivity)
 		{
 			super(_itemView);
 
-			taskActivity = _taskActivity;
+			this.taskListActivity = taskListActivity;
 
-			nameTextView = (TextView) _itemView.findViewById(R.id.item_task_name);
-			descriptionTextView = (TextView) _itemView.findViewById(R.id.item_task_description);
-			checkBoxTaskDone = (CheckBox) _itemView.findViewById(R.id.checkBox_task);
+			this.nameTextView = (TextView) _itemView.findViewById(R.id.item_task_name);
+			this.descriptionTextView = (TextView) _itemView.findViewById(R.id.item_task_description);
+			this.checkBoxTaskDone = (CheckBox) _itemView.findViewById(R.id.checkBox_task);
+			this.checkBoxTaskDone.setOnClickListener(this);
 
-			cardViewListItem = (CardView) _itemView.findViewById(R.id.cardView_task);
-			cardViewListItem.setOnLongClickListener(taskActivity);
-			checkBoxTaskDone.setOnClickListener(this);
+			this.cardViewListItem = (CardView) _itemView.findViewById(R.id.cardView_task);
+			this.cardViewListItem.setOnLongClickListener(taskListActivity);
 		}
 
 		@Override
 		public void onClick(View v)
 		{
-			taskActivity.prepareSelection(v,getAdapterPosition());
+			this.taskListActivity.prepareSelection(v,getAdapterPosition());
 		}
 	}
-
 }

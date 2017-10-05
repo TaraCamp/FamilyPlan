@@ -2,6 +2,7 @@ package de.taracamp.familyplan.Models;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wowa on 14.09.2017.
@@ -64,6 +65,29 @@ public class Dummy
 		family.addMember(newUser("Rainer","rainer@birk"));
 
 		return family;
+	}
+
+	public static String[] newRelatedUserList(List<User> _members)
+	{
+		//User a = newUser("Wowa","wowa@tarasov");
+		//User b = newUser("Lisa","lisa@birk");
+		//User c = newUser("Rainer","rainer@birk");
+		//User d = newUser("Christiane","christiane@birk");
+
+		String[] array = new String[_members.size()];
+
+		for (int i = 0;i<array.length;i++)
+		{
+			array[i] = _members.get(i).getUserName();
+		}
+
+		//array[0] = a.getUserName();
+		//array[1] = b.getUserName();
+		//array[2] = c.getUserName();
+		//array[3] = d.getUserName();
+
+		return array;
+
 	}
 }
 

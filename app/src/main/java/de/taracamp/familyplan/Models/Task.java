@@ -13,6 +13,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,18 +26,46 @@ public class Task
 	private String taskTitle = null;
 	private String taskDescription = null;
 	private String taskState = null;
-	private TaskState state = null; //// TODO: 25.09.2017 Status als enum nutzen
 	private User taskCreator = null;
-	private Date taskDate = null;
+	private String taskTime = null;
+	private String taskDate = null;
 	private List<User> taskRelatedUsers = null;
-	private Date taskCreatedOn = null;
+	private String taskCreatedOn = null;
+
+	public String getTaskCreatedOn() {
+		return taskCreatedOn;
+	}
+
+	public void setTaskCreatedOn(String taskCreatedOn) {
+		this.taskCreatedOn = taskCreatedOn;
+	}
+
+	public String getTaskTime() {
+		return taskTime;
+	}
+
+	public void setTaskTime(String taskTime) {
+		this.taskTime = taskTime;
+	}
+
+	public String getTaskDate() {
+		return taskDate;
+	}
+
+	public void setTaskDate(String taskDate) {
+		this.taskDate = taskDate;
+	}
 
 	// Default constructor required for calls to
 	// DataSnapshot.getValue(User.class)
-	public Task(){}
+	public Task()
+	{
+		this.taskRelatedUsers = new ArrayList<>();
+	}
 
 	public Task(User _creator)
 	{
+		this.taskRelatedUsers = new ArrayList<>();
 		this.taskCreator = _creator;
 	}
 
@@ -51,6 +80,11 @@ public class Task
 		{
 			this.taskRelatedUsers.add(relatedUser);
 		}
+	}
+
+	public List<User> getRelatedUserList()
+	{
+		return this.taskRelatedUsers;
 	}
 
 	/*
@@ -77,19 +111,9 @@ public class Task
 		this.taskDescription = _description;
 	}
 
-	public void setTaskDate(Date _date)
-	{
-		this.taskDate = _date;
-	}
-
 	public void setTaskCreator(User _user)
 	{
 		this.taskCreator = _user;
-	}
-
-	public void setTaskStatus(TaskState _state)
-	{
-		this.state = _state;
 	}
 
 	/*
@@ -116,7 +140,7 @@ public class Task
 		return this.taskDescription;
 	}
 
-	public User getCreator()
+	public User getTaskCreator()
 	{
 		return this.taskCreator;
 	}

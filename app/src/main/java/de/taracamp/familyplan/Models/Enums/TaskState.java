@@ -8,4 +8,5 @@ public enum TaskState {
 	OPEN,
 	IN_PROCESS,
 	FINISH
+
 }

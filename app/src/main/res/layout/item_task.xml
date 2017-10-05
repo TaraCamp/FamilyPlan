@@ -18,7 +18,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/imageView_taskItem"
@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:src="@drawable/ic_assignment_black_36dp"/>
 
             <TextView
@@ -55,17 +56,19 @@
 
         </RelativeLayout>
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center|right">
 
-            <CheckBox
-                android:id="@+id/checkBox_task"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginRight="20dp"/>
+                <CheckBox
+                    android:id="@+id/checkBox_task"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginRight="20dp"/>
+
         </RelativeLayout>
 
     </LinearLayout>

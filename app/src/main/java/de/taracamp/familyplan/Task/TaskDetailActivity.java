@@ -21,6 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
+import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
@@ -28,11 +30,13 @@ public class TaskDetailActivity extends AppCompatActivity
 {
 	private static final String TAG = "familyplan.debug";
 
+	private EditText editTextTaskCreator = null;
+	private EditText editTextTaskStatus = null;
 	private EditText editTextTaskTitle 	= null;
 	private EditText editTextTaskDescription = null;
 	private EditText editTextTaskDate 	= null;
 	private EditText editTextTaskTime 	= null;
-	private Spinner spinnerTaskEditors 	= null;
+	private MultiSelectionSpinner spinnerUsers 	= null;
 	private Button 	buttonUpdateTask 	= null;
 	private Button 	buttonCloseDialog 	= null;
 
@@ -40,6 +44,7 @@ public class TaskDetailActivity extends AppCompatActivity
 	private DatabaseReference tasksReference = null;
 
 	private Task task = null;
+	private Task updateTask = null;
 
 	private void init()
 	{
@@ -47,13 +52,26 @@ public class TaskDetailActivity extends AppCompatActivity
 		this.editTextTaskDescription = (EditText) findViewById(R.id.text_task_detail_taskDescription);
 		this.editTextTaskDate = (EditText) findViewById(R.id.text_task_detail_taskDate);
 		this.editTextTaskTime = (EditText) findViewById(R.id.text_task_detail_taskTime);
-		this.spinnerTaskEditors = (Spinner) findViewById(R.id.spinner_task_detail_taskEditors);
+		this.editTextTaskCreator = (EditText) findViewById(R.id.text_task_detail_taskCreator);
+		this.editTextTaskStatus = (EditText) findViewById(R.id.text_task_detail_taskStatus);
+		this.spinnerUsers = (MultiSelectionSpinner) findViewById(R.id.multiSpinner_detail);
 		this.buttonUpdateTask = (Button) findViewById(R.id.button_task_detail_updateTask);
 		this.buttonUpdateTask.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v)
 			{
 				Log.d(TAG,":TaskDetailActivity.onClick() -> update task");
+
+				updateTask.setTaskTitle(editTextTaskTitle.getText().toString());
+				updateTask.setTaskDescription(editTextTaskDescription.getText().toString());
+				updateTask.setTaskState(editTextTaskStatus.getText().toString());
+
+				tasksReference.child(task.getId()).setValue(updateTask);
+
+				Message.show(TaskDetailActivity.this,"Aufgabe wurde aktualisiert!","INFO");
+
+				Intent IntentTask = new Intent(getApplicationContext(),TaskActivity.class);
+				startActivity(IntentTask);
 			}
 		});
 		this.buttonCloseDialog = (Button) findViewById(R.id.button_task_detail_closeDialog);
@@ -63,7 +81,7 @@ public class TaskDetailActivity extends AppCompatActivity
 			{
 				Log.d(TAG,":TaskDetailActivity.onClick() -> close detail dialog");
 
-				Intent IntentTask = new Intent(getApplicationContext(),TaskActivity.class);
+				Intent IntentTask = new Intent(getApplicationContext(),TaskListActivity.class);
 				startActivity(IntentTask);
 			}
 		});
@@ -78,7 +96,21 @@ public class TaskDetailActivity extends AppCompatActivity
 		Log.d(TAG,":TaskDetailActivity.onCreate()");
 
 		this.init(); // Steuerelemente werden geladen aber noch nicht befüllt.
+
+
 	}
+
+	private void enableViews(String _loginUser, String _creator)
+	{
+		if (_loginUser.equals(_creator))
+		{
+			this.editTextTaskTitle.setEnabled(true);
+			this.editTextTaskDescription.setEnabled(true);
+			this.editTextTaskDate.setEnabled(true);
+			this.editTextTaskTime.setEnabled(true);
+		}
+	}
+
 
 	@Override
 	protected void onStart()
@@ -106,6 +138,10 @@ public class TaskDetailActivity extends AppCompatActivity
 					DataSnapshot taskSnap = dataSnapshot.child(taskKey);
 					task = taskSnap.getValue(Task.class);
 
+					updateTask = task;
+
+					enableViews("Wowa",task.getTaskCreator().getUserName());
+
 					fillViews(task);
 				}
 
@@ -118,6 +154,8 @@ public class TaskDetailActivity extends AppCompatActivity
 		}
 	}
 
+
+
 	/**
 	 *
 	 * Die Views der Ansicht werden befüllt.
@@ -128,5 +166,10 @@ public class TaskDetailActivity extends AppCompatActivity
 	{
 		this.editTextTaskTitle.setText(_detailTask.getTaskTitle());
 		this.editTextTaskDescription.setText(_detailTask.getTaskDescription());
+		this.editTextTaskDate.setText(_detailTask.getTaskDate());
+		this.editTextTaskTime.setText(_detailTask.getTaskTime());
+		//this.editTextTaskCreator.setText(_detailTask.getTaskCreator().getUserName());
+		//this.editTextTaskStatus.setText(_detailTask.getTaskState());
+
 	}
 }

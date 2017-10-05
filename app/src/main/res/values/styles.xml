@@ -18,6 +18,7 @@
 
     <!-- Quelle: https://www.androidhive.info/2015/09/android-material-design-working-with-tabs/ -->
     <style name="MyMaterialTheme" parent="MyMaterialTheme.Base"></style>
+
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
@@ -112,5 +113,9 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowIsFloating">false</item>
     </style>
+
+    <style name="MyMaterialTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="MyMaterialTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 </resources>

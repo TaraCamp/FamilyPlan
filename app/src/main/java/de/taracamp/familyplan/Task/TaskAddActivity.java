@@ -6,18 +6,22 @@
  */
 package de.taracamp.familyplan.Task;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.TimePicker;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,17 +30,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
-import de.taracamp.familyplan.Dialogs.DialogDateListener;
-import de.taracamp.familyplan.Dialogs.DialogDatePicker;
-import de.taracamp.familyplan.Dialogs.DialogTimeListener;
-import de.taracamp.familyplan.Dialogs.DialogTimePicker;
+import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
 import de.taracamp.familyplan.Models.Dummy;
-import de.taracamp.familyplan.Models.Enums.Status;
-import de.taracamp.familyplan.Models.Enums.TaskState;
 import de.taracamp.familyplan.Models.Family;
+import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -52,7 +52,7 @@ import de.taracamp.familyplan.R;
  * - Weitere Angaben -> ....
  *
  */
-public class TaskAddActivity extends FragmentActivity implements DialogDateListener, DialogTimeListener
+public class TaskAddActivity extends FragmentActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener
 {
 	private static final String TAG = "familyplan.debug";
 
@@ -60,17 +60,22 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 	private EditText editTextTaskDescription = null;
 	private EditText editTextTaskDate = null;
 	private EditText editTextTaskTime = null;
-	private Spinner spinnerTaskEditors = null;
+	private MultiSelectionSpinner multiSelectionSpinner = null;
 
 	private Button buttonAddTask = null;
 	private Button buttonCloseDialog = null;
 
-	private Date taskDate = null;
-	private List<String> editorsList = null;
+	private TimePickerDialog timePickerDialog = null;
+	private DatePickerDialog datePickerDialog = null;
+
+	private Calendar calendar = Calendar.getInstance();
+	private Calendar dateCalendar = null;
+	private Calendar timeCalendar = null;
+
+	private List<String> selectedUsersAsString = null;
 
 	private FirebaseDatabase database = null;
 	private DatabaseReference databaseReference = null;
-	private DatabaseReference familyReference = null;
 	private DatabaseReference taskReference = null;
 
 	private android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
@@ -80,7 +85,6 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	public void init()
 	{
-		// Die Steuerelemente werden hier  initialisiert.
 		editTextTaskTitle = (EditText) findViewById(R.id.text_task_add_taskName);
 		editTextTaskTitle.requestFocus();
 		editTextTaskDescription = (EditText) findViewById(R.id.text_task_add_taskDescription);
@@ -94,8 +98,21 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 				{
 					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open date dialog");
 
-					DialogDatePicker dialog = new DialogDatePicker();
-					dialog.show(fragmentManager,"DialogDatePicker");
+					datePickerDialog = new DatePickerDialog(TaskAddActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+						@Override
+						public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
+						{
+							dateCalendar = Calendar.getInstance();
+							dateCalendar.set(Calendar.YEAR,year);
+							dateCalendar.set(Calendar.MONTH,month);
+							dateCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+							editTextTaskDate.setText(DateUtils.formatDateTime(TaskAddActivity.this,dateCalendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
+						}
+					},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+					datePickerDialog.show();
+
 				}
 			}
 		});
@@ -109,12 +126,24 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 				{
 					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open time dialog");
 
-					DialogTimePicker dialog = new DialogTimePicker();
-					dialog.show(fragmentManager,"DialogTimePicker");
+					timePickerDialog = new TimePickerDialog(TaskAddActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
+						@Override
+						public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+						{
+							timeCalendar = Calendar.getInstance();
+							timeCalendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+							timeCalendar.set(Calendar.MINUTE,minute);
+
+							editTextTaskTime.setText(DateUtils.formatDateTime(TaskAddActivity.this,timeCalendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_TIME));
+						}
+
+					},calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(TaskAddActivity.this));
+					timePickerDialog.show();
 				}
 			}
 		});
-		spinnerTaskEditors = (Spinner)  findViewById(R.id.spinner_task_add_taskEditors);
+
 		buttonAddTask = (Button) findViewById(R.id.button_task_add_addTask);
 		buttonAddTask.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -132,12 +161,15 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> close dialog");
 
-				Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
+				Intent taskTabIntent = new Intent(getApplicationContext(),TaskListActivity.class);
 				startActivity(taskTabIntent);
 			}
 		});
 	}
 
+	/**
+	 * Das Family Object wird geladen und initialisiert.
+	 */
 	private void load()
 	{
 		Bundle extras = getIntent().getExtras();
@@ -154,6 +186,14 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 				{
 					DataSnapshot snap = dataSnapshot.child(key);
 					family = snap.getValue(Family.class);
+
+					// Der MultiSelectionSpinner wurde seperat anhand des Spinner Class erweitert und ist unter dem Ordner
+					// Controls zu finden. Zum befüllen des Spinners wurde ein Workaround verwendet.
+					// In Zukunft sollten Objekte abgekegt werden und keine Strings.
+					multiSelectionSpinner = (MultiSelectionSpinner) findViewById(R.id.multiSpinner);
+					String[] array = Dummy.newRelatedUserList(family.getFamilyMembers()); // // TODO: 27.09.2017 sollte aus der datenbank gefüllt werden
+					multiSelectionSpinner.setItems(array);
+					multiSelectionSpinner.setListener(TaskAddActivity.this);
 				}
 
 				@Override
@@ -172,76 +212,109 @@ public class TaskAddActivity extends FragmentActivity implements DialogDateListe
 
 		setContentView(R.layout.dialog_task_add);
 
-		load(); // Familie wird geladen
-		init(); // Initialisiert alle Komponenten
-
-		loadDummyEditorsList();
+		load();
+		init();
 	}
 
-	// Eine Dummyliste für eine Familie
-	private void loadDummyEditorsList()
-	{
-		editorsList = new ArrayList<>();
-		editorsList.add("Familie");
-		editorsList.add("Lisa");
-		editorsList.add("Wowa");
-		editorsList.add("Rainer");
-		editorsList.add("Christiane");
-		editorsList.add("Timo");
-
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, editorsList);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinnerTaskEditors.setAdapter(dataAdapter);
-	}
-
-	@Override
-	public void onFinishDateDialog(Date _date)
-	{
-		Log.d(TAG,":TaskAddActivity.onFinishDateDialog() -> with new date: " + _date.toString());
-
-		taskDate = _date;
-		editTextTaskDate.setText(_date.toString());
-	}
-
-	@Override
-	public void onFinishDateDialog()
-	{
-		Log.d(TAG,":TaskAddActivity.onFinishDateDialog() -> with new date: ... ");
-	}
-
+	/**
+	 * Speichert eine neue Aufgabe in der Firebase Datenbank.
+	 */
 	private void saveTask()
 	{
-		/*Creating new task node, which returns the unique key value,
-		* new task node would be /tasks/$userid/
-		*/
-		this.taskReference = this.databaseReference.child(this.family.getKey()).child("familyTasks").getRef();
-		String taskKey = this.taskReference.push().getKey();
+		// Es wird geprüft ob alle Pflichtfelder ausgefüllt sind
+		if(checkValid())
+		{
+			/*
+			* Creating new task node, which returns the unique key value,
+			* new task node would be families/$familyId/familyTasks/$userid/
+			*/
+			this.taskReference = this.databaseReference.child(this.family.getKey()).child("familyTasks").getRef();
+			String taskKey = this.taskReference.push().getKey(); // create a new taskKey
 
-		// Daten werden aus der UI übernommen.
-		String taskTitle = editTextTaskTitle.getText().toString();
-		String taskDescription = editTextTaskDescription.getText().toString();
+			this.taskReference.child(taskKey).setValue(this.createTask(taskKey)); // put to database
 
-		User userA = new User(spinnerTaskEditors.getSelectedItem().toString(),"test@tarasov");
-		User creator = Dummy.newUser("Wowa","wowa@tarasov");
+			Message.show(TaskAddActivity.this,"Die Aufgabe wurde angelegt!","SUCCES");
 
-		// Create new task.
-		Task newTask = new Task(creator);
+			Intent taskTabIntent = new Intent(getApplicationContext(),TaskListActivity.class);
+			startActivity(taskTabIntent);
+		}
+	}
 
-		// Set task fields
-		newTask.setId(taskKey); // Setze Aufgaben ID
-		newTask.setTaskTitle(taskTitle); // Setze Aufgabentitel
-		newTask.setTaskDescription(taskDescription); // Setze Aufgabenbeschreibung
-		newTask.setTaskState("OPEN"); // Setze Aufgaben Status
-		if (taskDate!=null) newTask.setTaskDate(taskDate); // Setze Aufgaben Datum
+	/**
+	 *
+	 * Erstellt eine neue Aufgabe. Jede Aufgabe erhält einen eindeutigen Schlüssen (_key).
+	 *
+	 * Folgende Eigenschaften besitzt eine Aufgabe:
+	 * - Aufgabenschlüssel -> wird aon firebase zurückgegeben.
+	 * - Aufgaben Titel -> Pflichtfeld
+	 * - Aufgaben Beschreibung -> Optional
+	 * - Aufgaben Status -> Wird zu Begin auf OPEN gesetzt.
+	 * - Aufgaben Erstelldatum -> automatisch
+	 * - Aufgaben Ausführdatum -> optional / ansonsten today()
+	 * - Aufgaben Ausführuhrzeit -> optional / ansonsten today()
+	 * - Aufgaben Benutzer -> min. 1 musst selektiert sein.
+	 *
+	 */
+	private Task createTask(String _key)
+	{
+		User creator = Dummy.newUser("Wowa","wowa@tarasov"); // // TODO: 27.09.2017  Dummy Ersteller
+		Task task = new Task(creator);
 
-		this.taskReference.child(taskKey).setValue(newTask);
+		task.setId(_key);
 
-		//this.family.addTask(newTask);
-		//databaseReference.child(this.family.getKey()).setValue(this.family);
-		//this.familyReference.setValue(this.family);
+		//// TODO: 27.09.2017  Workaround für die Auswahl der Benutzer!!
+		List<User> allUsers = family.getFamilyMembers();
+		if (selectedUsersAsString==null)
+		{
+			selectedUsersAsString = new ArrayList<>();
+			selectedUsersAsString.add(multiSelectionSpinner.getSelectedItemsAsString());
+		}
+		for(User user : allUsers)
+		{
+			for(String s : selectedUsersAsString)
+			{
+				if (user.getUserName().equals(s)) task.addRelatedUser(user);
+			}
+		}
 
-		Intent taskTabIntent = new Intent(getApplicationContext(),TaskActivity.class);
-		startActivity(taskTabIntent);
+		task.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
+		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
+		task.setTaskState("OPEN"); // // TODO: 27.09.2017 muss aus enum entnommen werden.
+		task.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
+		if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
+		if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
+
+		return task;
+	}
+
+	private boolean checkValid()
+	{
+		boolean isValid = false;
+
+		if (!this.editTextTaskTitle.getText().toString().equals("")) isValid=true;
+		else Message.show(TaskAddActivity.this,"Es muss ein Titel angegeben werden!","ERROR");
+
+		if (multiSelectionSpinner.getCount()==0)
+		{
+			isValid=false;
+			Message.show(TaskAddActivity.this,"Es muss mindestens einer ausgewählt sein!","ERROR");
+		}
+
+		return isValid;
+	}
+
+	@Override
+	public void selectedIndices(List<Integer> indices)
+	{
+		Log.d(TAG,":TaskAddActivity.selectedIndices()");
+	}
+
+	@Override
+	public void selectedStrings(List<String> strings)
+	{
+		Log.d(TAG,":TaskAddActivity.selectedStrings() -> " + strings.toString());
+
+		// Weil die Selektierteliste immer wieder zurückgesetzt wird, müssen die ausgewählten Strings übergeben werden
+		selectedUsersAsString = strings;
 	}
 }
