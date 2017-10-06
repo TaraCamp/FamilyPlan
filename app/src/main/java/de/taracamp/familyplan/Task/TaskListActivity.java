@@ -6,11 +6,14 @@
  */
 package de.taracamp.familyplan.Task;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -30,9 +33,11 @@ import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.Dummy;
 import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.Task;
+import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * In dieser Activity wird die Aufgabenliste gezeigt. Zudem kann man folgende Optionen nutzen:
@@ -43,7 +48,7 @@ import java.util.ArrayList;
  * - Nach Aufgaben suchen, über die Suche kann man die Liste filtern.
  * - ActionMode aktivieren. Über einen LongPress auf einem Item aktiviert man den ActionMode:
  * 	-> ActionMode: Aufgaben als Erledigt setzen. Über die gewählten Aufgaben.
- * 	-> ActionMode: ...
+ * 	-> ActionMode: In bearbeitungsmodus wechseln.
  * - Aufgaben Bearbeiten, über einen Klick auf ein Item -> TaskDetailActivity.
  *
  * Information: Die Liste ist eine RecyclerView und wird über einen Adapter (TaskListAdapter) geladen.
@@ -72,6 +77,8 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 	private FirebaseDatabase database = null;
 	private DatabaseReference familiesReference = null;
 	private DatabaseReference tasksReference = null;
+
+	private String mode = "own";
 
 	public Family family = null;
 
@@ -136,6 +143,28 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		getMenuInflater().inflate(R.menu.menu_task,menu);
+
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.item_task_search));
+		SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+		searchView.setMaxWidth(Integer.MAX_VALUE);
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			@Override
+			public boolean onQueryTextSubmit(String query)
+			{
+				Log.d(TAG,":TaskActivity.search()-> onQueryTextSubmit");
+				loadTaskList("search","Wowa",query);
+				return true;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText)
+			{
+				Log.d(TAG,":TaskActivity.search()-> onQueryTextChange");
+				return false;
+			}
+		});
+
 		return true;
 	}
 
@@ -182,49 +211,7 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 					family = dataSnapshot.child("-Kux_ITnsJUDHqqQdZXU").getValue(Family.class);
 				}
 
-				tasksReference = familiesReference.child(family.getKey()).child("familyTasks").getRef();
-				tasksReference.addValueEventListener(new ValueEventListener() {
-					@Override
-					public void onDataChange(DataSnapshot dataSnapshot)
-					{
-						long foundTasks = dataSnapshot.getChildrenCount();
-
-						Log.d(TAG,":TaskActivity.readDatabase() -> onDataChange, found records = " + foundTasks);
-
-						list.clear(); // Liste entleeren
-
-						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
-						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
-						{
-							Task readTask = taskSnap.getValue(Task.class);
-							if (readTask.getTaskState().equals("OPEN")) list.add(readTask); // Aufgabe der Liste anhefeten
-						}
-
-						adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
-						recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
-
-						if (list.size()!=0 && isMasterDetailEnable)
-						{
-							Bundle arguments = new Bundle();
-							arguments.putString(TaskDetailFragment.TASK_KEY,list.get(0).getId());
-							arguments.putString(TaskDetailFragment.FAMILY_KEY,family.getKey());
-
-							TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
-							taskDetailFragment.setArguments(arguments);
-
-							getSupportFragmentManager()
-									.beginTransaction()
-									.replace(R.id.item_detail_container,taskDetailFragment)
-									.commit();
-
-							textViewInformation.setVisibility(View.GONE);
-						}
-
-					}
-
-					@Override
-					public void onCancelled(DatabaseError databaseError) {}
-				});
+				loadTaskList(mode,"Wowa","");
 			}
 
 			@Override
@@ -301,30 +288,142 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 		if (_item.getItemId()==R.id.item_task_done)
 		{
 			Log.d(TAG,":TaskActivity.onClick() -> finish tasks");
-
 			finishTasks();
-		}
-		else if(_item.getItemId()==R.id.item_task_search)
-		{
-			Log.d(TAG,":TaskActivity.onClick() -> search tasks");
 		}
 		else if(_item.getItemId()==R.id.item_task_ownTasks)
 		{
 			Log.d(TAG,":TaskActivity.onClick() -> own tasks");
+			this.mode = "own";
+			this.loadTaskList(this.mode,"Wowa","");
 		}
 		else if(_item.getItemId()==R.id.item_task_createTasks)
 		{
 			Log.d(TAG,":TaskActivity.onClick() -> created tasks");
+			this.mode = "created";
+			this.loadTaskList(this.mode,"Wowa","");
 		}
 		else if (_item.getItemId()==android.R.id.home)
 		{
 			Log.d(TAG,":TaskActivity.onClick() -> home");
-
 			clearActionMode();
 			this.adapter.notifyDataSetChanged();
 		}
 
 		return true;
+	}
+
+	/**
+	 *Die Liste wird nach einem Muster gelden.
+	 *
+	 * mode:
+	 * - own // Zeigt nur zugewiesene Aufgaben an
+	 * - created // Zeigt alle Erstellten Aufgaben an
+	 * - search // Zeigt Aufgaben an die gesucht werden
+	 *
+	 * query
+	 * // Wird nur im Suchmodus verwendet.
+	 */
+	private void loadTaskList(final String _mode, final String _username, final String _query)
+	{
+		tasksReference = familiesReference.child(family.getKey()).child("familyTasks").getRef();
+		tasksReference.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot)
+			{
+				long foundTasks = dataSnapshot.getChildrenCount();
+				list.clear(); // Liste entleeren
+
+				switch (_mode)
+				{
+					case "own":
+					{
+						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+						{
+							Task readTask = taskSnap.getValue(Task.class);
+
+							List<User> relatedUsers = readTask.getTaskRelatedUsers();
+
+							for (User user : relatedUsers)
+							{
+								if (user.getUserName().equals(_username))
+								{
+									if ( readTask.getTaskState().equals("OPEN") || readTask.getTaskState().equals("IN_PROCESS")) list.add(readTask); // Aufgabe der Liste anhefeten
+								}
+							}
+						}
+					};
+					break;
+
+					case "created":
+					{
+						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+						{
+							Task readTask = taskSnap.getValue(Task.class);
+
+							if (readTask.getTaskCreator().getUserName().equals(_username)) list.add(readTask); // Aufgabe der Liste anhefeten
+
+						}
+					};
+					break;
+
+					case "search":{
+
+						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+						{
+							Task readTask = taskSnap.getValue(Task.class);
+
+							if (readTask.getTaskTitle().contains(_query)
+									|| readTask.getTaskDescription().contains(_query)) list.add(readTask);
+						}
+					}
+					break;
+
+					default:
+					{
+						// Jedes Element im Datenbankknoten wird durchlaufen und der Liste hinzugefügt
+						for(DataSnapshot taskSnap : dataSnapshot.getChildren())
+						{
+							Task readTask = taskSnap.getValue(Task.class);
+							list.add(readTask); // Aufgabe der Liste anhefeten
+						}
+					};
+					break;
+				}
+
+				adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
+				recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+
+				if (list.size()!=0 && isMasterDetailEnable)
+				{
+					Bundle arguments = new Bundle();
+					arguments.putString(TaskDetailFragment.TASK_KEY,list.get(0).getId());
+					arguments.putString(TaskDetailFragment.FAMILY_KEY,family.getKey());
+
+					TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
+					taskDetailFragment.setArguments(arguments);
+
+					try
+					{
+						getSupportFragmentManager()
+								.beginTransaction()
+								.replace(R.id.item_detail_container,taskDetailFragment)
+								.commit();
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+
+					textViewInformation.setVisibility(View.GONE);
+				}
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {}
+		});
 	}
 
 	/**

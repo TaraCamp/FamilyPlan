@@ -70,7 +70,7 @@ public class TaskDetailActivity extends AppCompatActivity
 
 				Message.show(TaskDetailActivity.this,"Aufgabe wurde aktualisiert!","INFO");
 
-				Intent IntentTask = new Intent(getApplicationContext(),TaskActivity.class);
+				Intent IntentTask = new Intent(getApplicationContext(),TaskDetailActivity.class);
 				startActivity(IntentTask);
 			}
 		});

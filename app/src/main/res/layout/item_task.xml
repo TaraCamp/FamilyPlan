@@ -27,8 +27,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/ic_assignment_black_36dp"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_action_open"/>
 
             <TextView
                 android:id="@+id/item_task_name"
@@ -51,8 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/item_task_description"
-                android:layout_toRightOf="@+id/imageView_taskItem"
-                android:text="Wladimir Tarasov"/>
+                android:layout_toRightOf="@+id/imageView_taskItem"/>
 
         </RelativeLayout>
 
@@ -68,6 +68,16 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     android:layout_marginRight="20dp"/>
+
+            <ImageView
+                android:id="@+id/imageView_task_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"/>
 
         </RelativeLayout>
 

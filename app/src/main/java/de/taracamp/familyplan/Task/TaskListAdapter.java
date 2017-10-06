@@ -8,6 +8,7 @@ package de.taracamp.familyplan.Task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +40,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	private Context ThisContext = null;
 	private TaskListActivity taskListActivity = null;
 
+	private FirebaseDatabase database = null;
+	private DatabaseReference tasksReference = null;
+
 	public TaskListAdapter(Context _thisContext,List<Task> _taskList)
 	{
 		this.TaskList = _taskList;
@@ -47,6 +55,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	public ViewHolder onCreateViewHolder(ViewGroup _parent, int _viewType)
 	{
 		View view = LayoutInflater.from(_parent.getContext()).inflate(R.layout.item_task,_parent,false);
+
 		ViewHolder viewHolder = new ViewHolder(view, taskListActivity);
 
 		return viewHolder;
@@ -55,28 +64,98 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	@Override
 	public void onBindViewHolder(final ViewHolder _holder, int _position)
 	{
-		final Task task = this.TaskList.get(_position); //Ausgewählte Aufgabe wird zurückgegeben
+		// Select task
+		final Task task = this.TaskList.get(_position);
 
+		// Firebase Database
+		this.database = FirebaseDatabase.getInstance();
+		this.tasksReference = this.database.getReference("families").child(task.getFamilyKey()).child("familyTasks").getRef();
+
+		// Show task title
 		final TextView textViewName = _holder.nameTextView;
 		textViewName.setText(task.getTaskTitle());
 
+		// Show task description
 		final TextView textViewDescription = _holder.descriptionTextView;
 		textViewDescription.setText(task.getTaskDescription());
 
-		// Status TextView wrd geladen
-		this.setStatusViev(_holder.cardViewListItem,task.getTaskState());
+		final TextView textViewCreator = _holder.textViewTaskCreator;
+		textViewCreator.setText("Ersteller: " + task.getTaskCreator().getUserName());
 
+		final CardView cardViewTask = _holder.cardViewListItem;
+
+		// show task status
+		final ImageView imageViewTaskStatusIcon = _holder.imageViewTaskStatusIcon;
+		switch (task.getTaskState())
+		{
+			case "OPEN": imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_open);
+				break;
+			case "IN_PROCESS":{
+				imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_in_process);
+				cardViewTask.setCardBackgroundColor(Color.argb(255,255,253,175));
+			}
+				break;
+			case "FINISH": {
+					imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_finish);
+					cardViewTask.setCardBackgroundColor(Color.argb(255,204,255,153));
+				}
+				break;
+			default: imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_open);
+				break;
+		}
+
+		// show task favorite state
+		final ImageView imageViewTaskFavorite = _holder.imageViewTaskFavorite;
+
+		if (task.getTaskFavorite())
+			imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_on);
+		else
+			imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_off);
+
+		// change task favorite state
+		imageViewTaskFavorite.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v)
+			{
+				if(task.getTaskFavorite())
+				{
+					Log.d(TAG,":TaskListAdapter.onClick() -> favorite=false");
+
+					imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_off);
+
+					task.setTaskFavorite(false);
+					tasksReference.child(task.getId()).setValue(task);
+				}
+				else
+				{
+					Log.d(TAG,":TaskListAdapter.onClick() -> favorite=true");
+
+					imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_on);
+
+					task.setTaskFavorite(true);
+					tasksReference.child(task.getId()).setValue(task);
+				}
+			}
+		});
+
+		// check whether action mode is active
 		if (!_holder.taskListActivity.isActionModeEnable)
 		{
 			_holder.checkBoxTaskDone.setVisibility(View.GONE);
+
+			_holder.imageViewTaskFavorite.setVisibility(View.VISIBLE);
 		}
 		else
 		{
 			_holder.checkBoxTaskDone.setVisibility(View.VISIBLE);
 			_holder.checkBoxTaskDone.setChecked(false);
+
+			_holder.imageViewTaskFavorite.setVisibility(View.GONE);
 		}
 
 		_holder.itemView.setOnClickListener(new View.OnClickListener() {
+
 			@Override
 			public void onClick(View _v)
 			{
@@ -110,31 +189,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 						intentDetail.putExtra("FAMILY_KEY",_holder.taskListActivity.family.getKey());
 						taskListActivity.startActivity(intentDetail);
 					}
-
-
-
 				}
 			}
 		});
-	}
-
-	/**
-	 * Die Status TextView wird initialisiert und angepasst.
-	 */
-	private void setStatusViev(CardView _view, String _state)
-	{
-		if (_state.equals("OPEN"))
-		{
-			//_view.setCardBackgroundColor(Color.argb(255, 193,255,193));
-		}
-		else if (_state.equals("IN_PROCESS"))
-		{
-			//_view.setCardBackgroundColor(Color.argb(255,224,255,255));
-		}
-		else if (_state.equals("FINISH"))
-		{
-			//_view.setCardBackgroundColor(Color.argb(255,224,255,255));
-		}
 	}
 
 	@Override
@@ -160,10 +217,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
 	{
 		private TaskListActivity taskListActivity;
+
 		private TextView nameTextView;
 		private TextView descriptionTextView;
+		private TextView textViewTaskCreator = null;
 		private CheckBox checkBoxTaskDone;
 		private CardView cardViewListItem;
+		private ImageView imageViewTaskStatusIcon = null;
+		private ImageView imageViewTaskFavorite = null;
 
 		public ViewHolder(View _itemView, TaskListActivity taskListActivity)
 		{
@@ -172,9 +233,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			this.taskListActivity = taskListActivity;
 
 			this.nameTextView = (TextView) _itemView.findViewById(R.id.item_task_name);
+
 			this.descriptionTextView = (TextView) _itemView.findViewById(R.id.item_task_description);
+
+			this.textViewTaskCreator = (TextView) _itemView.findViewById(R.id.item_task_editors);
+
 			this.checkBoxTaskDone = (CheckBox) _itemView.findViewById(R.id.checkBox_task);
 			this.checkBoxTaskDone.setOnClickListener(this);
+
+			this.imageViewTaskStatusIcon = (ImageView) _itemView.findViewById(R.id.imageView_taskItem);
+
+			this.imageViewTaskFavorite = (ImageView) _itemView.findViewById(R.id.imageView_task_favorite);
 
 			this.cardViewListItem = (CardView) _itemView.findViewById(R.id.cardView_task);
 			this.cardViewListItem.setOnLongClickListener(taskListActivity);

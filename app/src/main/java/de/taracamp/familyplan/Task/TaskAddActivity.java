@@ -261,6 +261,7 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		Task task = new Task(creator);
 
 		task.setId(_key);
+		task.setFamilyKey(family.getKey());
 
 		//// TODO: 27.09.2017  Workaround für die Auswahl der Benutzer!!
 		List<User> allUsers = family.getFamilyMembers();
@@ -269,11 +270,13 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 			selectedUsersAsString = new ArrayList<>();
 			selectedUsersAsString.add(multiSelectionSpinner.getSelectedItemsAsString());
 		}
+		List<User> listRel = new ArrayList<>();
 		for(User user : allUsers)
 		{
 			for(String s : selectedUsersAsString)
 			{
-				if (user.getUserName().equals(s)) task.addRelatedUser(user);
+				//if (user.getUserName().equals(s)) task.addRelatedUser(user);
+				if (user.getUserName().equals(s)) listRel.add(user);
 			}
 		}
 
@@ -281,6 +284,7 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
 		task.setTaskState("OPEN"); // // TODO: 27.09.2017 muss aus enum entnommen werden.
 		task.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
+		task.setTaskRelatedUsers(listRel);
 		if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
 		if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
 

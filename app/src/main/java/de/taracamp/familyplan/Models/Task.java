@@ -6,19 +6,9 @@
  */
 package de.taracamp.familyplan.Models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import de.taracamp.familyplan.Models.Enums.Status;
-import de.taracamp.familyplan.Models.Enums.TaskState;
 
 public class Task
 {
@@ -31,6 +21,8 @@ public class Task
 	private String taskDate = null;
 	private List<User> taskRelatedUsers = null;
 	private String taskCreatedOn = null;
+	private boolean taskFavorite = false;
+	private String familyKey = null;
 
 	public String getTaskCreatedOn() {
 		return taskCreatedOn;
@@ -56,6 +48,8 @@ public class Task
 		this.taskDate = taskDate;
 	}
 
+
+
 	// Default constructor required for calls to
 	// DataSnapshot.getValue(User.class)
 	public Task()
@@ -67,24 +61,6 @@ public class Task
 	{
 		this.taskRelatedUsers = new ArrayList<>();
 		this.taskCreator = _creator;
-	}
-
-	public void addRelatedUser(User _relatedUser)
-	{
-		this.taskRelatedUsers.add(_relatedUser);
-	}
-
-	public void addRelatedUsersList(List<User> _relatedUsers)
-	{
-		for(User relatedUser : _relatedUsers)
-		{
-			this.taskRelatedUsers.add(relatedUser);
-		}
-	}
-
-	public List<User> getRelatedUserList()
-	{
-		return this.taskRelatedUsers;
 	}
 
 	/*
@@ -116,6 +92,21 @@ public class Task
 		this.taskCreator = _user;
 	}
 
+	public void setTaskFavorite(boolean _isFavorite)
+	{
+		this.taskFavorite = _isFavorite;
+	}
+
+	public void setFamilyKey(String _key)
+	{
+		this.familyKey = _key;
+	}
+
+	public void setTaskRelatedUsers(List<User> _relatedUsers)
+	{
+		this.taskRelatedUsers = _relatedUsers;
+	}
+
 	/*
 	* Getter
 	* */
@@ -145,4 +136,18 @@ public class Task
 		return this.taskCreator;
 	}
 
+	public boolean getTaskFavorite()
+	{
+		return this.taskFavorite;
+	}
+
+	public String getFamilyKey()
+	{
+		return this.familyKey;
+	}
+
+	public List<User> getTaskRelatedUsers()
+	{
+		return this.taskRelatedUsers;
+	}
 }

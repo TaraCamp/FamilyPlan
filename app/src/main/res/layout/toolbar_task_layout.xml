@@ -23,7 +23,6 @@
             android:textSize="18dp"
             android:textColor="#ffffff"
             android:textStyle="bold" />
-
     </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>
