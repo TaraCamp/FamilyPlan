@@ -34,8 +34,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
-import de.taracamp.familyplan.Models.Dummy;
+import de.taracamp.familyplan.Models.FamiliyUser;
 import de.taracamp.familyplan.Models.Family;
+import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
@@ -73,22 +75,28 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 	private Calendar timeCalendar = null;
 
 	private List<String> selectedUsersAsString = null;
+	List<User> memberList = null;
+	List<User> listRel = null;
 
-	private FirebaseDatabase database = null;
-	private DatabaseReference databaseReference = null;
-	private DatabaseReference taskReference = null;
+	private FirebaseManager firebaseManager = null;
 
-	private android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+	@Override
+	protected void onCreate(@Nullable Bundle _savedInstanceState)
+	{
+		super.onCreate(_savedInstanceState);
+		setContentView(R.layout.dialog_task_add);
 
-	private Family family = null;
+		this.Firebase();
+	}
 
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	public void init()
 	{
-		editTextTaskTitle = (EditText) findViewById(R.id.text_task_add_taskName);
+		editTextTaskTitle = (EditText) findViewById(R.id.input_task_add_taskTitle);
 		editTextTaskTitle.requestFocus();
-		editTextTaskDescription = (EditText) findViewById(R.id.text_task_add_taskDescription);
-		editTextTaskDate = (EditText) findViewById(R.id.text_task_add_taskDate);
+		editTextTaskDescription = (EditText) findViewById(R.id.input_task_add_taskDescription);
+		editTextTaskDate = (EditText) findViewById(R.id.input_task_add_taskDate);
 		editTextTaskDate.setShowSoftInputOnFocus(false);
 		editTextTaskDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
@@ -116,7 +124,7 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 				}
 			}
 		});
-		editTextTaskTime = (EditText) findViewById(R.id.text_task_add_taskTime);
+		editTextTaskTime = (EditText) findViewById(R.id.input_task_add_taskTime);
 		editTextTaskTime.setShowSoftInputOnFocus(false);
 		editTextTaskTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 			@Override
@@ -151,7 +159,18 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> add task");
 
-				saveTask(); // Speichert die neue Aufgabe in der Datenbank.
+				// Prüft ob das Anlegen einer neuen Aufgabe erfolgreich war.
+				if (saveTask())
+				{
+					Message.show(TaskAddActivity.this,"Eine neue Aufgabe wurde angelegt!","SUCCES");
+
+					Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
+					startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+				}
+				else
+				{
+					Message.show(TaskAddActivity.this,"Aufgabe konnte nicht hinzugefügt werden","INFO");
+				}
 			}
 		});
 		buttonCloseDialog = (Button) findViewById(R.id.button_task_add_closeDialog);
@@ -161,130 +180,118 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 			{
 				Log.d(TAG,":TaskAddActivity.onClick() -> close dialog");
 
-				Intent taskTabIntent = new Intent(getApplicationContext(),TaskListActivity.class);
-				startActivity(taskTabIntent);
+				Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
+				startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
 			}
 		});
 	}
 
-	/**
-	 * Das Family Object wird geladen und initialisiert.
-	 */
-	private void load()
+	private void Firebase()
 	{
-		Bundle extras = getIntent().getExtras();
-		if (extras != null)
-		{
-			final String key = extras.getString("FAMILY_KEY");
+		// Der Multiselektion Spinner
+		this.multiSelectionSpinner = (MultiSelectionSpinner) findViewById(R.id.multiSpinner); //// TODO: 28.10.2017 vorher schon
 
-			this.database = FirebaseDatabase.getInstance();
+		this.firebaseManager = new FirebaseManager();
+		this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent()); //current user
 
-			this.databaseReference = this.database.getReference("families");
-			this.databaseReference.addValueEventListener(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot dataSnapshot)
-				{
-					DataSnapshot snap = dataSnapshot.child(key);
-					family = snap.getValue(Family.class);
+		// ./families/token
+		this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()).getRef();
+		this.firebaseManager.currentFamilyReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
-					// Der MultiSelectionSpinner wurde seperat anhand des Spinner Class erweitert und ist unter dem Ordner
-					// Controls zu finden. Zum befüllen des Spinners wurde ein Workaround verwendet.
-					// In Zukunft sollten Objekte abgekegt werden und keine Strings.
-					multiSelectionSpinner = (MultiSelectionSpinner) findViewById(R.id.multiSpinner);
-					String[] array = Dummy.newRelatedUserList(family.getFamilyMembers()); // // TODO: 27.09.2017 sollte aus der datenbank gefüllt werden
-					multiSelectionSpinner.setItems(array);
-					multiSelectionSpinner.setListener(TaskAddActivity.this);
-				}
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot)
+			{
+				Family family = dataSnapshot.getValue(Family.class);
 
-				@Override
-				public void onCancelled(DatabaseError databaseError) {}
-			});
-		}
+				memberList = family.getFamilyMembers(); // Alle Member werden zwischengespeichert.
+
+				multiSelectionSpinner.setItems(getRelatedUserList(family.getFamilyMembers()));
+				multiSelectionSpinner.setListener(TaskAddActivity.this);
+
+				init();
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {}
+		});
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-	@Override
-	protected void onCreate(@Nullable Bundle _savedInstanceState)
+	public static String[] getRelatedUserList(List<User> _members)
 	{
-		super.onCreate(_savedInstanceState);
+		String[] array = new String[_members.size()];
 
-		Log.d(TAG,":TaskAddActivity.onCreate()");
+		for (int i = 0;i<array.length;i++)
+		{
+			array[i] = _members.get(i).getUserName();
+		}
 
-		setContentView(R.layout.dialog_task_add);
+		return array;
 
-		load();
-		init();
 	}
 
 	/**
 	 * Speichert eine neue Aufgabe in der Firebase Datenbank.
 	 */
-	private void saveTask()
+	private boolean saveTask()
 	{
-		// Es wird geprüft ob alle Pflichtfelder ausgefüllt sind
-		if(checkValid())
+		try
 		{
-			/*
-			* Creating new task node, which returns the unique key value,
-			* new task node would be families/$familyId/familyTasks/$userid/
-			*/
-			this.taskReference = this.databaseReference.child(this.family.getKey()).child("familyTasks").getRef();
-			String taskKey = this.taskReference.push().getKey(); // create a new taskKey
+			// Es wird geprüft ob alle Pflichtfelder ausgefüllt sind
+			if(checkValid())
+			{
+				String taskKey = this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken())).push().getKey(); // create a new taskKey
 
-			this.taskReference.child(taskKey).setValue(this.createTask(taskKey)); // put to database
+				Task task = this.createTask(taskKey);
+				// ./families/<token>/familyTasks/token -> add object
+				this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken())).child(taskKey).setValue(task);
 
-			Message.show(TaskAddActivity.this,"Die Aufgabe wurde angelegt!","SUCCES");
+				return true;
+			}
 
-			Intent taskTabIntent = new Intent(getApplicationContext(),TaskListActivity.class);
-			startActivity(taskTabIntent);
+			return false;
+		}
+		catch(Exception exception)
+		{
+			return false;
 		}
 	}
 
 	/**
 	 *
 	 * Erstellt eine neue Aufgabe. Jede Aufgabe erhält einen eindeutigen Schlüssen (_key).
-	 *
-	 * Folgende Eigenschaften besitzt eine Aufgabe:
-	 * - Aufgabenschlüssel -> wird aon firebase zurückgegeben.
-	 * - Aufgaben Titel -> Pflichtfeld
-	 * - Aufgaben Beschreibung -> Optional
-	 * - Aufgaben Status -> Wird zu Begin auf OPEN gesetzt.
-	 * - Aufgaben Erstelldatum -> automatisch
-	 * - Aufgaben Ausführdatum -> optional / ansonsten today()
-	 * - Aufgaben Ausführuhrzeit -> optional / ansonsten today()
-	 * - Aufgaben Benutzer -> min. 1 musst selektiert sein.
-	 *
 	 */
 	private Task createTask(String _key)
 	{
-		User creator = Dummy.newUser("Wowa","wowa@tarasov"); // // TODO: 27.09.2017  Dummy Ersteller
-		Task task = new Task(creator);
+		User creator = FamilyUserHelper.getUserByFamilyUser(this.firebaseManager.appUser);
+		Task task = new Task();
 
-		task.setId(_key);
-		task.setFamilyKey(family.getKey());
+		task.setTaskToken(_key);
+		task.setTaskCreator(creator);
+		task.setTaskFamilyToken(this.firebaseManager.appUser.getUserFamilyToken());
 
 		//// TODO: 27.09.2017  Workaround für die Auswahl der Benutzer!!
-		List<User> allUsers = family.getFamilyMembers();
+		//List<User> allUsers = family.getFamilyMembers();
 		if (selectedUsersAsString==null)
 		{
 			selectedUsersAsString = new ArrayList<>();
 			selectedUsersAsString.add(multiSelectionSpinner.getSelectedItemsAsString());
 		}
-		List<User> listRel = new ArrayList<>();
-		for(User user : allUsers)
+
+		listRel = new ArrayList<>();
+
+		for(User user : memberList)
 		{
 			for(String s : selectedUsersAsString)
 			{
-				//if (user.getUserName().equals(s)) task.addRelatedUser(user);
 				if (user.getUserName().equals(s)) listRel.add(user);
 			}
 		}
 
+		task.setTaskRelatedUsers(listRel);
 		task.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
 		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
 		task.setTaskState("OPEN"); // // TODO: 27.09.2017 muss aus enum entnommen werden.
 		task.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
-		task.setTaskRelatedUsers(listRel);
 		if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
 		if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
 

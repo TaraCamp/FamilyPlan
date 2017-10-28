@@ -41,6 +41,7 @@
 
         <activity
             android:name=".Login.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"/>
         <activity android:name=".MainActivity"/>
         <activity
@@ -55,9 +56,10 @@
         <activity android:name=".Login.LoginGoogleActivity"/>
         <activity android:name=".Login.LoginFacebookActivity"/>
         <activity android:name=".Login.LoginGuestActivity"/>
-        <activity android:name=".Login.LoginEmailActivity"/>
-        <activity android:name=".Login.LoginSignupActivity"/>
-        <activity android:name=".AccountActivity"/>
+        <activity android:name=".Login.LoginSignupActivity"
+                  android:screenOrientation="portrait"/>
+        <activity android:name=".Account.AccountActivity"
+                  android:screenOrientation="portrait"/>
         <activity
             android:name=".transparentActivity"
             android:theme="@style/Theme.Transparent"/>
@@ -65,15 +67,30 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"/>
-        <activity android:name=".Task.TaskAddActivity"/>
+        <activity android:name=".Task.TaskAddActivity"
+                  android:windowSoftInputMode="stateHidden"
+                  android:screenOrientation="portrait"/>
         <activity
             android:name=".Task.TaskDetailActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Task.TaskListActivity"
             android:label="@string/title_item_list"
             android:theme="@style/MyMaterialTheme">
+        </activity>
+        <activity android:name=".Family.FamilyActivity"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".Start.FirstStartActivity"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".Start.FamilyCreatorActivity"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".Start.FamilySearchActivity"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

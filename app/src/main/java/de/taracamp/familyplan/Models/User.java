@@ -1,83 +1,119 @@
 package de.taracamp.familyplan.Models;
 
-/**
- * Created by wowa on 06.03.2017.
- */
-
 public class User
 {
-    private int UserId;
-    private String UserName;
-    private String UserFirstname;
-    private String UserLastname;
-    private String UserEmail;
-    private String userFamily;
+    private String userToken; //
+    private String UserName; //
+    private String UserFirstname; //
+    private String UserLastname; //
+    private String UserEmail; //
+    private String userFamilyName;
+    private boolean isNewMember; //
+    private boolean hasFamily; //
+    private boolean isGoogleMember; //
+    private boolean isFacebookMember; //
+    private boolean isEmailMember; //
+    private String userFamilyToken;
+
 
     public User(){}
 
-    public User(String _userName,String _userEmail)
-    {
-        this.UserName = _userName;
-        this.UserEmail = _userEmail;
+
+    public String getUserFamilyName() {
+        return userFamilyName;
     }
 
-    public int getUserId()
-    {
-        return UserId;
+    public void setUserFamilyName(String userFamilyName) {
+        this.userFamilyName = userFamilyName;
     }
 
-    public void setUserId(int userId)
-    {
-        UserId = userId;
+    public String getUserFamilyToken() {
+        return userFamilyToken;
     }
 
-    public String getUserName()
-    {
+    public void setUserFamilyToken(String userFamilyToken) {
+        this.userFamilyToken = userFamilyToken;
+    }
+
+
+
+    public String getUserToken() {
+        return userToken;
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
+    }
+
+    public String getUserName() {
         return UserName;
     }
 
-    public void setUserName(String userName)
-    {
+    public void setUserName(String userName) {
         UserName = userName;
     }
 
-    public String getUserFirstname()
-    {
+    public String getUserFirstname() {
         return UserFirstname;
     }
 
-    public void setUserFirstname(String userFirstname)
-    {
+    public void setUserFirstname(String userFirstname) {
         UserFirstname = userFirstname;
     }
 
-    public String getUserLastname()
-    {
+    public String getUserLastname() {
         return UserLastname;
     }
 
-    public void setUserLastname(String userLastname)
-    {
+    public void setUserLastname(String userLastname) {
         UserLastname = userLastname;
     }
 
-    public String getUserEmail()
-    {
+    public String getUserEmail() {
         return UserEmail;
     }
 
-    public void setUserEmail(String userEmail)
-    {
+    public void setUserEmail(String userEmail) {
         UserEmail = userEmail;
     }
 
-    public String getUserFamily()
-    {
-        return userFamily;
+    public boolean isNewMember() {
+        return isNewMember;
     }
 
-    public void setUserFamily(String userFamily)
-    {
-        this.userFamily = userFamily;
+    public void setNewMember(boolean newMember) {
+        isNewMember = newMember;
+    }
+
+    public boolean isHasFamily() {
+        return hasFamily;
+    }
+
+    public void setHasFamily(boolean hasFamily) {
+        this.hasFamily = hasFamily;
+    }
+
+    public boolean isGoogleMember() {
+        return isGoogleMember;
+    }
+
+    public void setGoogleMember(boolean googleMember) {
+        isGoogleMember = googleMember;
+    }
+
+    public boolean isFacebookMember() {
+        return isFacebookMember;
+    }
+
+    public void setFacebookMember(boolean facebookMember) {
+        isFacebookMember = facebookMember;
+    }
+
+    public boolean isEmailMember() {
+        return isEmailMember;
+    }
+
+    public void setEmailMember(boolean emailMember) {
+        isEmailMember = emailMember;
     }
 }

@@ -28,73 +28,61 @@
             android:scaleType="center"
             android:src="@drawable/ic_note_add_white_36dp"/>
 
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="30dp"/>
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
 
-        <TextView
-            android:id="@+id/lbl_task_add_taskName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Aufgaben Titel"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/text_task_add_taskName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="16dp"
-            android:hint="@string/dialog_task_add_taskName"/>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_task_add_taskTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Aufgaben Titel"/>
 
+            </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:id="@+id/lbl_task_add_taskDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Beschreibung"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/text_task_add_taskDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="4dp"
-            android:hint="@string/dialog_task_add_description"
-            android:inputType="textMultiLine"/>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_task_add_taskDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Aufgaben Beschreibung"/>
 
-        <TextView
-            android:id="@+id/lbl_task_add_taskDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:text="Datum"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/text_task_add_taskDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Datum"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_task_add_taskDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Aufgaben Datum"/>
 
-        <TextView
-            android:id="@+id/lbl_task_add_taskTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Uhrzeit"/>
+            </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/text_task_add_taskTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Uhrzeit"/>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_task_add_taskTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Aufgaben Zeitraum"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
 
             <TextView
                 android:id="@+id/lbl_task_add_taskEditors"

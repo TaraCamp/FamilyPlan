@@ -1,5 +1,6 @@
 package de.taracamp.familyplan.Task;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +31,7 @@ public class TaskDetailFragment extends Fragment
 	public static final String TASK_KEY = "TASK_KEY";
 	public static final String FAMILY_KEY = "FAMILY_KEY";
 
+	private ImageView imageViewDetailHeader = null;
 	private EditText editTextTaskCreator = null;
 	private EditText editTextTaskStatus = null;
 	private EditText editTextTaskTitle = null;
@@ -64,13 +67,14 @@ public class TaskDetailFragment extends Fragment
 	{
 		final View rootView = inflater.inflate(R.layout.activity_task_detail, container, false);
 
-		this.editTextTaskCreator = (EditText) rootView.findViewById(R.id.text_task_detail_taskCreator);
-		this.editTextTaskStatus = (EditText) rootView.findViewById(R.id.text_task_detail_taskStatus);
-		this.editTextTaskTitle = (EditText) rootView.findViewById(R.id.text_task_detail_taskName);
-		this.editTextTaskDescription = (EditText) rootView.findViewById(R.id.text_task_detail_taskDescription);
-		this.editTextTaskDate = (EditText) rootView.findViewById(R.id.text_task_detail_taskDate);
-		this.editTextTaskTime = (EditText) rootView.findViewById(R.id.text_task_detail_taskTime);
-		this.multiSelectionSpinnerRelatedUser = (MultiSelectionSpinner) rootView.findViewById(R.id.multiSpinner_detail);
+		this.imageViewDetailHeader = (ImageView) rootView.findViewById(R.id.imageView_detail);
+		this.editTextTaskCreator = (EditText) rootView.findViewById(R.id.input_task_detail_taskCreator);
+		this.editTextTaskStatus = (EditText) rootView.findViewById(R.id.input_task_detail_taskStatus);
+		this.editTextTaskTitle = (EditText) rootView.findViewById(R.id.input_task_detail_taskTitle);
+		this.editTextTaskDescription = (EditText) rootView.findViewById(R.id.input_task_detail_taskDescription);
+		this.editTextTaskDate = (EditText) rootView.findViewById(R.id.input_task_detail_taskDate);
+		this.editTextTaskTime = (EditText) rootView.findViewById(R.id.input_task_detail_taskTime);
+		this.multiSelectionSpinnerRelatedUser = (MultiSelectionSpinner) rootView.findViewById(R.id.input_task_detail_taskRelatedUsers);
 		this.buttonTaskUpdate = (Button) rootView.findViewById(R.id.button_task_detail_updateTask);
 		this.buttonTaskUpdate.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -82,7 +86,7 @@ public class TaskDetailFragment extends Fragment
 				updateTask.setTaskDescription(editTextTaskDescription.getText().toString());
 				updateTask.setTaskState(editTextTaskStatus.getText().toString());
 
-				tasksReference.child(task.getId()).setValue(updateTask);
+				tasksReference.child(task.getTaskToken()).setValue(updateTask);
 
 				Message.show(rootView.getContext(),"Aufgabe wurde aktualisiert!","INFO");
 			}
@@ -127,12 +131,23 @@ public class TaskDetailFragment extends Fragment
 
 	private void fillViews(Task _task)
 	{
+		if (_task.getTaskState().equals("FINISH"))
+		{
+			this.imageViewDetailHeader.setImageResource(R.drawable.ic_action_finish);
+			this.imageViewDetailHeader.setBackgroundColor(Color.argb(255,204,255,153));
+		}
+		else if (_task.getTaskState().equals("IN_PROCESS"))
+		{
+			this.imageViewDetailHeader.setImageResource(R.drawable.ic_action_in_process);
+			this.imageViewDetailHeader.setBackgroundColor(Color.argb(255,255,253,175));
+		}
+
 		this.editTextTaskTitle.setText(_task.getTaskTitle());
 		this.editTextTaskDescription.setText(_task.getTaskDescription());
 		this.editTextTaskDate.setText(_task.getTaskDate());
 		this.editTextTaskTime.setText(_task.getTaskTime());
-		//this.editTextTaskCreator.setText(_task.getTaskCreator().getUserName());
-		//this.editTextTaskStatus.setText(_task.getTaskState());
+		this.editTextTaskCreator.setText(_task.getTaskCreator().getUserName());
+		this.editTextTaskStatus.setText(_task.getTaskState());
 	}
 
 	private void enableViews(String _loginUser, String _creator)

@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
@@ -69,7 +70,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
 		// Firebase Database
 		this.database = FirebaseDatabase.getInstance();
-		this.tasksReference = this.database.getReference("families").child(task.getFamilyKey()).child("familyTasks").getRef();
+		this.tasksReference = this.database.getReference("families").child(task.getTaskFamilyToken()).child("familyTasks").getRef();
 
 		// Show task title
 		final TextView textViewName = _holder.nameTextView;
@@ -107,7 +108,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 		// show task favorite state
 		final ImageView imageViewTaskFavorite = _holder.imageViewTaskFavorite;
 
-		if (task.getTaskFavorite())
+		if (task.isTaskFavorite())
 			imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_on);
 		else
 			imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_off);
@@ -118,14 +119,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			@Override
 			public void onClick(View v)
 			{
-				if(task.getTaskFavorite())
+				if(task.isTaskFavorite())
 				{
 					Log.d(TAG,":TaskListAdapter.onClick() -> favorite=false");
 
 					imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_off);
 
 					task.setTaskFavorite(false);
-					tasksReference.child(task.getId()).setValue(task);
+					tasksReference.child(task.getTaskToken()).setValue(task);
 				}
 				else
 				{
@@ -134,7 +135,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 					imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_on);
 
 					task.setTaskFavorite(true);
-					tasksReference.child(task.getId()).setValue(task);
+					tasksReference.child(task.getTaskToken()).setValue(task);
 				}
 			}
 		});
@@ -168,8 +169,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 						Log.d(TAG,":TaskListAdapter.onClick() -> tablet mode");
 
 						Bundle arguments = new Bundle();
-						arguments.putString(TaskDetailFragment.TASK_KEY,task.getId());
-						arguments.putString(TaskDetailFragment.FAMILY_KEY,_holder.taskListActivity.family.getKey());
+						arguments.putString(TaskDetailFragment.TASK_KEY,task.getTaskToken());
+						String key = _holder.taskListActivity.firebaseManager.appUser.getUserFamilyToken();
+						arguments.putString(TaskDetailFragment.FAMILY_KEY,key);
 
 						TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
 						taskDetailFragment.setArguments(arguments);
@@ -184,10 +186,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 					{
 						Log.d(TAG,":TaskListAdapter.onClick() -> smart mode");
 
-						Intent intentDetail = new Intent(taskListActivity.getApplicationContext(),TaskDetailActivity.class);
-						intentDetail.putExtra("TASK_KEY",task.getId());
-						intentDetail.putExtra("FAMILY_KEY",_holder.taskListActivity.family.getKey());
-						taskListActivity.startActivity(intentDetail);
+						Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailActivity.class);
+						intent.putExtra("TASK_KEY",task.getTaskToken());
+						taskListActivity.startActivity(FamilyUserHelper.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
 					}
 				}
 			}

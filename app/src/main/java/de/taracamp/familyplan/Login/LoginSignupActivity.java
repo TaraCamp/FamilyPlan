@@ -1,3 +1,9 @@
+/**
+ * @file LoginSignupActivity.java
+ * @version 0.1
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Login;
 
 import android.app.ProgressDialog;
@@ -10,148 +16,228 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.Models.Dummy;
+import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.Message;
+import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
+import de.taracamp.familyplan.Start.FirstStartActivity;
 
-public class LoginSignupActivity extends AppCompatActivity {
-    private static final String TAG = "LoginSignupActivity";
-    private static final String LOG_INFO = "LOG_INFO";
+/**
+ *
+ * Der Benutzer wird in der Firebase Authentication Liste abgelegt und
+ * in der Firebase Datenbank wird unter './users/<key>' ein neuer
+ * Benutzer angelegt.
+ *
+ */
+public class LoginSignupActivity extends AppCompatActivity
+{
+    private static final String TAG = "familyplan.debug";
 
-    private EditText text_Signup_Name;
-    private EditText text_Signup_Email;
-    private EditText text_Signup_Password;
-    private Button button_Signup_Create;
-    private TextView button_Signup_GoToLogin;
+    private EditText editTextSignupName = null;
+    private EditText getEditTextSignupEmail = null;
+    private EditText getEditTextSignupPassword = null;
+    private EditText editTextPasswordRepeat = null;
+    private Button buttonSignUp = null;
+    private TextView buttonSignUpCancel = null;
 
-    private FirebaseAuth mAuth;
+    private FirebaseManager firebaseManager = null;
 
-    private void initialize(){
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_signup);
 
-        mAuth = FirebaseAuth.getInstance();
+        Log.d(TAG,":LoginSignupActivity.onCreate()");
 
-        text_Signup_Name = (EditText)findViewById(R.id.text_Signup_Name);
-        text_Signup_Email = (EditText)findViewById(R.id.text_Signup_Email);
-        text_Signup_Password = (EditText)findViewById(R.id.text_Signup_Password);
+        this.Firebase();
+        this.init();
+    }
 
-        button_Signup_Create = (Button)findViewById(R.id.button_Signup_Create);
-        button_Signup_Create.setOnClickListener(new View.OnClickListener() {
+    private void Firebase()
+    {
+        this.firebaseManager = new FirebaseManager();
+
+        this.firebaseManager.mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void init()
+    {
+        Log.d(TAG,":LoginSignupActivity.init()");
+
+        this.editTextSignupName = (EditText)findViewById(R.id.text_Signup_Name);
+        this.getEditTextSignupEmail = (EditText)findViewById(R.id.text_Signup_Email);
+        this.getEditTextSignupPassword = (EditText)findViewById(R.id.text_Signup_Password);
+        this.editTextPasswordRepeat = (EditText) findViewById(R.id.text_Signup_Password_repeat);
+
+        this.buttonSignUp = (Button)findViewById(R.id.button_Signup_Create);
+        this.buttonSignUp.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                //signUp();
+            public void onClick(View v)
+            {
+                Log.d(TAG,":LoginSignupActivity.onCLick() -> sign up");
+
+                signUp();
             }
         });
 
-        button_Signup_GoToLogin = (TextView)findViewById(R.id.button_Signup_GoToLogin);
-        button_Signup_GoToLogin.setOnClickListener(new View.OnClickListener() {
+        this.buttonSignUpCancel = (TextView)findViewById(R.id.button_Signup_GoToLogin);
+        this.buttonSignUpCancel.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-               Intent emailIntent = new Intent(getApplicationContext(),LoginEmailActivity.class);
+            public void onClick(View v)
+            {
+                Log.d(TAG,":LoginSignupActivity.onCLick() -> cancel");
+
+                Intent emailIntent = new Intent(getApplicationContext(),LoginActivity.class);
                 startActivity(emailIntent);
             }
         });
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
 
-        initialize();
-    }
+    /**
+     * Anmeldung an der Firebase.
+     * Vorgehen:
+     * - Validierung wird geprüft.
+     * - Benutzer wird angelegt.
+     */
+    private void signUp()
+    {
+        // Es wird geprüft ob alle Eingaben korrekt sind.
+        if(validate())
+        {
+            /* Benutzerdaten zusammenfassen */
+            final String name = this.editTextSignupName.getText().toString();
+            final String email = this.getEditTextSignupEmail.getText().toString();
+            String password = this.getEditTextSignupPassword.getText().toString();
 
+            this.firebaseManager.mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
-    /* Anmeldung via Firebase */
-    private void signUp() {
-        if(!validate()){
-            onSignupFailed();
-            return;
-        }
-
-        button_Signup_Create.setEnabled(false);
-
-        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext(),R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Account wird erstellt...");
-        progressDialog.show();
-
-        /* Benutzerdaten zusammenfassen */
-
-        String name = text_Signup_Name.getText().toString();
-        String email = text_Signup_Email.getText().toString();
-        String password = text_Signup_Password.getText().toString();
-
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        if (!task.isSuccessful()) {
-                            progressDialog.dismiss();
-                        }else{
-                            progressDialog.dismiss();
-
-                            onSaveInDatabase();
-
-                            onSignupSuccess();
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                FirebaseUser fUser = task.getResult().getUser();
+                                onSignupSuccess(fUser,fUser.getUid(),name,email);
+                            }
+                            else
+                            {
+                                task.getException();
+                                onSignupFailed(task.getException());
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
-    private void onSaveInDatabase() {
-        //// TODO: 05.03.2017 Das Speichern eines Benutzers in der Datenbank Knoten /users
+    /**
+     * Anmeldung war erfolgreich! Ein neuer Benutzer wird eingerichtet und a Firebase übergeben.
+     */
+    public void onSignupSuccess(FirebaseUser _user,String token,String name,String email)
+    {
+        final User newUser = new User();
+        newUser.setUserToken(token);
+        newUser.setUserName(name);
+        newUser.setUserFirstname("");
+        newUser.setUserLastname("");
+        newUser.setUserEmail(email);
+        newUser.setNewMember(true);
+        newUser.setEmailMember(true);
+        newUser.setGoogleMember(false);
+        newUser.setFacebookMember(false);
+        newUser.setHasFamily(false);
+        newUser.setUserFamilyToken("");
+        newUser.setUserFamilyName("");
+
+        // Benutzer wird an Stelle './users/<userKey>' abgelegt
+        if (this.firebaseManager.saveObject(newUser,_user))
+        {
+            Message.show(getApplicationContext(),"Benutzer wurde angelegt.","SUCCES");
+
+            Intent intent = new Intent(getApplicationContext(),FirstStartActivity.class);
+            startActivity(intent);
+        }
+        else
+        {
+            Message.show(getApplicationContext(),"Benutzer konnte nicht angelegt werden.","ERROR");
+        }
     }
 
-    /* Wenn die Anmeldung funktioniert */
-    public void onSignupSuccess() {
-        button_Signup_Create.setEnabled(true);
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        startActivity(intent);
+    /**
+     * Anmeldung war nicht erfolgreich! Eine Meldung wird angezeigt.
+     */
+    private void onSignupFailed(Exception _exception)
+    {
+        Message.show(getApplicationContext(),_exception.getMessage(),"ERROR");
     }
 
-    /* Wenn die Anmeldung nicht funktioniert */
-    private void onSignupFailed() {
-        Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        button_Signup_Create.setEnabled(true);
-    }
-
-    /* Prüft die Eingaben */
+    /**
+     * Eingaben werden überprüft.
+     */
     public boolean validate() {
         boolean valid = true;
 
-        String name = text_Signup_Name.getText().toString();
-        String email = text_Signup_Email.getText().toString();
-        String password = text_Signup_Password.getText().toString();
+        String name = this.editTextSignupName.getText().toString();
+        String email = this.getEditTextSignupEmail.getText().toString();
+        String password = this.getEditTextSignupPassword.getText().toString();
+        String passwordRepeat = this.editTextPasswordRepeat.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            text_Signup_Name.setError("at least 3 characters");
+        if (name.isEmpty() || name.length() < 3)
+        {
+            editTextSignupName.setError("Es müssen mehr als 3 zeichen sein.");
             valid = false;
-        } else {
-            text_Signup_Name.setError(null);
+        }
+        else
+            {
+            editTextSignupName.setError(null);
         }
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            text_Signup_Email.setError("enter a valid email address");
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
+        {
+            getEditTextSignupEmail.setError("Eine ungültige Email..");
             valid = false;
-        } else {
-            text_Signup_Email.setError(null);
+        }
+        else {
+            getEditTextSignupEmail.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            text_Signup_Password.setError("between 4 and 10 alphanumeric characters");
+            getEditTextSignupPassword.setError("Es müssen zwischen 4 - 10 Zeichen verwendet werden.");
             valid = false;
-        } else {
-            text_Signup_Password.setError(null);
+        }
+        else
+        {
+            getEditTextSignupPassword.setError(null);
+        }
+
+        if (passwordRepeat.isEmpty() || passwordRepeat.length() < 4 || passwordRepeat.length() > 10) {
+            editTextPasswordRepeat.setError("Es müssen zwischen 4 - 10 Zeichen verwendet werden.");
+            valid = false;
+        }
+        else
+        {
+            editTextPasswordRepeat.setError(null);
+        }
+
+        if (!password.equals(passwordRepeat)){
+            editTextPasswordRepeat.setError("Die beiden Passwörter müssen die gleichen sein.");
+            valid = false;
         }
 
         return valid;

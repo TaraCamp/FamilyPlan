@@ -26,16 +26,14 @@
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="default_notification_channel_name" translatable="true">News</string>
 
-
-    <string-array name="Task_Editors">
-        <item>Familie</item>
-        <item>Lisa</item>
-        <item>Christiane</item>
-        <item>Rainer</item>
-        <item>Timo</item>
-        <item>Wowa</item>
-        <item>Kira</item>
+    <string-array name="state">
+        <item>Offen</item>
+        <item>In Bearbeitung</item>
+        <item>Fertig</item>
     </string-array>
+
+
+
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
 

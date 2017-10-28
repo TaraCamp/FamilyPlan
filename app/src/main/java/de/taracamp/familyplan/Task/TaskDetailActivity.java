@@ -7,21 +7,33 @@
 package de.taracamp.familyplan.Task;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
+import de.taracamp.familyplan.Models.FamiliyUser;
+import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
@@ -30,8 +42,9 @@ public class TaskDetailActivity extends AppCompatActivity
 {
 	private static final String TAG = "familyplan.debug";
 
+	private ImageView imageViewDetailHeader = null;
 	private EditText editTextTaskCreator = null;
-	private EditText editTextTaskStatus = null;
+	private Spinner spinnerTaskStatus = null;
 	private EditText editTextTaskTitle 	= null;
 	private EditText editTextTaskDescription = null;
 	private EditText editTextTaskDate 	= null;
@@ -40,21 +53,40 @@ public class TaskDetailActivity extends AppCompatActivity
 	private Button 	buttonUpdateTask 	= null;
 	private Button 	buttonCloseDialog 	= null;
 
-	private FirebaseDatabase database = null;
-	private DatabaseReference tasksReference = null;
+	private FirebaseManager firebaseManager = null;
 
 	private Task task = null;
 	private Task updateTask = null;
 
+	private ArrayAdapter<CharSequence> adapter = null;
+	String state;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_task_detail);
+
+		this.Firebase();
+		this.init();
+	}
+
+	private void Firebase()
+	{
+		this.firebaseManager = new FirebaseManager();
+		this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent());
+	}
+
 	private void init()
 	{
-		this.editTextTaskTitle = (EditText) findViewById(R.id.text_task_detail_taskName);
-		this.editTextTaskDescription = (EditText) findViewById(R.id.text_task_detail_taskDescription);
-		this.editTextTaskDate = (EditText) findViewById(R.id.text_task_detail_taskDate);
-		this.editTextTaskTime = (EditText) findViewById(R.id.text_task_detail_taskTime);
-		this.editTextTaskCreator = (EditText) findViewById(R.id.text_task_detail_taskCreator);
-		this.editTextTaskStatus = (EditText) findViewById(R.id.text_task_detail_taskStatus);
-		this.spinnerUsers = (MultiSelectionSpinner) findViewById(R.id.multiSpinner_detail);
+		this.imageViewDetailHeader = (ImageView) findViewById(R.id.imageView_detail);
+		this.editTextTaskTitle = (EditText) findViewById(R.id.input_task_detail_taskTitle);
+		this.editTextTaskDescription = (EditText) findViewById(R.id.input_task_detail_taskDescription);
+		this.editTextTaskDate = (EditText) findViewById(R.id.input_task_detail_taskDate);
+		this.editTextTaskTime = (EditText) findViewById(R.id.input_task_detail_taskTime);
+		this.editTextTaskCreator = (EditText) findViewById(R.id.input_task_detail_taskCreator);
+		this.spinnerTaskStatus = (Spinner) findViewById(R.id.input_task_detail_taskStatus);
+		this.spinnerUsers = (MultiSelectionSpinner) findViewById(R.id.input_task_detail_taskRelatedUsers);
 		this.buttonUpdateTask = (Button) findViewById(R.id.button_task_detail_updateTask);
 		this.buttonUpdateTask.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -62,16 +94,17 @@ public class TaskDetailActivity extends AppCompatActivity
 			{
 				Log.d(TAG,":TaskDetailActivity.onClick() -> update task");
 
-				updateTask.setTaskTitle(editTextTaskTitle.getText().toString());
-				updateTask.setTaskDescription(editTextTaskDescription.getText().toString());
-				updateTask.setTaskState(editTextTaskStatus.getText().toString());
-
-				tasksReference.child(task.getId()).setValue(updateTask);
-
-				Message.show(TaskDetailActivity.this,"Aufgabe wurde aktualisiert!","INFO");
-
-				Intent IntentTask = new Intent(getApplicationContext(),TaskDetailActivity.class);
-				startActivity(IntentTask);
+				// Es wird geprüft ob das Update erfolgreich war.
+				if (update())
+				{
+					Message.show(TaskDetailActivity.this,"Aufgabe wurde aktualisiert!","SUCCES");
+					Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
+					startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+				}
+				else
+				{
+					Message.show(TaskDetailActivity.this,"Aufgabe konnte nicht aktualisiert werden!","INFO");
+				}
 			}
 		});
 		this.buttonCloseDialog = (Button) findViewById(R.id.button_task_detail_closeDialog);
@@ -81,36 +114,53 @@ public class TaskDetailActivity extends AppCompatActivity
 			{
 				Log.d(TAG,":TaskDetailActivity.onClick() -> close detail dialog");
 
-				Intent IntentTask = new Intent(getApplicationContext(),TaskListActivity.class);
-				startActivity(IntentTask);
+				Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
+				startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
 			}
 		});
 	}
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_task_detail);
-
-		Log.d(TAG,":TaskDetailActivity.onCreate()");
-
-		this.init(); // Steuerelemente werden geladen aber noch nicht befüllt.
-
-
-	}
-
+	/**
+	 * Die Steuerelemente werden anhand des Benutzers zum Bearbeiten freigegeben.
+	 */
 	private void enableViews(String _loginUser, String _creator)
 	{
+		// Wenn der aktuelle Benutzer der Ersteller der Aufgabe ist.
 		if (_loginUser.equals(_creator))
 		{
+			this.spinnerTaskStatus.setEnabled(true);
 			this.editTextTaskTitle.setEnabled(true);
 			this.editTextTaskDescription.setEnabled(true);
 			this.editTextTaskDate.setEnabled(true);
 			this.editTextTaskTime.setEnabled(true);
+			//// TODO: 27.10.2017 Bearbeiter
 		}
 	}
 
+	/**
+	 * Eine Aufgabe wird geupdated
+	 */
+	private boolean update()
+	{
+		try
+		{
+			updateTask.setTaskTitle(editTextTaskTitle.getText().toString());
+			updateTask.setTaskDescription(editTextTaskDescription.getText().toString());
+			//updateTask.setTaskState(editTextTaskStatus.getText().toString());
+
+			// ./families/<token>/familyTasks/<taskToken>/ -> update task
+			firebaseManager.tasks(firebaseManager.families().child(firebaseManager.appUser.getUserFamilyToken()))
+					.child(task.getTaskToken())
+					.setValue(updateTask);
+
+			return true;
+		}
+		catch(Exception exception)
+		{
+			Log.d(TAG,"TaskDetailActivity.update():Exception -> " + exception.getMessage());
+			return false;
+		}
+	}
 
 	@Override
 	protected void onStart()
@@ -123,53 +173,60 @@ public class TaskDetailActivity extends AppCompatActivity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null)
 		{
-			final String taskKey = extras.getString("TASK_KEY");
-			final String familyKey = extras.getString("FAMILY_KEY");
+			final String taskKey = extras.getString("TASK_KEY"); //Der Token von der selektierten Aufgabe wird zurück gegeben.
 
-			this.database = FirebaseDatabase.getInstance();
-
-			this.tasksReference = this.database.getReference("families").child(familyKey).child("familyTasks").getRef();
-			this.tasksReference.addValueEventListener(new ValueEventListener() {
+			// ./families/<token>/familyTasks/<token>/ -> getValue()
+			this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()))
+					.child(taskKey).addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot)
 				{
-					Log.d(TAG,":TaskDetailActivity.readDatabase() -> onDataChange with id=" + taskKey);
-
-					DataSnapshot taskSnap = dataSnapshot.child(taskKey);
-					task = taskSnap.getValue(Task.class);
-
-					updateTask = task;
-
-					enableViews("Wowa",task.getTaskCreator().getUserName());
-
-					fillViews(task);
+					task = dataSnapshot.getValue(Task.class); // Aktuelle Aufgabe wird zurückgegeben
+					updateTask = task; // Die aktuelle Aufgabe wird in der Update Aufgabe abgelegt.
+					// Die Steuerelemente zum Bearbeiten werden anhand des Benutzers zum Bearbeiten freigegeben.
+					enableViews(firebaseManager.appUser.getUserName(),task.getTaskCreator().getUserName());
+					fillViews(task); // Die Aufgabe wird angezeigt.
 				}
 
 				@Override
-				public void onCancelled(DatabaseError databaseError)
-				{
-					Log.d(TAG,":TaskDetailActivity.readDatabase() -> onCancelled");
-				}
+				public void onCancelled(DatabaseError databaseError) {}
 			});
 		}
 	}
 
-
-
 	/**
-	 *
 	 * Die Views der Ansicht werden befüllt.
-	 *
-	 * @param _detailTask
 	 */
 	private void fillViews(Task _detailTask)
 	{
+		if (_detailTask.getTaskState().equals("FINISH"))
+		{
+			this.imageViewDetailHeader.setImageResource(R.drawable.ic_action_finish);
+			this.imageViewDetailHeader.setBackgroundColor(Color.argb(255,204,255,153));
+		}
+		else if (_detailTask.getTaskState().equals("IN_PROCESS"))
+		{
+			this.imageViewDetailHeader.setImageResource(R.drawable.ic_action_in_process);
+			this.imageViewDetailHeader.setBackgroundColor(Color.argb(255,255,253,175));
+		}
+
 		this.editTextTaskTitle.setText(_detailTask.getTaskTitle());
 		this.editTextTaskDescription.setText(_detailTask.getTaskDescription());
 		this.editTextTaskDate.setText(_detailTask.getTaskDate());
 		this.editTextTaskTime.setText(_detailTask.getTaskTime());
-		//this.editTextTaskCreator.setText(_detailTask.getTaskCreator().getUserName());
-		//this.editTextTaskStatus.setText(_detailTask.getTaskState());
+		this.editTextTaskCreator.setText(_detailTask.getTaskCreator().getUserName());
 
+		adapter = ArrayAdapter.createFromResource(this,R.array.state,android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerTaskStatus.setAdapter(adapter);
+		spinnerTaskStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				state = (String) parent.getItemAtPosition(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {}
+		});
 	}
 }

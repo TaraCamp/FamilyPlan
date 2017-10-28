@@ -1,12 +1,16 @@
-package de.taracamp.familyplan;
+package de.taracamp.familyplan.Account;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class AccountActivity extends AppCompatActivity {
+import de.taracamp.familyplan.R;
+
+public class AccountActivity extends AppCompatActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
     }

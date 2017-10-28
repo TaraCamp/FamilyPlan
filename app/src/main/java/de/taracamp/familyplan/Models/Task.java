@@ -6,30 +6,68 @@
  */
 package de.taracamp.familyplan.Models;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Task
 {
-	private String taskId = null;
+	private String taskToken = null;
 	private String taskTitle = null;
 	private String taskDescription = null;
 	private String taskState = null;
 	private User taskCreator = null;
 	private String taskTime = null;
 	private String taskDate = null;
-	private List<User> taskRelatedUsers = null;
 	private String taskCreatedOn = null;
 	private boolean taskFavorite = false;
-	private String familyKey = null;
+	private String taskFamilyToken = null;
+	private List<User> taskRelatedUsers = null;
 
-	public String getTaskCreatedOn() {
-		return taskCreatedOn;
+	public String getTaskToken() {
+		return taskToken;
 	}
 
-	public void setTaskCreatedOn(String taskCreatedOn) {
-		this.taskCreatedOn = taskCreatedOn;
+	public List<User> getTaskRelatedUsers() {
+		return taskRelatedUsers;
+	}
+
+	public void setTaskRelatedUsers(List<User> taskRelatedUsers) {
+		this.taskRelatedUsers = taskRelatedUsers;
+	}
+
+	public void setTaskToken(String taskToken) {
+		this.taskToken = taskToken;
+	}
+
+	public String getTaskTitle() {
+		return taskTitle;
+	}
+
+	public void setTaskTitle(String taskTitle) {
+		this.taskTitle = taskTitle;
+	}
+
+	public String getTaskDescription() {
+		return taskDescription;
+	}
+
+	public void setTaskDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
+	}
+
+	public String getTaskState() {
+		return taskState;
+	}
+
+	public void setTaskState(String taskState) {
+		this.taskState = taskState;
+	}
+
+	public User getTaskCreator() {
+		return taskCreator;
+	}
+
+	public void setTaskCreator(User taskCreator) {
+		this.taskCreator = taskCreator;
 	}
 
 	public String getTaskTime() {
@@ -48,106 +86,27 @@ public class Task
 		this.taskDate = taskDate;
 	}
 
-
-
-	// Default constructor required for calls to
-	// DataSnapshot.getValue(User.class)
-	public Task()
-	{
-		this.taskRelatedUsers = new ArrayList<>();
+	public String getTaskCreatedOn() {
+		return taskCreatedOn;
 	}
 
-	public Task(User _creator)
-	{
-		this.taskRelatedUsers = new ArrayList<>();
-		this.taskCreator = _creator;
+	public void setTaskCreatedOn(String taskCreatedOn) {
+		this.taskCreatedOn = taskCreatedOn;
 	}
 
-	/*
-	* Setter
-	* */
-
-	public void setId(String _key)
-	{
-		this.taskId = _key;
+	public boolean isTaskFavorite() {
+		return taskFavorite;
 	}
 
-	public void setTaskState(String _state)
-	{
-		this.taskState = _state;
+	public void setTaskFavorite(boolean taskFavorite) {
+		this.taskFavorite = taskFavorite;
 	}
 
-	public void setTaskTitle(String _title)
-	{
-		this.taskTitle = _title;
+	public String getTaskFamilyToken() {
+		return taskFamilyToken;
 	}
 
-	public void setTaskDescription(String _description)
-	{
-		this.taskDescription = _description;
-	}
-
-	public void setTaskCreator(User _user)
-	{
-		this.taskCreator = _user;
-	}
-
-	public void setTaskFavorite(boolean _isFavorite)
-	{
-		this.taskFavorite = _isFavorite;
-	}
-
-	public void setFamilyKey(String _key)
-	{
-		this.familyKey = _key;
-	}
-
-	public void setTaskRelatedUsers(List<User> _relatedUsers)
-	{
-		this.taskRelatedUsers = _relatedUsers;
-	}
-
-	/*
-	* Getter
-	* */
-
-	public String getTaskState()
-	{
-		return this.taskState;
-	}
-
-	public String getId()
-	{
-		return this.taskId;
-	}
-
-	public String getTaskTitle()
-	{
-		return this.taskTitle;
-	}
-
-	public String getTaskDescription()
-	{
-		return this.taskDescription;
-	}
-
-	public User getTaskCreator()
-	{
-		return this.taskCreator;
-	}
-
-	public boolean getTaskFavorite()
-	{
-		return this.taskFavorite;
-	}
-
-	public String getFamilyKey()
-	{
-		return this.familyKey;
-	}
-
-	public List<User> getTaskRelatedUsers()
-	{
-		return this.taskRelatedUsers;
+	public void setTaskFamilyToken(String taskFamilyToken) {
+		this.taskFamilyToken = taskFamilyToken;
 	}
 }

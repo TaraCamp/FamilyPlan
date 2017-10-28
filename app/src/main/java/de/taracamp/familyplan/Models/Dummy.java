@@ -34,8 +34,8 @@ public class Dummy
 	// Gibt eine Liste von Benutzern zurück
 	public static ArrayList<User> getUserList()
 	{
-		User a = new User("Wowa","wowa@tarasov");
-		User b = new User("Lisa","lisa@birk");
+		User a = newUser("Wowa","wowa@tarasov");
+		User b = newUser("Lisa","lisa@birk");
 
 		ArrayList<User> uList = new ArrayList<>();
 		uList.add(a);
@@ -47,9 +47,10 @@ public class Dummy
 	// Gibt einen Benutzer zurück
 	public static User newUser(String _name,String _email)
 	{
-		User user = new User(_name,_email);
-		user.setUserFirstname("Wowa");
-		user.setUserLastname("Tarasov");
+		User user = new User();
+
+		user.setUserName(_name);
+		user.setUserEmail(_email);
 
 		return user;
 	}
@@ -57,14 +58,7 @@ public class Dummy
 	// Erstellt eine Familie und gibt diese mit Testbenutzern zurück
 	public static Family newFamily(String _key)
 	{
-		Family family = new Family();
-		family.setKey(_key);
-		family.setFamilyName("Tara/Birk");
-		family.addMember(newUser("Wowa","wowa@tara"));
-		family.addMember(newUser("Lisa","lisa@birk"));
-		family.addMember(newUser("Rainer","rainer@birk"));
-
-		return family;
+		return new Family();
 	}
 
 	public static String[] newRelatedUserList(List<User> _members)
@@ -88,6 +82,16 @@ public class Dummy
 
 		return array;
 
+	}
+
+	public static String getUsername()
+	{
+		return "Wowa.tarasov@gmx.net";
+	}
+
+	public static String getPassword()
+	{
+		return "54tzck23";
 	}
 }
 

@@ -6,55 +6,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represent a task.
+ * Represent a family.
  */
 @IgnoreExtraProperties
 public class Family
 {
-	private String familyId = null;
-	private String familyName = null;
+	private String familyName = null; // Der Familienname
+	private String familyToken = null; // Der vollständige Schlüssel zur Familie.
 	private List<User> familyMembers = null;
 
-	public Family()
-	{
-		this.familyMembers = new ArrayList<>();
-	}
-
-	public void setKey(String familyId)
-	{
-		this.familyId = familyId;
-	}
-
 	public String getFamilyName() {
-		return this.familyName;
+		return familyName;
 	}
 
 	public void setFamilyName(String familyName) {
 		this.familyName = familyName;
 	}
 
-	public String getKey()
-	{
-		return this.familyId;
+	public String getFamilyToken() {
+		return familyToken;
 	}
 
-
-	public void addMember(User _member)
-	{
-		this.familyMembers.add(_member);
+	public void setFamilyToken(String familyToken) {
+		this.familyToken = familyToken;
 	}
 
-	public void addMembers(List<User> _members)
-	{
-		for (User u : _members)
-		{
-			this.familyMembers.add(u);
-		}
+	public List<User> getFamilyMembers() {
+		return familyMembers;
 	}
 
-	public List<User> getFamilyMembers()
-	{
-		return this.familyMembers;
+	public void setFamilyMembers(List<User> familyMembers) {
+		this.familyMembers = familyMembers;
 	}
-
 }
