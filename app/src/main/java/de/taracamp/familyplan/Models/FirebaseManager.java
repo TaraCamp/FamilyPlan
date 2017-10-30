@@ -26,6 +26,7 @@ public class FirebaseManager
 	public DatabaseReference currentUserReference = null; // Referenz zum aktuellen Benutzer Knoten.
 	public DatabaseReference currentTasksReference = null; // Knoten zu Aufgaben der Familie.
 	public DatabaseReference currentFamilyReference = null; // Knoten zur aktuellen familie
+	public DatabaseReference currentTaskReference = null;
 
 	public  FirebaseAuth mAuth = null;
 	public FirebaseAuth.AuthStateListener mAuthListener = null;

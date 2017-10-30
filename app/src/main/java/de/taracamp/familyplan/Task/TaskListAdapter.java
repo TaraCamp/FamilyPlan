@@ -186,7 +186,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 					{
 						Log.d(TAG,":TaskListAdapter.onClick() -> smart mode");
 
-						Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailActivity.class);
+						//Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailActivity.class);
+						//intent.putExtra("TASK_KEY",task.getTaskToken());
+						//taskListActivity.startActivity(FamilyUserHelper.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
+
+						Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailTabsActivity.class);
 						intent.putExtra("TASK_KEY",task.getTaskToken());
 						taskListActivity.startActivity(FamilyUserHelper.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
 					}

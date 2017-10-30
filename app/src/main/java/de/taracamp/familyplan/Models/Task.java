@@ -20,10 +20,19 @@ public class Task
 	private String taskCreatedOn = null;
 	private boolean taskFavorite = false;
 	private String taskFamilyToken = null;
+	private History taskHistory = null;
 	private List<User> taskRelatedUsers = null;
 
 	public String getTaskToken() {
 		return taskToken;
+	}
+
+	public History getTaskHistory() {
+		return taskHistory;
+	}
+
+	public void setTaskHistory(History taskHistory) {
+		this.taskHistory = taskHistory;
 	}
 
 	public List<User> getTaskRelatedUsers() {
