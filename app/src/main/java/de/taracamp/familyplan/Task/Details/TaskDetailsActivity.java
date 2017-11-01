@@ -1,4 +1,10 @@
-package de.taracamp.familyplan.Task;
+/**
+ * @file TaskDetailsActivity.java
+ * @version 0.5
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
+package de.taracamp.familyplan.Task.Details;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -6,14 +12,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import java.util.List;
-
-import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
 import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.R;
+import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
+import de.taracamp.familyplan.Task.Details.History.TaskHistoryFragment;
 
-public class TaskDetailTabsActivity extends AppCompatActivity
+/**
+ * Diese Klasse beinhaltet eine Tabübersicht für eine einzelne Aufgabe.
+ *
+ * Tab 1: Detail Ansicht
+ * Tab 2: History Verlauf
+ */
+public class TaskDetailsActivity extends AppCompatActivity
 {
 	private Toolbar toolbar = null;
 	private TabLayout tabLayout = null;
@@ -32,7 +43,7 @@ public class TaskDetailTabsActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_detail_tabs);
 
-		Firebase();
+		this.Firebase();
 
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -45,6 +56,9 @@ public class TaskDetailTabsActivity extends AppCompatActivity
 		setupTabIcons();
 	}
 
+	/**
+	 * Alle Firebase relevanten Daten werden geladen.
+	 */
 	private void Firebase()
 	{
 		this.firebaseManager = new FirebaseManager();
@@ -61,12 +75,9 @@ public class TaskDetailTabsActivity extends AppCompatActivity
 	{
 		Bundle extras = getIntent().getExtras();
 
-		String task_key = extras.getString("TASK_KEY");
-		String family_key = firebaseManager.appUser.getUserFamilyToken();
-
 		TaskDetailViewPagerAdapter adapter = new TaskDetailViewPagerAdapter(getSupportFragmentManager());
-		adapter.addFrag(TaskDetailTabFragment.newInstance(task_key,family_key), "Details");
-		adapter.addFrag(new TaskHistoryTabFragment(), "History");
+		adapter.addFrag(TaskDetailFragment.newInstance(extras.getString("TASK_KEY"),this.firebaseManager), "Details");
+		adapter.addFrag(TaskHistoryFragment.newInstance(extras.getString("TASK_KEY"),this.firebaseManager), "History");
 		viewPager.setAdapter(adapter);
 	}
 }

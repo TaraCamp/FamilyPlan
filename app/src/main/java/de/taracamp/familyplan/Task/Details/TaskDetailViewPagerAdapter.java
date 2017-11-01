@@ -1,4 +1,4 @@
-package de.taracamp.familyplan.Task;
+package de.taracamp.familyplan.Task.Details;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

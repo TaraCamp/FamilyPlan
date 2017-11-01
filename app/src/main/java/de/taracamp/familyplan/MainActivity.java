@@ -9,7 +9,6 @@ package de.taracamp.familyplan;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,13 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import de.taracamp.familyplan.Account.AccountActivity;
 import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Login.LoginActivity;
-import de.taracamp.familyplan.Models.FamiliyUser;
 import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.Start.FirstStartActivity;
-import de.taracamp.familyplan.Task.TaskListActivity;
+import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
  * Das Hauptmenu für den Benutzer.

@@ -74,12 +74,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
         <activity
-            android:name=".Task.TaskDetailActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
-        <activity
-            android:name=".Task.TaskListActivity"
+            android:name=".Task.List.TaskListActivity"
             android:label="@string/title_item_list"
             android:theme="@style/MyMaterialTheme">
         </activity>
@@ -99,7 +94,7 @@
             android:name=".Start.FamilySearchActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Task.TaskDetailTabsActivity"
+        <activity android:name=".Task.Details.TaskDetailsActivity"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateHidden">
         </activity>

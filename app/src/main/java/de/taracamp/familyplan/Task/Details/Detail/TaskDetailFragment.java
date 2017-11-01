@@ -1,25 +1,27 @@
-package de.taracamp.familyplan.Task;
+package de.taracamp.familyplan.Task.Details.Detail;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 
-import com.google.firebase.FirebaseApiNotAvailableException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -30,18 +32,19 @@ import java.util.List;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
 import de.taracamp.familyplan.Models.Family;
+import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
+import de.taracamp.familyplan.Task.List.TaskListActivity;
 
-public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpinner.OnMultipleItemsSelectedListener
+public class TaskDetailFragment extends Fragment implements MultiSelectionSpinner.OnMultipleItemsSelectedListener
 {
 	private static String TAG = "familyplan.debug";
 
 	private static final String TASK_KEY = "TASK_KEY";
-	private static final String FAMILY_KEY = "FAMILY_KEY";
 
 	private ImageView imageViewTaskHeader = null;
 	private Spinner spinnerTaskState = null;
@@ -67,25 +70,28 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 	List<User> memberList = null;
 	List<User> listRel = null;
 
-	private String state = null;
-	private String taskKey = null;
-	private String familyToken = null;
+	private String state = null; // Aufgaben Status
+	private String taskKey = null; // Aufgaben Token
 
-	private FirebaseManager firebaseManager = null;
+	private static FirebaseManager firebaseManager = null;
 
-	public TaskDetailTabFragment()
+	public TaskDetailFragment()
 	{
 		// Required empty public constructor
 	}
 
-	public static TaskDetailTabFragment newInstance(String _taskKey,String _familyToken)
+	/**
+	 * Ein neues Fragment von Typ TaskDetailFragment wird erstellt.
+	 */
+	public static TaskDetailFragment newInstance(String _taskKey, FirebaseManager _firebaseManager)
 	{
-		TaskDetailTabFragment fragment = new TaskDetailTabFragment();
+		TaskDetailFragment fragment = new TaskDetailFragment();
 
 		Bundle args = new Bundle();
 		args.putString(TASK_KEY,_taskKey);
-		args.putString(FAMILY_KEY,_familyToken);
 		fragment.setArguments(args);
+
+		firebaseManager = _firebaseManager;
 
 		return fragment;
 	}
@@ -97,7 +103,6 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 		if (getArguments() != null)
 		{
 			taskKey = getArguments().getString(TASK_KEY);
-			familyToken = getArguments().getString(FAMILY_KEY);
 		}
 	}
 
@@ -121,8 +126,8 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 			@Override
 			public void onClick(View v)
 			{
-				//Intent intent = new Intent(getActivity().getApplicationContext(),TaskListActivity.class);
-				//startActivity(intent);
+				Intent intent = new Intent(getActivity().getApplicationContext(),TaskListActivity.class);
+				startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
 			}
 		});
 
@@ -132,7 +137,8 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 	}
 
 	@Override
-	public void onAttach(Context context) {
+	public void onAttach(Context context)
+	{
 		super.onAttach(context);
 	}
 
@@ -143,8 +149,7 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 
 	private void Firebase()
 	{
-		this.firebaseManager = new FirebaseManager();
-		this.firebaseManager.currentTasksReference = this.firebaseManager.tasks(this.firebaseManager.families().child(familyToken));
+		this.firebaseManager.currentTasksReference = this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()));
 		this.firebaseManager.currentTaskReference = this.firebaseManager.currentTasksReference.child(taskKey);
 		this.firebaseManager.currentTaskReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -179,7 +184,7 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 
 	private void fillViews(final Task _task)
 	{
-		this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(familyToken);
+		this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(firebaseManager.appUser.getUserFamilyToken());
 		this.firebaseManager.currentFamilyReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
@@ -191,7 +196,7 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 
 				multiSelectionSpinnerTaskRelatedUsers.setItems(getRelatedUserList(family.getFamilyMembers()));
 				multiSelectionSpinnerTaskRelatedUsers.setSelection(getRelatedUserList(_task.getTaskRelatedUsers()));
-				multiSelectionSpinnerTaskRelatedUsers.setListener(TaskDetailTabFragment.this);
+				multiSelectionSpinnerTaskRelatedUsers.setListener(TaskDetailFragment.this);
 
 				buttonUpdateTask.setOnClickListener(new View.OnClickListener() {
 
@@ -200,6 +205,8 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 					{
 						if (update(_task))
 						{
+							loadHeader(_task.getTaskState());
+
 							Message.show(getContext().getApplicationContext(),"Die Aufgabe wurde geändert!","INFO");
 						}
 						else
@@ -220,8 +227,73 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 		this.editTextTaskCreator.setText(_task.getTaskCreator().getUserName());
 		this.editTextTaskTitle.setText(_task.getTaskTitle());
 		this.editTextTaskDescription.setText(_task.getTaskDescription());
+
 		this.editTextTaskDate.setText(_task.getTaskDate());
+		this.setDateListener();
 		this.editTextTaskTime.setText(_task.getTaskTime());
+		this.setTimeListener();
+
+		if (_task.getTaskCreator().getUserToken().equals(firebaseManager.appUser.getUserToken())) enableViews(true);
+		else enableViews(false);
+	}
+
+	private void setTimeListener()
+	{
+		this.editTextTaskTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View _v, boolean _hasFocus)
+			{
+				if (_hasFocus)
+				{
+					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open time dialog");
+
+					timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+
+						@Override
+						public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+						{
+							timeCalendar = Calendar.getInstance();
+							timeCalendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+							timeCalendar.set(Calendar.MINUTE,minute);
+
+							editTextTaskTime.setText(DateUtils.formatDateTime(getContext(),timeCalendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_TIME));
+						}
+
+					},calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(getContext()));
+					timePickerDialog.show();
+				}
+			}
+		});
+	}
+
+	private void setDateListener()
+	{
+		this.editTextTaskDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View _v, boolean _hasFocus)
+			{
+				if (_hasFocus)
+				{
+					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open date dialog");
+
+					datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+
+						@Override
+						public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
+						{
+							dateCalendar = Calendar.getInstance();
+							dateCalendar.set(Calendar.YEAR,year);
+							dateCalendar.set(Calendar.MONTH,month);
+							dateCalendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+
+							editTextTaskDate.setText(DateUtils.formatDateTime(getContext(),dateCalendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
+						}
+
+					},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+					datePickerDialog.show();
+				}
+			}
+		});
 	}
 
 	private void loadSpinner(String _taskState)
@@ -280,7 +352,8 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 	{
 		if (valid())
 		{
-			this.firebaseManager.currentTaskReference.setValue(createTask(_task));
+			Task updateTask = this.createTask(_task);
+			this.firebaseManager.currentTaskReference.setValue(updateTask);
 			return true;
 		}
 		else
@@ -315,21 +388,23 @@ public class TaskDetailTabFragment extends Fragment implements MultiSelectionSpi
 				if (user.getUserName().equals(s)) listRel.add(user);
 			}
 		}
-
+		//// TODO: 01.11.2017 Beim Ändern tritt ein Fehler manchmal auf.
 		updateTask.setTaskRelatedUsers(listRel);
+
 		updateTask.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
 		updateTask.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
 		updateTask.setTaskState(state);
-		//updateTask.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
-		//if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
-		//if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
+
+		updateTask.setTaskCreatedOn(DateUtils.formatDateTime(getContext(),calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
+		if (dateCalendar!=null) _task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
+		if (timeCalendar!=null) _task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
 
 		return updateTask;
 	}
 
 	private void enableViews(boolean _enable)
 	{
-		this.spinnerTaskState.setEnabled(_enable);
+		//this.spinnerTaskState.setEnabled(_enable);
 		this.editTextTaskTitle.setEnabled(_enable);
 		this.editTextTaskDescription.setEnabled(_enable);
 		this.editTextTaskDate.setEnabled(_enable);

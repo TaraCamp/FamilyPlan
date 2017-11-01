@@ -35,6 +35,7 @@ import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.FamiliyUser;
 import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.R;
 
 /**
@@ -74,8 +75,8 @@ public class LoginActivity extends FragmentActivity
     }
 
     /*
-    * Alle Firebase bezogenen Informationen werden verarbeitet.
-    */
+     * Alle Firebase bezogenen Informationen werden verarbeitet.
+     */
     private void Firebase()
     {
         this.firebaseManager = new FirebaseManager();
@@ -122,7 +123,7 @@ public class LoginActivity extends FragmentActivity
     @OnClick(R.id.button_EmailLogin)
     public void loginButtonClick()
     {
-        signInWithEmailAndPassword(editTextLoginEmail.getText().toString(),editTextLoginPassword.getText().toString());
+        this.signInWithEmailAndPassword(editTextLoginEmail.getText().toString(),editTextLoginPassword.getText().toString());
     }
 
     @OnClick(R.id.button_Signup)
@@ -146,57 +147,38 @@ public class LoginActivity extends FragmentActivity
         startActivity(facebookIntent);
     }
 
-    /* Anmeldung mit Email und Passwort */
+    /**
+     * Anmeldung mit Email und Passwort
+     */
     private void signInWithEmailAndPassword(String email, String password)
     {
-        if(!validate())
+        if(validate())
         {
-            onLoginFailed();
-            return;
+            this.firebaseManager.mAuth.signInWithEmailAndPassword(email,password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                            if (task.isSuccessful())
+                            {
+                                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                startActivity(intent);
+                            }
+                            else
+                            {
+                                Message.show(getApplicationContext(),task.getException().getMessage(),"ERROR");
+                            }
+                        }
+                    });
         }
-
-        this.firebaseManager.mAuth.signInWithEmailAndPassword(email,password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task)
-                    {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                        if (!task.isSuccessful())
-                        {
-                            Log.w(TAG, "Email Anmeldung ist fehlgeschlagen", task.getException());
-
-                            onLoginFailed();
-                        }
-                        else
-                        {
-                            Log.d(TAG,"Email Anmeldung hat funktioniert");
-
-                            onLoginSuccess();
-                        }
-                    }
-                });
-
     }
 
-    /* Wenn die Anmeldung erfolgreich war */
-    private void onLoginSuccess()
-    {
-        this.buttonLoginEmail.setEnabled(true);
-
-        Intent i = new Intent(getApplicationContext(),MainActivity.class);
-        startActivity(i);
-    }
-
-    /* Wenn die Anmeldung nicht erfolgreich war */
-    private void onLoginFailed()
-    {
-        Toast.makeText(getApplicationContext(),"Login ist fehlgeschlagen",Toast.LENGTH_LONG).show();
-        this.buttonLoginEmail.setEnabled(true);
-    }
-
-    /* Prüft die Eingaben */
+    /**
+     * Alle Benutzereingaben werden im Vorfeld kontrolliert.
+     */
     public boolean validate()
     {
         boolean valid = true;
@@ -225,6 +207,5 @@ public class LoginActivity extends FragmentActivity
 
         return valid;
     }
-
 }
 

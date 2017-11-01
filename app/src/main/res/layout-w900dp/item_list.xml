@@ -7,7 +7,7 @@
               android:divider="?android:attr/dividerHorizontal"
               android:orientation="horizontal"
               android:showDividers="middle"
-              tools:context="de.taracamp.familyplan.Task.TaskListActivity">
+              tools:context="de.taracamp.familyplan.Task.List.TaskListActivity">
 
     <!--
     This layout is a two-pane layout for the Items
@@ -23,7 +23,7 @@
                                             android:layout_width="@dimen/item_width"
                                             android:layout_height="match_parent"
                                             app:layoutManager="LinearLayoutManager"
-                                            tools:context="de.taracamp.familyplan.Task.TaskListActivity"
+                                            tools:context="de.taracamp.familyplan.Task.List.TaskListActivity"
                                             tools:listitem="@layout/item_task"/>
 
     <FrameLayout

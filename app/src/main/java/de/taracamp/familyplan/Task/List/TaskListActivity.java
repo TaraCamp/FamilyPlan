@@ -4,7 +4,7 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan.Task;
+package de.taracamp.familyplan.Task.List;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -25,19 +25,17 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import de.taracamp.familyplan.MainActivity;
-import de.taracamp.familyplan.Models.FamiliyUser;
 import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
-import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
+import de.taracamp.familyplan.Task.TaskAddActivity;
+import de.taracamp.familyplan.Task.TaskDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;

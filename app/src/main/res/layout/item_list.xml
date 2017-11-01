@@ -8,5 +8,5 @@
                                         android:layout_height="match_parent"
                                         android:layout_marginTop="5dp"
                                         app:layoutManager="LinearLayoutManager"
-                                        tools:context="de.taracamp.familyplan.Task.TaskListActivity"
+                                        tools:context="de.taracamp.familyplan.Task.List.TaskListActivity"
                                         tools:listitem="@layout/item_task"/>

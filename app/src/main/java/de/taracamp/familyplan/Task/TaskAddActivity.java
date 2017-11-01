@@ -25,8 +25,6 @@ import android.widget.TimePicker;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -34,14 +32,16 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
-import de.taracamp.familyplan.Models.FamiliyUser;
 import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.History;
+import de.taracamp.familyplan.Models.HistoryManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
+import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
  * Diese Activity wird genutzt eine neue Aufgabe zu erstellen. Folgende Felder sind anzugeben:
@@ -262,38 +262,36 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 	 */
 	private Task createTask(String _key)
 	{
-		User creator = FamilyUserHelper.getUserByFamilyUser(this.firebaseManager.appUser);
 		Task task = new Task();
 
-		task.setTaskToken(_key);
-		task.setTaskCreator(creator);
-		task.setTaskFamilyToken(this.firebaseManager.appUser.getUserFamilyToken());
+		task.setTaskToken(_key); // Aufgaben Token
+		task.setTaskCreator(FamilyUserHelper.getUserByFamilyUser(this.firebaseManager.appUser)); // Aufgaben Ersteller
+		task.setTaskFamilyToken(this.firebaseManager.appUser.getUserFamilyToken()); // Aufgaben Familien Token
 
 		//// TODO: 27.09.2017  Workaround für die Auswahl der Benutzer!!
-		//List<User> allUsers = family.getFamilyMembers();
 		if (selectedUsersAsString==null)
 		{
 			selectedUsersAsString = new ArrayList<>();
 			selectedUsersAsString.add(multiSelectionSpinner.getSelectedItemsAsString());
 		}
-
 		listRel = new ArrayList<>();
-
 		for(User user : memberList)
 		{
-			for(String s : selectedUsersAsString)
+			for(String username : selectedUsersAsString)
 			{
-				if (user.getUserName().equals(s)) listRel.add(user);
+				if (user.getUserName().equals(username)) listRel.add(user);
 			}
 		}
+		task.setTaskRelatedUsers(listRel); // Aufgaben Benutzer festlegen
 
-		task.setTaskRelatedUsers(listRel);
 		task.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
 		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
 		task.setTaskState("OPEN"); // // TODO: 27.09.2017 muss aus enum entnommen werden.
 		task.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
 		if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
 		if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
+
+		task.setTaskHistory(HistoryManager.newHistory(task)); // Eine neue History wird an die Aufgabe übergeben.
 
 		return task;
 	}

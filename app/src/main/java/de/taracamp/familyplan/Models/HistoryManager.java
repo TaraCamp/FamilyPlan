@@ -1,21 +1,37 @@
 package de.taracamp.familyplan.Models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HistoryManager
 {
-	private static History history = null;
+	public static History history = null;
 
-	public static void addMessage()
+	/**
+	 * Erstellt eine History für eine neue Aufgabe
+	 */
+	public static History newHistory(Task _task)
 	{
-		// hier wird eine message an die history angefügt.
-	}
+		history = new History();
 
-	public static History getHistory()
-	{
+		HistoryMessage message = new HistoryMessage();
+		message.setMessageUser(_task.getTaskCreator());
+		message.setMessageDate(_task.getTaskDate());
+		message.setMessageTime(_task.getTaskTime());
+		message.setMessageData("Die Aufgabe: " + _task.getTaskTitle() + " wurde erstellt von: " + _task.getTaskCreator().getUserName());
+
+		List<HistoryMessage> messages = new ArrayList<>();
+		messages.add(message);
+
+		history.setMessages(messages);
+
 		return history;
 	}
 
-	public static void loadHistory(History _history)
+	public static List<HistoryMessage> getHistoryMessages(Task _task)
 	{
-		history = _history;
+		return _task.getTaskHistory().getMessages();
 	}
+
+
 }
