@@ -207,11 +207,11 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 						{
 							loadHeader(_task.getTaskState());
 
-							Message.show(getContext().getApplicationContext(),"Die Aufgabe wurde geändert!","INFO");
+							Message.show(getContext().getApplicationContext(),"Die Aufgabe wurde geändert!", Message.Mode.INFO);
 						}
 						else
 						{
-							Message.show(getContext().getApplicationContext(),"Die Aufgabe konnte nicht geändert werden.","ERROR");
+							Message.show(getContext().getApplicationContext(),"Die Aufgabe konnte nicht geändert werden.", Message.Mode.ERROR);
 						}
 					}
 				});

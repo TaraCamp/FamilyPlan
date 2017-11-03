@@ -69,14 +69,14 @@ public class FamilyCreatorActivity extends AppCompatActivity
 
 				if (createFamily(editTextFamilyName.getText().toString()))
 				{
-					Message.show(getApplicationContext(),"Familie " + newFamily.getFamilyName() + " wurde gegründet","SUCCES");
+					Message.show(getApplicationContext(),"Familie " + newFamily.getFamilyName() + " wurde gegründet", Message.Mode.SUCCES);
 
 					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 					startActivity(intent);
 				}
 				else
 				{
-					Message.show(getApplicationContext(),"Es konnte keine Familie gegründet werden.","ERROR");
+					Message.show(getApplicationContext(),"Es konnte keine Familie gegründet werden.", Message.Mode.ERROR);
 				}
 			}
 		});

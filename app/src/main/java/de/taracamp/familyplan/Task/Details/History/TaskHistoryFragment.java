@@ -18,11 +18,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.History;
 import de.taracamp.familyplan.Models.HistoryManager;
 import de.taracamp.familyplan.Models.HistoryMessage;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
 
+/**
+ * Stellt eine Aufgabenübesicht dar. Der Benutzer kann die Daten abändern und
+ * den Status bearbeiten.
+ */
 public class TaskHistoryFragment extends Fragment
 {
 	private static final String TAG = "familyplan.debug";
@@ -32,11 +37,12 @@ public class TaskHistoryFragment extends Fragment
 	private FloatingActionButton floatingActionButtonAddMessage = null;
 	private EditText editTextInputMessage = null;
 
-	private String taskKey = null; // Aufgaben Token
-
 	private HistoryListAdapter historyListAdapter = null;
-
 	private static FirebaseManager firebaseManager = null;
+
+	private HistoryManager historyManager = null;
+
+	private String taskKey = null; // Aufgaben Token
 
 	public TaskHistoryFragment() {
 		// Required empty public constructor
@@ -63,7 +69,6 @@ public class TaskHistoryFragment extends Fragment
 		{
 			taskKey = getArguments().getString(TASK_KEY);
 		}
-
 	}
 
 	private void Firebase()
@@ -75,20 +80,38 @@ public class TaskHistoryFragment extends Fragment
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
-				Task task = dataSnapshot.getValue(Task.class);
+				final Task task = dataSnapshot.getValue(Task.class);
 
 				if (task!=null)
 				{
-					loadRecyclerView(HistoryManager.getHistoryMessages(task));
+					historyManager = new HistoryManager(task);
+					loadRecyclerView(historyManager.getMessages());
+
+					floatingActionButtonAddMessage.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View v)
+						{
+							sendMessage(task);
+						}
+					});
 				}
 			}
 
 			@Override
 			public void onCancelled(DatabaseError databaseError) {}
 		});
-
 	}
 
+	private void sendMessage(Task _task)
+	{
+		String message = editTextInputMessage.getText().toString();
+		historyManager.addMessage(historyManager.getMessageByInput(message));
+
+		_task.setTaskHistory(historyManager.getHistory());
+		this.firebaseManager.currentTaskReference.setValue(_task);
+
+		loadRecyclerView(historyManager.getMessages());
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -99,7 +122,10 @@ public class TaskHistoryFragment extends Fragment
 		this.floatingActionButtonAddMessage = (FloatingActionButton) view.findViewById(R.id.floatingActionButton_task_addHistory);
 		this.editTextInputMessage = (EditText) view.findViewById(R.id.input_task_history);
 
-		Firebase();
+		this.floatingActionButtonAddMessage = (FloatingActionButton) view.findViewById(R.id.floatingActionButton_task_addHistory);
+		this.editTextInputMessage = (EditText) view.findViewById(R.id.input_task_history);
+
+		this.Firebase();
 
 		return view;
 	}

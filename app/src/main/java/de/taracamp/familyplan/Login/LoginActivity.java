@@ -169,7 +169,7 @@ public class LoginActivity extends FragmentActivity
                             }
                             else
                             {
-                                Message.show(getApplicationContext(),task.getException().getMessage(),"ERROR");
+                                Message.show(getApplicationContext(),task.getException().getMessage(), Message.Mode.ERROR);
                             }
                         }
                     });

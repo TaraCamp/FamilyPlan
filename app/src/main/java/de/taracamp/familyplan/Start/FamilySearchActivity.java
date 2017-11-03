@@ -63,7 +63,7 @@ public class FamilySearchActivity extends AppCompatActivity
 
 				if (query.length()<6 || query.length() > 6)
 				{
-					Message.show(getApplicationContext(),"Die Familien ID muss aus 6 zeichen bestehen.","ERROR");
+					Message.show(getApplicationContext(),"Die Familien ID muss aus 6 zeichen bestehen.", Message.Mode.ERROR);
 				}
 				else
 				{
@@ -86,7 +86,7 @@ public class FamilySearchActivity extends AppCompatActivity
 								firebaseManager.currentUserReference.child(firebaseManager.userFamilyToken()).setValue(query);
 								firebaseManager.currentUserReference.child(firebaseManager.userFamilyName()).setValue(family.getFamilyName());
 
-								Message.show(getApplicationContext(),"Der Familie beigetreten.","SUCCES");
+								Message.show(getApplicationContext(),"Der Familie beigetreten.", Message.Mode.SUCCES);
 
 								Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 								startActivity(intent);
@@ -98,7 +98,7 @@ public class FamilySearchActivity extends AppCompatActivity
 					}
 					else
 					{
-						Message.show(getApplicationContext(),"Diese Familie existiert nicht","INFO");
+						Message.show(getApplicationContext(),"Diese Familie existiert nicht", Message.Mode.INFO);
 					}
 				}
 			}

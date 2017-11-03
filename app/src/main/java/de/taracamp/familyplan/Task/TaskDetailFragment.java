@@ -69,7 +69,6 @@ public class TaskDetailFragment extends Fragment
 
 		this.imageViewDetailHeader = (ImageView) rootView.findViewById(R.id.imageView_detail);
 		this.editTextTaskCreator = (EditText) rootView.findViewById(R.id.input_task_detail_taskCreator);
-		this.editTextTaskStatus = (EditText) rootView.findViewById(R.id.input_task_detail_taskStatus);
 		this.editTextTaskTitle = (EditText) rootView.findViewById(R.id.input_task_detail_taskTitle);
 		this.editTextTaskDescription = (EditText) rootView.findViewById(R.id.input_task_detail_taskDescription);
 		this.editTextTaskDate = (EditText) rootView.findViewById(R.id.input_task_detail_taskDate);
@@ -88,7 +87,7 @@ public class TaskDetailFragment extends Fragment
 
 				tasksReference.child(task.getTaskToken()).setValue(updateTask);
 
-				Message.show(rootView.getContext(),"Aufgabe wurde aktualisiert!","INFO");
+				Message.show(rootView.getContext(),"Aufgabe wurde aktualisiert!", Message.Mode.INFO);
 			}
 		});
 		this.buttonTaskCancel = (Button) rootView.findViewById(R.id.button_task_detail_closeDialog);

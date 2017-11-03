@@ -26,7 +26,6 @@ import de.taracamp.familyplan.Task.Details.History.TaskHistoryFragment;
  */
 public class TaskDetailsActivity extends AppCompatActivity
 {
-	private Toolbar toolbar = null;
 	private TabLayout tabLayout = null;
 	private ViewPager viewPager = null;
 
@@ -45,8 +44,6 @@ public class TaskDetailsActivity extends AppCompatActivity
 
 		this.Firebase();
 
-		toolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
 
 		viewPager = (ViewPager) findViewById(R.id.task_detail_viewpager);
 		setupViewPager(viewPager);

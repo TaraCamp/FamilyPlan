@@ -1,16 +1,33 @@
+/**
+ * @file History.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Models;
 
 import java.util.List;
 
+/**
+ * Repräsentiert eine Historie von einer Aufgabe.
+ */
 public class History
 {
-	private List<HistoryMessage> messages;
+	private List<HistoryMessage> messages; // Liste von Nachrichten.
 
-	public List<HistoryMessage> getMessages() {
+	/**
+	 * Gibt alle Nachtichten zurück.
+	 */
+	public List<HistoryMessage> getMessages()
+	{
 		return messages;
 	}
 
-	public void setMessages(List<HistoryMessage> messages) {
+	/**
+	 * Setzt eine Liste von Nachrichten.
+	 */
+	public void setMessages(List<HistoryMessage> messages)
+	{
 		this.messages = messages;
 	}
 }

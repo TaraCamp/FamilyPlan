@@ -162,14 +162,14 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 				// Prüft ob das Anlegen einer neuen Aufgabe erfolgreich war.
 				if (saveTask())
 				{
-					Message.show(TaskAddActivity.this,"Eine neue Aufgabe wurde angelegt!","SUCCES");
+					Message.show(TaskAddActivity.this,"Eine neue Aufgabe wurde angelegt!", Message.Mode.SUCCES);
 
 					Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
 					startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
 				}
 				else
 				{
-					Message.show(TaskAddActivity.this,"Aufgabe konnte nicht hinzugefügt werden","INFO");
+					Message.show(TaskAddActivity.this,"Aufgabe konnte nicht hinzugefügt werden", Message.Mode.INFO);
 				}
 			}
 		});
@@ -267,7 +267,24 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		task.setTaskToken(_key); // Aufgaben Token
 		task.setTaskCreator(FamilyUserHelper.getUserByFamilyUser(this.firebaseManager.appUser)); // Aufgaben Ersteller
 		task.setTaskFamilyToken(this.firebaseManager.appUser.getUserFamilyToken()); // Aufgaben Familien Token
+		task.setTaskRelatedUsers(getRelatedUsers()); // Aufgaben Benutzer festlegen
+		task.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
+		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
+		task.setTaskState("OPEN"); // // TODO: 27.09.2017 muss aus enum entnommen werden.
+		task.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
+		if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
+		if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
 
+		// Eine History wird eingefügt.
+		HistoryManager historyManager = new HistoryManager(task);
+		historyManager.addMessage(historyManager.getMessageByNewHistory());
+		task.setTaskHistory(historyManager.getHistory()); // Eine neue History wird an die Aufgabe übergeben.
+
+		return task;
+	}
+
+	private List<User> getRelatedUsers()
+	{
 		//// TODO: 27.09.2017  Workaround für die Auswahl der Benutzer!!
 		if (selectedUsersAsString==null)
 		{
@@ -282,18 +299,8 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 				if (user.getUserName().equals(username)) listRel.add(user);
 			}
 		}
-		task.setTaskRelatedUsers(listRel); // Aufgaben Benutzer festlegen
 
-		task.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
-		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
-		task.setTaskState("OPEN"); // // TODO: 27.09.2017 muss aus enum entnommen werden.
-		task.setTaskCreatedOn(DateUtils.formatDateTime(TaskAddActivity.this,calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
-		if (dateCalendar!=null) task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String
-		if (timeCalendar!=null) task.setTaskTime(editTextTaskTime.getText().toString()); // Setzt Time als String
-
-		task.setTaskHistory(HistoryManager.newHistory(task)); // Eine neue History wird an die Aufgabe übergeben.
-
-		return task;
+		return listRel;
 	}
 
 	private boolean checkValid()
@@ -301,12 +308,12 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		boolean isValid = false;
 
 		if (!this.editTextTaskTitle.getText().toString().equals("")) isValid=true;
-		else Message.show(TaskAddActivity.this,"Es muss ein Titel angegeben werden!","ERROR");
+		else Message.show(TaskAddActivity.this,"Es muss ein Titel angegeben werden!", Message.Mode.ERROR);
 
 		if (multiSelectionSpinner.getCount()==0)
 		{
 			isValid=false;
-			Message.show(TaskAddActivity.this,"Es muss mindestens einer ausgewählt sein!","ERROR");
+			Message.show(TaskAddActivity.this,"Es muss mindestens einer ausgewählt sein!",Message.Mode.ERROR);
 		}
 
 		return isValid;

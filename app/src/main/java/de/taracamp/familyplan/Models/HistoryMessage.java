@@ -1,16 +1,24 @@
+/**
+ * @file HistoryMessage.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Models;
 
 /**
- * Created by wowa on 31.10.2017.
+ * Repräsentiert eine Nachricht, die in einer History abgelegt wird.
  */
-
 public class HistoryMessage
 {
-	private User messageUser;
-	private String messageDate;
-	private String messageTime;
-	private String messageData;
+	private User messageUser; // Ersteller der Nachricht.
+	private String messageDate; // Datum der Nachricht.
+	private String messageTime; // Zeitpunkt der Nachricht.
+	private String messageData; // Inhalt der Nachricht.
 
+	/**
+	 *  Konstrukor: gibt den Ersteller der Nachricht zurück
+	 */
 	public User getMessageUser() {
 		return messageUser;
 	}

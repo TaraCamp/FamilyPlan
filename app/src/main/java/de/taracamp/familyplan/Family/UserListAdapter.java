@@ -64,7 +64,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 			{
 				Log.d(TAG,":UserListAdapter.onClick() -> open user profile");
 
-				Message.show(thisContext,"Profil aufrufen.","SUCCES");
+				Message.show(thisContext,"Profil aufrufen.", Message.Mode.SUCCES);
 			}
 		});
 	}

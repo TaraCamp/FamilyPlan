@@ -168,14 +168,14 @@ public class LoginSignupActivity extends AppCompatActivity
         // Benutzer wird an Stelle './users/<userKey>' abgelegt
         if (this.firebaseManager.saveObject(newUser,_user))
         {
-            Message.show(getApplicationContext(),"Benutzer wurde angelegt.","SUCCES");
+            Message.show(getApplicationContext(),"Benutzer wurde angelegt.", Message.Mode.SUCCES);
 
             Intent intent = new Intent(getApplicationContext(),FirstStartActivity.class);
             startActivity(intent);
         }
         else
         {
-            Message.show(getApplicationContext(),"Benutzer konnte nicht angelegt werden.","ERROR");
+            Message.show(getApplicationContext(),"Benutzer konnte nicht angelegt werden.", Message.Mode.ERROR);
         }
     }
 
@@ -184,7 +184,7 @@ public class LoginSignupActivity extends AppCompatActivity
      */
     private void onSignupFailed(Exception _exception)
     {
-        Message.show(getApplicationContext(),_exception.getMessage(),"ERROR");
+        Message.show(getApplicationContext(),_exception.getMessage(), Message.Mode.ERROR);
     }
 
     /**

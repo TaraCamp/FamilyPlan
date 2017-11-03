@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
                                     firebaseManager.appUser = FamilyUserHelper.getFamilyUserByFirebaseUser(dataSnapshot.getValue(User.class));
                                     initializeMenu(); // Menu Komponenten werden geladen.
 
-                                    Message.show(getApplicationContext(),"Willkommen: " + firebaseManager.appUser.getUserName() + " :-)","SUCCES");
+                                    Message.show(getApplicationContext(),"Willkommen: " + firebaseManager.appUser.getUserName() + " :-)", Message.Mode.SUCCES);
                                 }
 
                                 @Override
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         else
                         {
-                            Message.show(getApplicationContext(),"Willkommen zurück: " + firebaseManager.appUser.getUserName() + " :-)","SUCCES");
+                            Message.show(getApplicationContext(),"Willkommen zurück: " + firebaseManager.appUser.getUserName() + " :-)", Message.Mode.SUCCES);
                         }
                     }
                 }
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Message.show(getApplicationContext(),"Kalendar ist noch nicht verfügbar!","INFO");
+                Message.show(getApplicationContext(),"Kalendar ist noch nicht verfügbar!", Message.Mode.INFO);
             }
         });
 
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Message.show(getApplicationContext(),"Einstellungen sind noch nicht verfügbar!","INFO");
+                Message.show(getApplicationContext(),"Einstellungen sind noch nicht verfügbar!",Message.Mode.INFO);
             }
         });
 

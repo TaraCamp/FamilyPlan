@@ -1,36 +1,88 @@
+/**
+ * @file HistoryManager.java
+ * @version 0.1
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Models;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Diese Klasse verwaltet eine History und erstellt diese entsprechend.
+ */
 public class HistoryManager
 {
-	public static History history = null;
+	private History history = null;
+	private Task task = null;
 
 	/**
-	 * Erstellt eine History für eine neue Aufgabe
+	 * Konstruktor
 	 */
-	public static History newHistory(Task _task)
+	public HistoryManager(Task _task)
 	{
-		history = new History();
+		this.task = _task; // Aktuelle Aufgabe
 
-		HistoryMessage message = new HistoryMessage();
-		message.setMessageUser(_task.getTaskCreator());
-		message.setMessageDate(_task.getTaskDate());
-		message.setMessageTime(_task.getTaskTime());
-		message.setMessageData("Die Aufgabe: " + _task.getTaskTitle() + " wurde erstellt von: " + _task.getTaskCreator().getUserName());
-
-		List<HistoryMessage> messages = new ArrayList<>();
-		messages.add(message);
-
-		history.setMessages(messages);
-
-		return history;
+		// Es wird geprüft ob eine History vorhanden ist.
+		if (this.task.getTaskHistory()==null) this.history = new History(); // Eine neue History wird erstellt.
+		else this.history = this.task.getTaskHistory();
 	}
 
-	public static List<HistoryMessage> getHistoryMessages(Task _task)
+
+	public List<HistoryMessage> getMessages()
 	{
-		return _task.getTaskHistory().getMessages();
+		return task.getTaskHistory().getMessages();
+	}
+
+	public void addMessage(HistoryMessage _message)
+	{
+		List<HistoryMessage> messages;
+
+		// Es wird geprüft ob schon eine History besteht.
+		if (this.history.getMessages().size()==0)  messages = new ArrayList<>(); // Eine neue message liste wird erstellt.
+		else messages = this.history.getMessages();
+
+		messages.add(_message); // Die Message wird an die Liste angehfetet.
+		history.setMessages(messages); // Die Liste wird an die History übergeben.
+	}
+
+	// Gibt die aktuelle History von der Aufgabe zurück
+	public History getHistory()
+	{
+		return this.history;
+	}
+
+	/**
+	 * Gibt ein HistoryMessage Objekt zurück beim ersten erstellen einer Aufgabe.
+	 */
+	public HistoryMessage getMessageByNewHistory()
+	{
+		// Eine neue Message wird erstellt
+		HistoryMessage message = new HistoryMessage();
+		message.setMessageUser(task.getTaskCreator()); // Ersteller
+		message.setMessageDate(task.getTaskCreatedOn()); // Erstellungsdatum
+		message.setMessageTime(task.getTaskTime()); // Erstellungsuhrzeit
+		// Message Inhalt beim Anlegen.
+		message.setMessageData("Die Aufgabe: " + task.getTaskTitle() + " wurde erstellt von: " + task.getTaskCreator().getUserName());
+
+		return message;
+	}
+
+	/**
+	 * Gibt ein HistorMessage Objekt zurück mit einer Benutzer Message
+	 */
+	public HistoryMessage getMessageByInput(String _data)
+	{
+		// Eine neue Message wird erstellt
+		HistoryMessage message = new HistoryMessage();
+		message.setMessageUser(task.getTaskCreator()); // Ersteller
+		message.setMessageDate(task.getTaskCreatedOn()); // Erstellungsdatum
+		message.setMessageTime(task.getTaskTime()); // Erstellungsuhrzeit
+		// Message Inhalt beim Anlegen.
+		message.setMessageData(_data);
+
+		return message;
 	}
 
 
