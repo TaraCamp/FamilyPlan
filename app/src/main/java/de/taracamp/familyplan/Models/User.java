@@ -1,5 +1,7 @@
 package de.taracamp.familyplan.Models;
 
+import android.net.Uri;
+
 public class User
 {
     private String userToken; //
@@ -14,10 +16,9 @@ public class User
     private boolean isFacebookMember; //
     private boolean isEmailMember; //
     private String userFamilyToken;
-
+    private String userPhoto;
 
     public User(){}
-
 
     public String getUserFamilyName() {
         return userFamilyName;
@@ -35,7 +36,13 @@ public class User
         this.userFamilyToken = userFamilyToken;
     }
 
+    public String getUserPhoto() {
+        return userPhoto;
+    }
 
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
 
     public String getUserToken() {
         return userToken;

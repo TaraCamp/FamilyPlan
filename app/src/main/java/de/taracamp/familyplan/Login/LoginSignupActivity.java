@@ -6,7 +6,6 @@
  */
 package de.taracamp.familyplan.Login;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -22,16 +21,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import de.taracamp.familyplan.MainActivity;
-import de.taracamp.familyplan.Models.Dummy;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
+import de.taracamp.familyplan.Models.UserManager;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Start.FirstStartActivity;
+import de.taracamp.familyplan.Family.FamilyAddActivity;
 
 /**
  *
@@ -68,7 +65,6 @@ public class LoginSignupActivity extends AppCompatActivity
     private void Firebase()
     {
         this.firebaseManager = new FirebaseManager();
-
         this.firebaseManager.mAuth = FirebaseAuth.getInstance();
     }
 
@@ -151,32 +147,15 @@ public class LoginSignupActivity extends AppCompatActivity
      */
     public void onSignupSuccess(FirebaseUser _user,String token,String name,String email)
     {
-        final User newUser = new User();
-        newUser.setUserToken(token);
-        newUser.setUserName(name);
-        newUser.setUserFirstname("");
-        newUser.setUserLastname("");
-        newUser.setUserEmail(email);
-        newUser.setNewMember(true);
-        newUser.setEmailMember(true);
-        newUser.setGoogleMember(false);
-        newUser.setFacebookMember(false);
-        newUser.setHasFamily(false);
-        newUser.setUserFamilyToken("");
-        newUser.setUserFamilyName("");
+        // Ein neuer Benutzer wird erstellt
+        final User newUser = UserManager.createUser(token,name,"","",email,"",true, UserManager.Platform.EMAIL,false,"","");
 
-        // Benutzer wird an Stelle './users/<userKey>' abgelegt
-        if (this.firebaseManager.saveObject(newUser,_user))
-        {
-            Message.show(getApplicationContext(),"Benutzer wurde angelegt.", Message.Mode.SUCCES);
+        // ./users/<token> -> save user
+        this.firebaseManager.users().child(_user.getUid()).setValue(newUser);
 
-            Intent intent = new Intent(getApplicationContext(),FirstStartActivity.class);
-            startActivity(intent);
-        }
-        else
-        {
-            Message.show(getApplicationContext(),"Benutzer konnte nicht angelegt werden.", Message.Mode.ERROR);
-        }
+        Intent intent = new Intent(getApplicationContext(),FamilyAddActivity.class);
+        intent.putExtra("USER",AppUserManager.getAppUser(newUser));
+        startActivity(intent);
     }
 
     /**

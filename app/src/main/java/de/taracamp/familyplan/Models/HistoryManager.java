@@ -39,8 +39,10 @@ public class HistoryManager
 	{
 		List<HistoryMessage> messages;
 
-		// Es wird geprüft ob schon eine History besteht.
-		if (this.history.getMessages().size()==0)  messages = new ArrayList<>(); // Eine neue message liste wird erstellt.
+		if (this.history.getMessages()==null)
+		{
+			messages = new ArrayList<>();
+		}
 		else messages = this.history.getMessages();
 
 		messages.add(_message); // Die Message wird an die Liste angehfetet.

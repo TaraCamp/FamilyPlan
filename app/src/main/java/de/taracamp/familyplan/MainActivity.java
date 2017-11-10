@@ -6,12 +6,11 @@
  */
 package de.taracamp.familyplan;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -24,11 +23,11 @@ import com.google.firebase.database.ValueEventListener;
 import de.taracamp.familyplan.Account.AccountActivity;
 import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Login.LoginActivity;
-import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.AppUserManager;
+import de.taracamp.familyplan.Models.Debug;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
-import de.taracamp.familyplan.Start.FirstStartActivity;
 import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
@@ -43,7 +42,8 @@ import de.taracamp.familyplan.Task.List.TaskListActivity;
  */
 public class MainActivity extends AppCompatActivity
 {
-    private static final String TAG = "familyplan.debug ";
+    private static final String TAG = "familyplan.debug";
+    private static final String CLASS = "MainActivity";
 
     private RelativeLayout button_menu_task = null;
     private RelativeLayout button_menu_account = null;
@@ -54,13 +54,13 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseManager firebaseManager = null;
 
-    private boolean isBackButtonPressed = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d(TAG,CLASS+".onCreate()");
 
         this.Firebase(); // Firebase wird geladen
     }
@@ -71,9 +71,10 @@ public class MainActivity extends AppCompatActivity
     private void Firebase()
     {
         this.firebaseManager = new FirebaseManager(); // Hilft bei gloabalen Firebase Zugriffen.
-
         // Der Aktuelle App Benutzer wird anhand vom Intent serialisiert übergeben.
-        this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent());
+        this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
+
+        Debug.debugAppUser(CLASS,firebaseManager.appUser);
 
             // Firebase prüft ob ein benutzer vorliegt.
             this.firebaseManager.mAuth = FirebaseAuth.getInstance();
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity
                     // Prüft ob der App Benutzer bereits übergeben wurde.
                     if (firebaseManager.appUser==null)
                     {
+                        Log.d(TAG,CLASS+".Firebase() -> no user");
+
                         FirebaseUser user = firebaseAuth.getCurrentUser(); // Der aktuelle Firebase Benutzer.
 
                         // Prüft on der Firebase Benutzer vorhanden ist.
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity
                                 public void onDataChange(DataSnapshot dataSnapshot)
                                 {
                                     // Der aktuelle Firebase benutzer wird in eine Serialisierte Klasse übertragen.
-                                    firebaseManager.appUser = FamilyUserHelper.getFamilyUserByFirebaseUser(dataSnapshot.getValue(User.class));
+                                    firebaseManager.appUser = AppUserManager.getAppUser(dataSnapshot.getValue(User.class));
                                     initializeMenu(); // Menu Komponenten werden geladen.
 
                                     Message.show(getApplicationContext(),"Willkommen: " + firebaseManager.appUser.getUserName() + " :-)", Message.Mode.SUCCES);
@@ -117,19 +120,26 @@ public class MainActivity extends AppCompatActivity
                     }
                     else
                     {
-                        //Wenn ein App benutzer vorliegt wird Das Menu direkt geladen.
-                        initializeMenu();
+                        Log.d(TAG,CLASS+".Firebase() -> App User = " + firebaseManager.appUser.getUserName());
+                        Log.d(TAG,CLASS+".Firebase() -> " + firebaseManager.appUser.getUserName() + " is new member = " + firebaseManager.appUser.isNewMember());
 
+                        /*
                         // Prüft ob der aktuelle App Benutzer noch eine Familie gründen/ suchen muss.
                         if (firebaseManager.appUser.isNewMember())
                         {
-                            Intent intent = new Intent(getApplicationContext(),FirstStartActivity.class);
+                            Intent intent = new Intent(getApplicationContext(),FamilyAddActivity.class);
+                            intent.putExtra("USER",firebaseManager.appUser);
                             startActivity(intent);
                         }
                         else
                         {
+                            //Wenn ein App benutzer vorliegt wird Das Menu direkt geladen.
+                            initializeMenu();
                             Message.show(getApplicationContext(),"Willkommen zurück: " + firebaseManager.appUser.getUserName() + " :-)", Message.Mode.SUCCES);
-                        }
+                        }*/
+
+                        initializeMenu();
+
                     }
                 }
             };
@@ -149,7 +159,8 @@ public class MainActivity extends AppCompatActivity
 
                 // Informationen vom App benutzer werden an die nächste Activity übergeben.
                 Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
-                startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+                intent.putExtra("USER",firebaseManager.appUser);
+                startActivity(AppUserManager.setAppUser(intent,firebaseManager.appUser));
             }
         });
 
@@ -159,8 +170,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent accountIntent = new Intent(getApplicationContext(),AccountActivity.class);
-                startActivity(accountIntent);
+                Intent intent = new Intent(getApplicationContext(),AccountActivity.class);
+                intent.putExtra("USER",firebaseManager.appUser);
+                startActivity(intent);
             }
         });
 
@@ -180,8 +192,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent familyIntent = new Intent(getApplicationContext(), FamilyActivity.class);
-                startActivity(FamilyUserHelper.setAppUser(familyIntent,firebaseManager.appUser));
+                Intent intent = new Intent(getApplicationContext(), FamilyActivity.class);
+                intent.putExtra("USER",firebaseManager.appUser);
+                startActivity(AppUserManager.setAppUser(intent,firebaseManager.appUser));
             }
         });
 
@@ -226,27 +239,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onBackPressed();
 
-        isBackButtonPressed = false;
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("Wollen Sie die App beenden?")
-                .setCancelable(false)
-                .setTitle("Beenden");
-
-        builder.setPositiveButton("Beenden", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                System.exit(0);
-            }
-        });
-        builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-        setContentView(R.layout.activity_main);
+        System.exit(0);
     }
 }

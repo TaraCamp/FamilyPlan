@@ -4,15 +4,9 @@ import java.io.Serializable;
 
 import de.taracamp.familyplan.Models.User;
 
-/**
- * Created by wowa on 21.10.2017.
- */
-
 @SuppressWarnings("serial") //With this annotation we are going to hide compiler warnings
-public class FamiliyUser implements Serializable {
-
-	public FamiliyUser(){}
-
+public class AppUser implements Serializable
+{
 	private String userToken; //
 	private String UserName; //
 	private String UserFirstname; //
@@ -25,6 +19,9 @@ public class FamiliyUser implements Serializable {
 	private boolean isFacebookMember; //
 	private boolean isEmailMember; //
 	private String userFamilyToken;
+	private String userPhoto;
+
+	public AppUser(){}
 
 	public String getUserFamilyName() {
 		return userFamilyName;
@@ -32,6 +29,22 @@ public class FamiliyUser implements Serializable {
 
 	public void setUserFamilyName(String userFamilyName) {
 		this.userFamilyName = userFamilyName;
+	}
+
+	public String getUserFamilyToken() {
+		return userFamilyToken;
+	}
+
+	public void setUserFamilyToken(String userFamilyToken) {
+		this.userFamilyToken = userFamilyToken;
+	}
+
+	public String getUserPhoto() {
+		return userPhoto;
+	}
+
+	public void setUserPhoto(String userPhoto) {
+		this.userPhoto = userPhoto;
 	}
 
 	public String getUserToken() {
@@ -112,13 +125,5 @@ public class FamiliyUser implements Serializable {
 
 	public void setEmailMember(boolean emailMember) {
 		isEmailMember = emailMember;
-	}
-
-	public String getUserFamilyToken() {
-		return userFamilyToken;
-	}
-
-	public void setUserFamilyToken(String userFamilyToken) {
-		this.userFamilyToken = userFamilyToken;
 	}
 }

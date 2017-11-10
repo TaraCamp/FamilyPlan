@@ -9,7 +9,7 @@
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
               android:background="@drawable/fam"
-              tools:context="de.taracamp.familyplan.Start.FirstStartActivity">
+              tools:context="de.taracamp.familyplan.Family.FamilyAddActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -25,6 +25,17 @@
                    android:layout_marginBottom="10dp"
                    android:layout_gravity="center_horizontal" />
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText android:id="@+id/edittext_start_familyname"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:hint="Familienname" />
+
+        </android.support.design.widget.TextInputLayout>
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_start_create"
             android:layout_width="fill_parent"
@@ -34,6 +45,17 @@
             android:background="@color/primary_light"
             android:text="Familie Gründen"/>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText android:id="@+id/edittext_start_search"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:hint="Token" />
+
+        </android.support.design.widget.TextInputLayout>
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_start_search"
             android:layout_width="fill_parent"
@@ -42,6 +64,15 @@
             android:layout_marginBottom="24dp"
             android:background="@color/primary_light"
             android:text="Familie Suchen"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_start_main"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/primary_light"
+            android:text="Weiter ohne Familie"/>
 
     </LinearLayout>
 

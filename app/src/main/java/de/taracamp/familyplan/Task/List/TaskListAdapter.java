@@ -9,7 +9,6 @@ package de.taracamp.familyplan.Task.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,11 +25,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.R;
+import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
 import de.taracamp.familyplan.Task.Details.TaskDetailsActivity;
-import de.taracamp.familyplan.Task.TaskDetailFragment;
 
 /**
  * Ein Adapter für eine RecycleListView die alle Aufgaben anzeigt.
@@ -170,17 +169,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 					{
 						Log.d(TAG,":TaskListAdapter.onClick() -> tablet mode");
 
-						Bundle arguments = new Bundle();
-						arguments.putString(TaskDetailFragment.TASK_KEY,task.getTaskToken());
-						String key = _holder.taskListActivity.firebaseManager.appUser.getUserFamilyToken();
-						arguments.putString(TaskDetailFragment.FAMILY_KEY,key);
-
-						TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
-						taskDetailFragment.setArguments(arguments);
+						TaskDetailFragment fragment = TaskDetailFragment.newInstance(task.getTaskToken(),_holder.taskListActivity.firebaseManager);
 
 						taskListActivity.getSupportFragmentManager()
 								.beginTransaction()
-								.replace(R.id.item_detail_container,taskDetailFragment)
+								.replace(R.id.item_detail_container,fragment)
 								.commit();
 
 					}
@@ -190,7 +183,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
 						Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailsActivity.class);
 						intent.putExtra("TASK_KEY",task.getTaskToken());
-						taskListActivity.startActivity(FamilyUserHelper.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
+						taskListActivity.startActivity(AppUserManager.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
 					}
 				}
 			}

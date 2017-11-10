@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import de.taracamp.familyplan.Login.LoginActivity;
-import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.AppUser;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.User;
 
@@ -28,6 +30,9 @@ import de.taracamp.familyplan.Models.User;
  */
 public class SplashActivity extends AppCompatActivity
 {
+    private static final String TAG = "familyplan.debug";
+    private static final String CLASS = "SplashActivity";
+
     private FirebaseManager firebaseManager = null;
 
     /**
@@ -41,6 +46,8 @@ public class SplashActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        Log.d(TAG,CLASS+".onCreate()");
 
         this.Firebase(); // Firebase wird geladen
     }
@@ -78,26 +85,7 @@ public class SplashActivity extends AppCompatActivity
                 // Prüft on der Firebase Benutzer vorhanden ist.
                 if (user!=null)
                 {
-                    String userToken = user.getUid();
-
-                    // ./users/<token> Zugriff
-                    firebaseManager.users().child(userToken).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public
-                        void onDataChange(DataSnapshot dataSnapshot)
-                        {
-                            // Der aktuelle Firebase Benutzer wird in eine Serialisierte Klasse FamilyUser übertragen.
-                            firebaseManager.appUser = FamilyUserHelper.getFamilyUserByFirebaseUser(dataSnapshot.getValue(User.class));
-
-                            // Der aktuelle Firebase benutzer wird in eine Serialisierte Klasse übertragen.
-                            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                            startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {}
-                    });
+                    loadUserInformation(user.getUid()); // Alle Benutzerinformationen werden geladen.
                 }
                 else
                 {
@@ -106,5 +94,29 @@ public class SplashActivity extends AppCompatActivity
                 }
             }
         };
+    }
+
+    /**
+     * Läd alle Daten eines Benutzers und gibt diese weiter.
+     */
+    private void loadUserInformation(String _token)
+    {
+        // ./users/<token> Zugriff
+        firebaseManager.users().child(_token).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                // Der aktuelle Firebase Benutzer wird in eine Serialisierte Klasse FamilyUser übertragen.
+                firebaseManager.appUser =  AppUserManager.getAppUser(dataSnapshot.getValue(User.class));
+                // Sendet den App user an die nächste Activity und startet diese.
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                intent.putExtra("USER", firebaseManager.appUser);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 }

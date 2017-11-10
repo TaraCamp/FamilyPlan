@@ -4,10 +4,12 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan.Task;
+package de.taracamp.familyplan.Task.List;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,16 +34,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
+import de.taracamp.familyplan.Family.FamilyAddActivity;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
-import de.taracamp.familyplan.Models.History;
 import de.taracamp.familyplan.Models.HistoryManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
  * Diese Activity wird genutzt eine neue Aufgabe zu erstellen. Folgende Felder sind anzugeben:
@@ -165,7 +166,8 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 					Message.show(TaskAddActivity.this,"Eine neue Aufgabe wurde angelegt!", Message.Mode.SUCCES);
 
 					Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
-					startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+					intent.putExtra("USER",firebaseManager.appUser);
+					startActivity(intent);
 				}
 				else
 				{
@@ -181,7 +183,8 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 				Log.d(TAG,":TaskAddActivity.onClick() -> close dialog");
 
 				Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
-				startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+				intent.putExtra("USER",firebaseManager.appUser);
+				startActivity(intent);
 			}
 		});
 	}
@@ -192,28 +195,64 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		this.multiSelectionSpinner = (MultiSelectionSpinner) findViewById(R.id.multiSpinner); //// TODO: 28.10.2017 vorher schon
 
 		this.firebaseManager = new FirebaseManager();
-		this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent()); //current user
+		this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent()); //current user
 
-		// ./families/token
-		this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()).getRef();
-		this.firebaseManager.currentFamilyReference.addListenerForSingleValueEvent(new ValueEventListener() {
+		if (firebaseManager.appUser.getUserFamilyToken().equals(""))
+		{
+			openNoFamilyDialog();
+		}
+		else
+		{
+			// ./families/token
+			this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()).getRef();
+			this.firebaseManager.currentFamilyReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
-			@Override
-			public void onDataChange(DataSnapshot dataSnapshot)
-			{
-				Family family = dataSnapshot.getValue(Family.class);
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot)
+				{
+					Family family = dataSnapshot.getValue(Family.class);
 
-				memberList = family.getFamilyMembers(); // Alle Member werden zwischengespeichert.
+					memberList = family.getFamilyMembers(); // Alle Member werden zwischengespeichert.
 
-				multiSelectionSpinner.setItems(getRelatedUserList(family.getFamilyMembers()));
-				multiSelectionSpinner.setListener(TaskAddActivity.this);
+					multiSelectionSpinner.setItems(getRelatedUserList(family.getFamilyMembers()));
+					multiSelectionSpinner.setListener(TaskAddActivity.this);
 
-				init();
-			}
+					init();
+				}
 
-			@Override
-			public void onCancelled(DatabaseError databaseError) {}
-		});
+				@Override
+				public void onCancelled(DatabaseError databaseError) {}
+			});
+		}
+
+	}
+
+	private void openNoFamilyDialog()
+	{
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(TaskAddActivity.this);
+		alertDialogBuilder.setTitle("Familie Anlegen!");
+		alertDialogBuilder.setIcon(R.drawable.logo);
+		alertDialogBuilder
+				.setMessage("Sie müssen in einer Familie sein um eine Aufgabe zu erstellen. Wollen Sie einer Familie beitreten?")
+				.setCancelable(false)
+				.setPositiveButton("Ja",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						Intent intent = new Intent(getApplicationContext(), FamilyAddActivity.class);
+						intent.putExtra("USER",firebaseManager.appUser);
+						startActivity(intent);
+					}
+				})
+				.setNegativeButton("Nein",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+
+						Intent intent = new Intent(getApplicationContext(),TaskListActivity.class);
+						intent.putExtra("USER",firebaseManager.appUser);
+						startActivity(intent);
+					}
+				});
+		AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.show();
 	}
 
 	public static String[] getRelatedUserList(List<User> _members)
@@ -265,8 +304,9 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		Task task = new Task();
 
 		task.setTaskToken(_key); // Aufgaben Token
-		task.setTaskCreator(FamilyUserHelper.getUserByFamilyUser(this.firebaseManager.appUser)); // Aufgaben Ersteller
+		task.setTaskCreator(AppUserManager.getUserByAppUser(this.firebaseManager.appUser)); // Aufgaben Ersteller
 		task.setTaskFamilyToken(this.firebaseManager.appUser.getUserFamilyToken()); // Aufgaben Familien Token
+
 		task.setTaskRelatedUsers(getRelatedUsers()); // Aufgaben Benutzer festlegen
 		task.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
 		task.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
@@ -310,7 +350,9 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		if (!this.editTextTaskTitle.getText().toString().equals("")) isValid=true;
 		else Message.show(TaskAddActivity.this,"Es muss ein Titel angegeben werden!", Message.Mode.ERROR);
 
-		if (multiSelectionSpinner.getCount()==0)
+		int relatedCount = multiSelectionSpinner.getSelectedItemsAsString().length();
+
+		if (relatedCount==0)
 		{
 			isValid=false;
 			Message.show(TaskAddActivity.this,"Es muss mindestens einer ausgewählt sein!",Message.Mode.ERROR);

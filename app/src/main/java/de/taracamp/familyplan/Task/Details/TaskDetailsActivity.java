@@ -6,17 +6,18 @@
  */
 package de.taracamp.familyplan.Task.Details;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 
-import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.R;
 import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
 import de.taracamp.familyplan.Task.Details.History.TaskHistoryFragment;
+import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
  * Diese Klasse beinhaltet eine Tabübersicht für eine einzelne Aufgabe.
@@ -59,7 +60,7 @@ public class TaskDetailsActivity extends AppCompatActivity
 	private void Firebase()
 	{
 		this.firebaseManager = new FirebaseManager();
-		this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent());
+		this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
 	}
 
 	private void setupTabIcons()
@@ -76,5 +77,15 @@ public class TaskDetailsActivity extends AppCompatActivity
 		adapter.addFrag(TaskDetailFragment.newInstance(extras.getString("TASK_KEY"),this.firebaseManager), "Details");
 		adapter.addFrag(TaskHistoryFragment.newInstance(extras.getString("TASK_KEY"),this.firebaseManager), "History");
 		viewPager.setAdapter(adapter);
+	}
+
+	@Override
+	public void onBackPressed()
+	{
+		super.onBackPressed();
+
+		Intent mainIntent = new Intent(getApplicationContext(), TaskListActivity.class);
+		mainIntent.putExtra("USER",firebaseManager.appUser);
+		startActivity(mainIntent);
 	}
 }

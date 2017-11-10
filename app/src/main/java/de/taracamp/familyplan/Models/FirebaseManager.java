@@ -6,13 +6,14 @@
  */
 package de.taracamp.familyplan.Models;
 
+import android.support.annotation.NonNull;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import java.util.concurrent.Callable;
 
 /**
  * Diese Klasse unterstützt bei der Arbeit mit Firebase.
@@ -32,7 +33,7 @@ public class FirebaseManager
 	public FirebaseAuth.AuthStateListener mAuthListener = null;
 
 	// Der aktuell angemeldete App Benutzer
-	public FamiliyUser appUser;
+	public AppUser appUser;
 
 	// User Object
 	public String emailMember(){return "emailMember";}
@@ -70,6 +71,23 @@ public class FirebaseManager
 		{
 			mAuth.removeAuthStateListener(mAuthListener);
 		}
+	}
+
+	public void setAuthStateListener(final Callable<String> func)
+	{
+		mAuthListener = new FirebaseAuth.AuthStateListener() {
+			@Override
+			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+				try
+				{
+					func.call();
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		};
 	}
 
 	public FirebaseManager()
@@ -110,6 +128,7 @@ public class FirebaseManager
 		}
 	}
 
+	public DatabaseReference root(){return this.database.getReference();}
 	public DatabaseReference users()
 	{
 		return this.database.getReference("users").getRef();

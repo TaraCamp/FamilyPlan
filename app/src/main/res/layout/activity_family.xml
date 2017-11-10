@@ -31,6 +31,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
                     android:text="TextView"
                     tools:text="Familie : "/>
 
@@ -38,9 +41,21 @@
                     android:id="@+id/textView_family_familyToken"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:layout_weight="1"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
                     android:text="TextView"
                     tools:text="Token : "/>
+
+                <ImageButton
+                    android:id="@+id/imageButton_family_exitFamily"
+                    android:clickable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:src="@drawable/ic_action_exit"/>
 
             </LinearLayout>
 
@@ -59,6 +74,27 @@
             <include layout="@layout/family_list"/>
 
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/textView_family_noFamily"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Noch keine Familie"
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_family_add"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@color/primary_light"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:text="Familie Hinzufügen"/>
 
     </LinearLayout>
 

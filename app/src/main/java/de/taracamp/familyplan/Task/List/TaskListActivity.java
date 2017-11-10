@@ -28,14 +28,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import de.taracamp.familyplan.MainActivity;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.TaskAddActivity;
-import de.taracamp.familyplan.Task.TaskDetailFragment;
+import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +107,7 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 	private void Firebase()
 	{
 		this.firebaseManager = new FirebaseManager();
-		this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent());
+		this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
 		this.firebaseManager.currentTasksReference = this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()));
 
 		this.loadTasksByRelated();
@@ -138,7 +137,7 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 				Log.d(TAG,":TaskActivity.click()-> open new task window");
 
 				Intent intent = new Intent(getApplicationContext(),TaskAddActivity.class);
-				startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+				startActivity(AppUserManager.setAppUser(intent,firebaseManager.appUser));
 
 			}
 		});
@@ -201,7 +200,8 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 			super.onBackPressed();
 
 			Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-			startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+			intent.putExtra("USER",firebaseManager.appUser);
+			startActivity(intent);
 		}
 	}
 
@@ -318,6 +318,8 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 				// Adapter wird geladen.
 				adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
 				recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+
+				loadFirstTaskDetail();
 			}
 
 			@Override
@@ -354,6 +356,8 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 				// Adapter wird geladen.
 				adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
 				recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+
+				loadFirstTaskDetail();
 			}
 
 			@Override
@@ -387,6 +391,8 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 				// Adapter wird geladen.
 				adapter = new TaskListAdapter(thisActivity,list); // Liste wird an Adapter weitergegeben
 				recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+
+				loadFirstTaskDetail();
 			}
 
 			@Override
@@ -394,22 +400,17 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 		});
 	}
 
-	private void loadList()
+	private void loadFirstTaskDetail()
 	{
 		if (list.size()!=0 && isMasterDetailEnable)
 		{
-			Bundle arguments = new Bundle();
-			arguments.putString(TaskDetailFragment.TASK_KEY,list.get(0).getTaskToken());
-			arguments.putString(TaskDetailFragment.FAMILY_KEY,firebaseManager.appUser.getUserFamilyToken());
-
-			TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
-			taskDetailFragment.setArguments(arguments);
+			TaskDetailFragment detailFragment = TaskDetailFragment.newInstance(list.get(0).getTaskToken(),firebaseManager);
 
 			try
 			{
 				getSupportFragmentManager()
 						.beginTransaction()
-						.replace(R.id.item_detail_container,taskDetailFragment)
+						.replace(R.id.item_detail_container,detailFragment)
 						.commit();
 			}
 			catch (Exception e)
@@ -418,6 +419,7 @@ public class TaskListActivity extends AppCompatActivity implements View.OnLongCl
 			}
 
 			textViewInformation.setVisibility(View.GONE);
+
 		}
 	}
 

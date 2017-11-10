@@ -7,13 +7,21 @@
 package de.taracamp.familyplan.Family;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import de.taracamp.familyplan.Models.Message;
@@ -51,8 +59,16 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 	{
 		final User user = this.userList.get(position);
 
+		final ImageView imageViewUserPhoto = holder.imageViewUserPhoto;
 		final TextView textViewUserName = holder.textViewUserName;
 		final TextView textViewUserState = holder.textViewUserState;
+
+		/*
+		if (user.getUserPhoto()!=null)
+		{
+			imageViewUserPhoto.setImageURI(Uri.parse(user.getUserPhoto()));
+		}
+		*/
 
 		textViewUserName.setText(user.getUserName());
 		textViewUserState.setText(user.getUserEmail());
@@ -80,6 +96,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 	{
 		private FamilyActivity familyActivity = null;
 
+		private ImageView imageViewUserPhoto = null;
 		private TextView textViewUserName = null;
 		private TextView textViewUserState = null;
 
@@ -89,6 +106,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
 			this.familyActivity = familyActivity;
 
+			this.imageViewUserPhoto = (ImageView) itemView.findViewById(R.id.imageView_taskItem);
 			this.textViewUserName = (TextView) itemView.findViewById(R.id.textview_user_username);
 			this.textViewUserState = (TextView) itemView.findViewById(R.id.textview_user_state);
 		}

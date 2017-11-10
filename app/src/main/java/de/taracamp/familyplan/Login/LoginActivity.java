@@ -6,7 +6,6 @@
  */
 package de.taracamp.familyplan.Login;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,11 +14,9 @@ import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -32,8 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.taracamp.familyplan.MainActivity;
-import de.taracamp.familyplan.Models.FamiliyUser;
-import de.taracamp.familyplan.Models.FamilyUserHelper;
+import de.taracamp.familyplan.Models.AppUser;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.R;
@@ -81,8 +78,10 @@ public class LoginActivity extends FragmentActivity
     {
         this.firebaseManager = new FirebaseManager();
 
-        // Der aktuelle App Benutzer wird zurückgegeben.
-        this.firebaseManager.appUser = FamilyUserHelper.getFamilyUser(getIntent());
+        Intent getIntent = getIntent();
+        this.firebaseManager.appUser = (AppUser) getIntent.getSerializableExtra("USER");
+
+        //this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
 
         this.firebaseManager.mAuth = FirebaseAuth.getInstance();
         this.firebaseManager.mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -90,17 +89,11 @@ public class LoginActivity extends FragmentActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
             {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser(); // Der aktuelle Firebase Benutzer.
-
-                // Prüft on der Firebase Benutzer vorhanden ist.
-                if (user != null)
+                if (firebaseManager.appUser!=null)
                 {
-                    Log.d(TAG,"Firebase Benutzer ist bereits angemeldet.");
-
                     Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
-
+                    intent.putExtra("USER", firebaseManager.appUser);
+                    startActivity(intent);
                 }
             }
         };

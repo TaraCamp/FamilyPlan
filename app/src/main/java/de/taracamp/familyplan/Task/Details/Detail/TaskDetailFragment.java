@@ -31,8 +31,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
+import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FamilyUserHelper;
 import de.taracamp.familyplan.Models.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
@@ -127,7 +127,7 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 			public void onClick(View v)
 			{
 				Intent intent = new Intent(getActivity().getApplicationContext(),TaskListActivity.class);
-				startActivity(FamilyUserHelper.setAppUser(intent,firebaseManager.appUser));
+				startActivity(AppUserManager.setAppUser(intent,firebaseManager.appUser));
 			}
 		});
 
@@ -149,6 +149,7 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 
 	private void Firebase()
 	{
+		// ./families/<token>/familyTasks/<token>/ -> get task
 		this.firebaseManager.currentTasksReference = this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()));
 		this.firebaseManager.currentTaskReference = this.firebaseManager.currentTasksReference.child(taskKey);
 		this.firebaseManager.currentTaskReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,10 +157,13 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
+				// Gibt die aktuelle Aufgabe zurück.
 				Task task = dataSnapshot.getValue(Task.class);
 
+				// Prüfft ob die Aufgabe vorhanden ist.
 				if (task!=null)
 				{
+					// Füllt die Views mit Inhalt aus der Aufgabe.
 					fillViews(task);
 				}
 			}
@@ -184,17 +188,21 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 
 	private void fillViews(final Task _task)
 	{
+		// ./families/<token>/ -> get family
 		this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(firebaseManager.appUser.getUserFamilyToken());
 		this.firebaseManager.currentFamilyReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
+				// Gibt die aktuelle Familie zurück
 				Family family = dataSnapshot.getValue(Family.class);
 
+				// Gibt die aktuellen Familien Mitglieder zurück.
 				memberList = family.getFamilyMembers(); // Alle Member werden zwischengespeichert.
 
-				multiSelectionSpinnerTaskRelatedUsers.setItems(getRelatedUserList(family.getFamilyMembers()));
+
+				multiSelectionSpinnerTaskRelatedUsers.setItems(getRelatedUserList(memberList));
 				multiSelectionSpinnerTaskRelatedUsers.setSelection(getRelatedUserList(_task.getTaskRelatedUsers()));
 				multiSelectionSpinnerTaskRelatedUsers.setListener(TaskDetailFragment.this);
 
@@ -206,12 +214,11 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 						if (update(_task))
 						{
 							loadHeader(_task.getTaskState());
-
 							Message.show(getContext().getApplicationContext(),"Die Aufgabe wurde geändert!", Message.Mode.INFO);
 						}
 						else
 						{
-							Message.show(getContext().getApplicationContext(),"Die Aufgabe konnte nicht geändert werden.", Message.Mode.ERROR);
+							Message.show(getContext().getApplicationContext(),"Die Aufgabe konnte nicht geändert werden.", Message.Mode.WARNING);
 						}
 					}
 				});
