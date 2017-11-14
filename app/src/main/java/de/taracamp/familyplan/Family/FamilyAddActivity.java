@@ -241,6 +241,11 @@ public class FamilyAddActivity extends AppCompatActivity
 		}
 	}
 
+	private void updateUser(Family _family)
+	{
+		//this.firebaseManager.users().child(firebaseManager.appUser.getUserToken());
+	}
+
 	private boolean valid()
 	{
 		return true;
@@ -251,5 +256,6 @@ public class FamilyAddActivity extends AppCompatActivity
 	{
 		super.onBackPressed();
 	}
+
 
 }

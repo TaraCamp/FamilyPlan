@@ -14,6 +14,15 @@ public class Family
 	private String familyName = null; // Der Familienname
 	private String familyToken = null; // Der vollständige Schlüssel zur Familie.
 	private List<User> familyMembers = null;
+	private List<Event> familyEvents;
+
+	public List<Event> getFamilyEvents() {
+		return familyEvents;
+	}
+
+	public void setFamilyEvents(List<Event> familyEvents) {
+		this.familyEvents = familyEvents;
+	}
 
 	public String getFamilyName() {
 		return familyName;

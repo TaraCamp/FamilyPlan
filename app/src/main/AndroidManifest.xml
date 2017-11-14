@@ -87,9 +87,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".Task.Details.TaskDetailsActivity"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateHidden">
+        <activity
+            android:name=".Task.Details.TaskDetailsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity android:name=".Calendar.CalendarActivity">
         </activity>
     </application>
 
