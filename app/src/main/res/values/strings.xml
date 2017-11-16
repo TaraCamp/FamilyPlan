@@ -32,6 +32,14 @@
         <item>Fertig</item>
     </string-array>
 
+    <string-array name="categories">
+        <item>Keine Kategorie</item>
+        <item>Feier</item>
+        <item>Geburtstag</item>
+        <item>Schule</item>
+        <item>Ausflug</item>
+        <item>Arbeit</item>
+    </string-array>
 
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>

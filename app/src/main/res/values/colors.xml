@@ -27,6 +27,8 @@
     <color name="medium_green">#FFFFFF</color>
     <color name="light_green">#3c2ae668</color>
 
+    <color name="red">#E43F3F</color>
+
     <color name="colorPrimary">#125688</color>
     <color name="colorPrimaryDark">#125688</color>
     <color name="textColorPrimary">#FFFFFF</color>

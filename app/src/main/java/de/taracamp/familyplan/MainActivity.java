@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import de.taracamp.familyplan.Account.AccountActivity;
+import de.taracamp.familyplan.Calendar.CalendarActivity;
 import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Login.LoginActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
@@ -182,7 +183,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Message.show(getApplicationContext(),"Kalendar ist noch nicht verfügbar!", Message.Mode.INFO);
+                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
+                intent.putExtra("USER",firebaseManager.appUser);
+                startActivity(intent);
             }
         });
 
