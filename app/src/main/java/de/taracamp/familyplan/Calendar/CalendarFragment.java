@@ -76,8 +76,6 @@ public class CalendarFragment extends Fragment {
 				Log.d(TAG,CLASS+".onClick() -> select date : " + eventDay.getCalendar().getTime().toString() + ". Open action dialog.");
 
 				Calendar clickedDayCalendar = eventDay.getCalendar();
-				Message.show(getContext().getApplicationContext(),clickedDayCalendar.getTime().toString(), Message.Mode.INFO);
-
 				CalendarActionDialog dialog = CalendarActionDialog.newInstance(firebaseManager,clickedDayCalendar);
 				dialog.show(getFragmentManager(),"action");
 			}
@@ -91,16 +89,10 @@ public class CalendarFragment extends Fragment {
 			{
 				Log.d(TAG,CLASS+".onClick() -> open new event dialog");
 
-				if (!firebaseManager.appUser.isHasFamily())
-				{
-					openNoFamilyDialog();
-				}
-				else
-				{
-					Intent intent = new Intent(getActivity().getApplicationContext(),EventAddActivity.class);
-					intent.putExtra("USER",firebaseManager.appUser);
-					startActivity(intent);
-				}
+				Intent intent = new Intent(getActivity().getApplicationContext(),EventAddActivity.class);
+				intent.putExtra("USER",firebaseManager.appUser);
+				startActivity(intent);
+
 			}
 		});
 
@@ -109,80 +101,57 @@ public class CalendarFragment extends Fragment {
 		return view;
 	}
 
-	private void openNoFamilyDialog()
-	{
-		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-		alertDialogBuilder.setTitle("Familie Anlegen!");
-		alertDialogBuilder.setIcon(R.drawable.logo);
-		alertDialogBuilder
-				.setMessage("Sie müssen in einer Familie sein um ein Event zu erstellen. Wollen Sie einer Familie beitreten?")
-				.setCancelable(false)
-				.setPositiveButton("Ja",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						Intent intent = new Intent(getActivity().getApplicationContext(), FamilyAddActivity.class);
-						intent.putExtra("USER",firebaseManager.appUser);
-						startActivity(intent);
-					}
-				})
-				.setNegativeButton("Nein",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						dialog.cancel();
-					}
-				});
-		AlertDialog alertDialog = alertDialogBuilder.create();
-		alertDialog.show();
-	}
-
 	private void loadEvents()
 	{
 		String familyToken = firebaseManager.appUser.getUserFamilyToken();
-
-		firebaseManager.families().child(familyToken).addListenerForSingleValueEvent(new ValueEventListener() {
+		firebaseManager.families().child(familyToken).child(firebaseManager.FAMILY_EVENTS).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
-				Family family = dataSnapshot.getValue(Family.class);
-
-				List<Event> familyEvents = family.getFamilyEvents();
-				if (familyEvents!=null)
+				List<EventDay> events = new ArrayList<>();
+				for (DataSnapshot eventSnap : dataSnapshot.getChildren())
 				{
-					List<EventDay> events = new ArrayList<>();
+					Event event = eventSnap.getValue(Event.class);
 
-					for (Event event : familyEvents)
+					Calendar calendar = Calendar.getInstance();
+					calendar.set(event.getEventYear(),event.getEventMonth(),event.getEventDay());
+
+					EventCategory eventCategory = event.getEventCategory();
+					if (eventCategory.equals(EventCategory.BIRTHDAY))
 					{
-						int year = event.getEventYear();
-						int month = event.getEventMonth();
-						int day = event.getEventDay();
-
-						Calendar calendar = Calendar.getInstance();
-						calendar.set(year,month,day);
-
-						EventCategory eventCategory = event.getEventCategory();
-
-						if (eventCategory.equals(EventCategory.BIRTHDAY))
-						{
-							events.add(new EventDay(calendar, R.drawable.birthday));
-						}
-						else if (eventCategory.equals(EventCategory.SCHOOL))
-						{
-							events.add(new EventDay(calendar, R.drawable.school));
-						}
-						else if (eventCategory.equals(EventCategory.PARTY))
-						{
-							events.add(new EventDay(calendar, R.drawable.party));
-						}
-						else if (eventCategory.equals(EventCategory.JOB))
-						{
-							events.add(new EventDay(calendar, R.drawable.work));
-						}
-						else if (eventCategory.equals(EventCategory.EXCURSION))
-						{
-							events.add(new EventDay(calendar, R.drawable.excursion));
-						}
+						events.add(new EventDay(calendar, R.drawable.birthday));
 					}
-
-					calendarView.setEvents(events);
+					else if (eventCategory.equals(EventCategory.DATE))
+					{
+						events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
+					}
+					else if (eventCategory.equals(EventCategory.SPORT))
+					{
+						events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
+					}
+					else if (eventCategory.equals(EventCategory.SCHOOL))
+					{
+						events.add(new EventDay(calendar, R.drawable.school));
+					}
+					else if (eventCategory.equals(EventCategory.NOTHING))
+					{
+						events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
+					}
+					else if (eventCategory.equals(EventCategory.PARTY))
+					{
+						events.add(new EventDay(calendar, R.drawable.party));
+					}
+					else if (eventCategory.equals(EventCategory.JOB))
+					{
+						events.add(new EventDay(calendar, R.drawable.work));
+					}
+					else if (eventCategory.equals(EventCategory.EXCURSION))
+					{
+						events.add(new EventDay(calendar, R.drawable.excursion));
+					}
 				}
+
+				calendarView.setEvents(events);
 			}
 
 			@Override

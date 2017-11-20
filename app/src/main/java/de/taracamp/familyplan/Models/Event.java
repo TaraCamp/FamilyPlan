@@ -5,6 +5,7 @@ import de.taracamp.familyplan.Models.Enums.EventCategory;
 
 public class Event
 {
+	private String eventToken;
 	private String eventName;
 	private String eventDescription;
 	private String eventDate;
@@ -15,6 +16,14 @@ public class Event
 	private User eventCreator;
 	private List<User> eventRelatedUsers;
 	private EventCategory eventCategory;
+
+	public String getEventToken() {
+		return eventToken;
+	}
+
+	public void setEventToken(String eventToken) {
+		this.eventToken = eventToken;
+	}
 
 	public int getEventDay() {
 		return eventDay;

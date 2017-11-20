@@ -44,6 +44,8 @@ import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
 /**
  * Diese Activity wird genutzt eine neue Aufgabe zu erstellen. Folgende Felder sind anzugeben:
  *
@@ -81,6 +83,11 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 
 	private FirebaseManager firebaseManager = null;
 
+	private int year;
+	private int month;
+	private int day;
+	private String time;
+
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	protected void onCreate(@Nullable Bundle _savedInstanceState)
@@ -91,21 +98,56 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 		this.Firebase();
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-	public void init()
+	@Override
+	protected void onStart()
 	{
-		editTextTaskTitle = (EditText) findViewById(R.id.input_task_add_taskTitle);
-		editTextTaskTitle.requestFocus();
-		editTextTaskDescription = (EditText) findViewById(R.id.input_task_add_taskDescription);
+		super.onStart();
+
+		initializeDate();
+		getIntentDate();
+
+		Log.d(TAG,CLASS+".onStart() -> load time = " + year + "." + month + "." + day + ": " + time);
+	}
+
+	private void getIntentDate()
+	{
+		Intent intent = getIntent();
+		if (intent.hasExtra("YEAR"))
+		{
+			year = intent.getIntExtra("YEAR",0);
+		}
+		if (intent.hasExtra("MONTH"))
+		{
+			month = intent.getIntExtra("MONTH",0);
+		}
+		if (intent.hasExtra("DAY"))
+		{
+			day = intent.getIntExtra("DAY",0);
+		}
+		if (intent.hasExtra("TIME"))
+		{
+			time = intent.getStringExtra("TIME");
+		}
+
+		if (time!=null)
+		{
+			dateCalendar = Calendar.getInstance();
+			dateCalendar.set(year,month,day);
+			editTextTaskDate.setText(time);
+		}
+	}
+
+	private void initializeDate()
+	{
 		editTextTaskDate = (EditText) findViewById(R.id.input_task_add_taskDate);
-		editTextTaskDate.setShowSoftInputOnFocus(false);
 		editTextTaskDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
 			@Override
-			public void onFocusChange(View _v, boolean _hasFocus)
+			public void onFocusChange(View v, boolean hasFocus)
 			{
-				if (_hasFocus)
+				if (hasFocus)
 				{
-					Log.d(TAG,":TaskAddActivity.onFocusChange() -> open date dialog");
+					Log.d(TAG,CLASS+" -> open date dialog");
 
 					datePickerDialog = new DatePickerDialog(TaskAddActivity.this, new DatePickerDialog.OnDateSetListener() {
 
@@ -121,10 +163,17 @@ public class TaskAddActivity extends FragmentActivity implements MultiSelectionS
 						}
 					},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
 					datePickerDialog.show();
-
 				}
 			}
 		});
+	}
+
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+	public void init()
+	{
+		editTextTaskTitle = (EditText) findViewById(R.id.input_task_add_taskTitle);
+		editTextTaskTitle.requestFocus();
+		editTextTaskDescription = (EditText) findViewById(R.id.input_task_add_taskDescription);
 		editTextTaskTime = (EditText) findViewById(R.id.input_task_add_taskTime);
 		editTextTaskTime.setShowSoftInputOnFocus(false);
 		editTextTaskTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {

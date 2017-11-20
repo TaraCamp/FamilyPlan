@@ -1,20 +1,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp" >
+                android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="vertical">
 
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/MyMaterialTheme.AppBarOverlay">
+
+            <include
+                layout="@layout/toolbar_event_add">
+            </include>
+
+        </android.support.design.widget.AppBarLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="vertical"
-                      android:weightSum="1">
+                      android:weightSum="1"
+                      android:paddingLeft="16dp"
+                      android:paddingRight="16dp" >
 
             <Space
                 android:layout_width="1dp"
@@ -146,31 +158,6 @@
             <Space
                 android:layout_width="1dp"
                 android:layout_height="30dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:orientation="horizontal"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/button_event_add_addEvent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="10px"
-                android:background="@color/com_facebook_button_background_color_selected"
-                android:text="Event Hinzufügen"/>
-
-            <Button
-                android:id="@+id/button_event_add_closeDialog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="10px"
-                android:background="@color/com_facebook_button_background_color_selected"
-                android:text="Abbrechen"/>
 
         </LinearLayout>
 

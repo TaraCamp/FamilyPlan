@@ -7,7 +7,9 @@ public enum EventCategory
 	BIRTHDAY("Geburtstag"),
 	SCHOOL("Schule"),
 	EXCURSION("Ausflug"),
-	JOB("Arbeit");
+	JOB("Arbeit"),
+	SPORT("Sport"),
+	DATE("Treffen");
 
 	private String category;
 

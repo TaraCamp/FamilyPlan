@@ -26,7 +26,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_showevent"
+                    android:src="@drawable/ic_action_edit"
                     android:layout_gravity="center"/>
 
                 <Space
@@ -34,11 +34,11 @@
                     android:layout_height="20dp"/>
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/calendar_show_event"
+                    android:id="@+id/calendar_events_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:background="@color/white"
-                    android:text="Events Anzeigen"
+                    android:text="Event Bearbeiten"
                     android:layout_gravity="center"
                     />
 
@@ -52,7 +52,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_event"
+                    android:src="@drawable/ic_action_remove"
                     android:layout_gravity="center"/>
 
                 <Space
@@ -60,38 +60,13 @@
                     android:layout_height="20dp"/>
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/calendar_add_event"
+                    android:id="@+id/calendar_events_remove"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:background="@color/white"
-                    android:text="Event Hinzufügen"
+                    android:text="Event Entfernen"
                     android:layout_gravity="center"
                     />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_add"
-                    android:layout_gravity="center"/>
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="20dp"/>
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/calendar_add_task"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:background="@color/white"
-                    android:text="Aufgabe Erstellen"
-                    android:layout_gravity="center"/>
 
             </LinearLayout>
 
@@ -111,7 +86,7 @@
                     android:layout_height="20dp"/>
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/calendar_add_cancel"
+                    android:id="@+id/calendar_events_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:background="@color/white"

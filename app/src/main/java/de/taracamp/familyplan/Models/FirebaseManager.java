@@ -29,6 +29,10 @@ public class FirebaseManager
 	public DatabaseReference currentFamilyReference = null; // Knoten zur aktuellen familie
 	public DatabaseReference currentTaskReference = null;
 
+	//Family Object
+
+	public final String FAMILY_EVENTS = "familyEvents";
+
 	public  FirebaseAuth mAuth = null;
 	public FirebaseAuth.AuthStateListener mAuthListener = null;
 
@@ -73,26 +77,71 @@ public class FirebaseManager
 		}
 	}
 
-	public void setAuthStateListener(final Callable<String> func)
-	{
-		mAuthListener = new FirebaseAuth.AuthStateListener() {
-			@Override
-			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-				try
-				{
-					func.call();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		};
-	}
-
 	public FirebaseManager()
 	{
 		this.database = FirebaseDatabase.getInstance();
+	}
+
+	/**
+	 * Speichert ein Event in der Firebase Database
+	 */
+	public boolean saveEvent(Event _event)
+	{
+		try
+		{
+			if (families()!=null)
+			{
+				// ./families/<token>/familyEvents/<key> get key and set a value there
+				families().child(appUser.getUserFamilyToken()).child(FAMILY_EVENTS).child(_event.getEventToken()).setValue(_event);
+				return true;
+			}
+			else return false;
+
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
+	}
+
+	public boolean updateEvent(Event _event)
+	{
+		try
+		{
+			if(families()!=null)
+			{
+				families().child(appUser.getUserFamilyToken()).child(FAMILY_EVENTS).child(_event.getEventToken()).setValue(_event);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (Exception exception)
+		{
+			return false;
+		}
+	}
+
+	public boolean removeEvent(Event _event)
+	{
+		try
+		{
+			if(families()!=null)
+			{
+				families().child(appUser.getUserFamilyToken()).child(FAMILY_EVENTS).child(_event.getEventToken()).removeValue();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (Exception exception)
+		{
+			return false;
+		}
 	}
 
 	public boolean saveObject(Object _object,FirebaseUser _user)
