@@ -340,9 +340,7 @@ public class EventAddActivity extends AppCompatActivity implements MultiSelectio
 
 	private void initializeRelatedUsersMultiSpinner()
 	{
-		String familyToken = firebaseManager.appUser.getUserFamilyToken();
-
-		firebaseManager.families().child(familyToken).addListenerForSingleValueEvent(new ValueEventListener() {
+		firebaseManager.getCurrentFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
@@ -376,7 +374,8 @@ public class EventAddActivity extends AppCompatActivity implements MultiSelectio
 
 	private Event createEvent()
 	{
-		String eventToken = firebaseManager.families().push().getKey();
+		String eventToken = firebaseManager.getFamiliesReference().push().getKey();
+
 		String eventName = editTextEventName.getText().toString();
 		String eventDescription = editTextEventDescription.getText().toString();
 		String eventDate = editTextEventDate.getText().toString();

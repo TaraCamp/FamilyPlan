@@ -150,9 +150,7 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 	private void Firebase()
 	{
 		// ./families/<token>/familyTasks/<token>/ -> get task
-		this.firebaseManager.currentTasksReference = this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()));
-		this.firebaseManager.currentTaskReference = this.firebaseManager.currentTasksReference.child(taskKey);
-		this.firebaseManager.currentTaskReference.addListenerForSingleValueEvent(new ValueEventListener() {
+		this.firebaseManager.getCurrentTask(taskKey).addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
@@ -189,8 +187,7 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 	private void fillViews(final Task _task)
 	{
 		// ./families/<token>/ -> get family
-		this.firebaseManager.currentFamilyReference = this.firebaseManager.families().child(firebaseManager.appUser.getUserFamilyToken());
-		this.firebaseManager.currentFamilyReference.addListenerForSingleValueEvent(new ValueEventListener() {
+		this.firebaseManager.getCurrentFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)

@@ -87,7 +87,7 @@ public class EventsFragment extends Fragment
 	private void loadAllEvents()
 	{
 		String familyToken = firebaseManager.appUser.getUserFamilyToken();
-		firebaseManager.families().child(familyToken).child(firebaseManager.FAMILY_EVENTS).addListenerForSingleValueEvent(new ValueEventListener() {
+		firebaseManager.getCurrentFamilyReference().child("familyEvents").addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{

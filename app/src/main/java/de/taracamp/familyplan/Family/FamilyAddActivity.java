@@ -107,7 +107,7 @@ public class FamilyAddActivity extends AppCompatActivity
 		{
 			family = new Family(); // Eine neue Familie wird erstellt.
 
-			String familyKey = this.firebaseManager.families().push().getKey(); // Der Zugriffsschlüssel wird generiert.
+			String familyKey = this.firebaseManager.getFamiliesReference().push().getKey(); // Der Zugriffsschlüssel wird generiert.
 			familyKey = familyKey.substring(familyKey.length()-6,familyKey.length()); // Der Zugriffsschlüssel wird auf 6 Zeichen beschränkt.
 
 			ArrayList<User> members = new ArrayList<>(); // Eine neue Liste von Familienmitgliedern wird erstellt.
@@ -117,7 +117,7 @@ public class FamilyAddActivity extends AppCompatActivity
 			family.setFamilyToken(familyKey); // Zugriffsschlüssel wird gesetzt.
 			family.setFamilyMembers(members); // Mitglieerliste wird gesetzt.
 
-			firebaseManager.families().child(family.getFamilyToken()).setValue(family);
+			firebaseManager.getFamiliesReference().child(family.getFamilyToken()).setValue(family);
 
 			UserManager.Platform platform = null;
 			if (firebaseManager.appUser.isEmailMember())
@@ -168,7 +168,7 @@ public class FamilyAddActivity extends AppCompatActivity
 		}
 		else
 		{
-			firebaseManager.families().addListenerForSingleValueEvent(new ValueEventListener() {
+			firebaseManager.getFamiliesReference().addListenerForSingleValueEvent(new ValueEventListener() {
 
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot)
@@ -200,7 +200,7 @@ public class FamilyAddActivity extends AppCompatActivity
 			List<User> members = family.getFamilyMembers();
 			members.add(AppUserManager.getUserByAppUser(firebaseManager.appUser));
 
-			firebaseManager.families().child(family.getFamilyToken()).child(firebaseManager.familyMembers()).setValue(members);
+			firebaseManager.getFamiliesReference().child(family.getFamilyToken()).child(firebaseManager.familyMembers()).setValue(members);
 
 			UserManager.Platform platform = null;
 			if (firebaseManager.appUser.isEmailMember())

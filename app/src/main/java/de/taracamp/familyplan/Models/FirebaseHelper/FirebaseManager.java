@@ -24,13 +24,7 @@ public class FirebaseManager
 {
 	FirebaseDatabase database = null;
 
-	public DatabaseReference currentTasksReference = null; // Knoten zu Aufgaben der Familie.
-	public DatabaseReference currentFamilyReference = null; // Knoten zur aktuellen familie
 	public DatabaseReference currentTaskReference = null;
-
-	//Family Object
-
-	public final String FAMILY_EVENTS = "familyEvents";
 
 	public FirebaseAuth mAuth = null;
 	public FirebaseAuth.AuthStateListener mAuthListener = null;
@@ -41,8 +35,7 @@ public class FirebaseManager
 	public String familyMembers() {return "familyMembers";}
 
 	public String id(){return "id";}
-	// // TODO: 24.10.2017 weiter machen
-	public String taskRelatedUsers(){return "taskRelatedUsers";}
+
 
 	public void onStart()
 	{
@@ -57,6 +50,9 @@ public class FirebaseManager
 		}
 	}
 
+	/**
+	 * Initialize FireBaseManager.
+	 */
 	public FirebaseManager()
 	{
 		this.database = FirebaseDatabase.getInstance();
@@ -64,9 +60,6 @@ public class FirebaseManager
 
 	/**
 	 * Remove a task, event, family or user object from FireBase database.
-	 *
-	 * @param object
-	 * @return
 	 */
 	public boolean removeObject(Object object)
 	{
@@ -97,9 +90,6 @@ public class FirebaseManager
 
 	/**
 	 * Save a task, event, family or user object in FireBase database.
-	 *
-	 * @param object
-	 * @return
 	 */
 	public boolean saveObject(Object object)
 	{
@@ -130,11 +120,17 @@ public class FirebaseManager
 		}
 	}
 
+	/**
+	 * Get all families.
+	 */
 	public DatabaseReference getFamiliesReference()
 	{
 		return database.getReference("families").getRef();
 	}
 
+	/**
+	 * Get current family.
+	 */
 	public DatabaseReference getCurrentFamilyReference()
 	{
 		if (appUser!=null)
@@ -149,8 +145,6 @@ public class FirebaseManager
 
 	/**
 	 * Get FireBase path to all users.
-	 *
-	 * @return
 	 */
 	public DatabaseReference getUsersReference()
 	{
@@ -159,8 +153,6 @@ public class FirebaseManager
 
 	/**
 	 *  Get FireBase path to Calendar Events.
-	 *
-	 * @return
 	 */
 	public DatabaseReference getEventsReference()
 	{
@@ -176,8 +168,6 @@ public class FirebaseManager
 
 	/**
 	 * Get FireBase path to Tasks.
-	 *
-	 * @return
 	 */
 	public DatabaseReference getTasksReference()
 	{
@@ -191,6 +181,14 @@ public class FirebaseManager
 		}
 	}
 
+	public DatabaseReference getCurrentTask(String token)
+	{
+		return getTasksReference().child(token);
+	}
+
+	/**
+	 * Get current user without token.
+	 */
 	public DatabaseReference getCurrentUserReference()
 	{
 		if (appUser!=null)
@@ -205,23 +203,18 @@ public class FirebaseManager
 
 	/**
 	 * Get current user by FireBase token.
-	 *
-	 * @param token
-	 * @return
 	 */
 	public DatabaseReference getCurrentUserReference(String token)
 	{
 		return getUsersReference().child(token).getRef();
 	}
 
-	public DatabaseReference root(){return this.database.getReference();}
-	public DatabaseReference families()
+	/**
+	 * Get FireBase DataBase root path.
+	 * @return
+	 */
+	public DatabaseReference getRootReference()
 	{
-		return this.database.getReference("families").getRef();
+		return this.database.getReference();
 	}
-	public DatabaseReference tasks(DatabaseReference _family)
-	{
-		return _family.child("familyTasks");
-	}
-
 }

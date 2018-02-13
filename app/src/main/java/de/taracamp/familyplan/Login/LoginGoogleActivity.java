@@ -133,7 +133,7 @@ public class LoginGoogleActivity extends AppCompatActivity implements GoogleApiC
                     @Override
                     public void onComplete(@NonNull final Task<AuthResult> task)
                     {
-                        firebaseManager.root().addValueEventListener(new ValueEventListener() {
+                        firebaseManager.getRootReference().addValueEventListener(new ValueEventListener() {
 
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot)

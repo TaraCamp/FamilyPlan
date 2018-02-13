@@ -72,9 +72,8 @@ public class TaskHistoryFragment extends Fragment
 
 	private void Firebase()
 	{
-		this.firebaseManager.currentTasksReference = this.firebaseManager.tasks(this.firebaseManager.families().child(this.firebaseManager.appUser.getUserFamilyToken()));
-		this.firebaseManager.currentTaskReference = this.firebaseManager.currentTasksReference.child(taskKey);
-		this.firebaseManager.currentTaskReference.addListenerForSingleValueEvent(new ValueEventListener() {
+		this.firebaseManager.currentTaskReference = this.firebaseManager.getCurrentTask(taskKey);
+		this.firebaseManager.getCurrentTask(taskKey).addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
