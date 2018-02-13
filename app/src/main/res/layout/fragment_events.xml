@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.taracamp.familyplan.Calendar.EventsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="92dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/border">
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"/>
+
+                <TextView
+                    android:id="@+id/textview_allevents_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="25dp"
+                    android:textStyle="bold"
+                    android:text="Alle Ereignisse"/>
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"/>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <include layout="@layout/events_listview"/>
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/textView_allevents_noevents"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="Noch keine Ereignisse"
+                android:textSize="40dp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton_allevents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_add"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/red"
+        android:layout_gravity="bottom|end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

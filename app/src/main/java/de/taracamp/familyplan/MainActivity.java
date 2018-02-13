@@ -26,7 +26,7 @@ import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Login.LoginActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Debug;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.Task.List.TaskListActivity;

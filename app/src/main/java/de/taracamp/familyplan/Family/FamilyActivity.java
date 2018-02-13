@@ -29,7 +29,7 @@ import java.util.List;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -156,12 +156,10 @@ public class FamilyActivity extends AppCompatActivity
 
 		this.userList = new ArrayList<>();
 
-		String familyToken = this.firebaseManager.appUser.getUserFamilyToken();
 
+		String familyToken = this.firebaseManager.appUser.getUserFamilyToken();
 		// ./families/<token>/familyMembers
-		this.firebaseManager.families()
-				.child(familyToken)
-				.child(this.firebaseManager.familyMembers()).addValueEventListener(new ValueEventListener() {
+		this.firebaseManager.families().child(familyToken).child(this.firebaseManager.familyMembers()).addValueEventListener(new ValueEventListener() {
 
 					@Override
 					public void onDataChange(DataSnapshot dataSnapshot)

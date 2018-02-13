@@ -1,32 +1,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp" >
+                android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="vertical">
 
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/MyMaterialTheme.AppBarOverlay">
+
+            <include
+                layout="@layout/toolbar_add">
+            </include>
+
+        </android.support.design.widget.AppBarLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical"
-                  android:weightSum="1">
-
-        <Space
-            android:layout_width="1dp"
-            android:layout_height="30dp"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="@color/com_facebook_button_background_color_selected"
-            android:contentDescription="@string/app_name"
-            android:scaleType="center"
-            android:src="@drawable/ic_note_add_white_36dp"/>
+                  android:weightSum="1"
+                  android:paddingLeft="16dp"
+                  android:paddingRight="16dp" >
 
             <Space
                 android:layout_width="1dp"
@@ -44,6 +44,10 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -56,6 +60,10 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -67,6 +75,10 @@
                     android:hint="Aufgaben Datum"/>
 
             </android.support.design.widget.TextInputLayout>
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="30dp"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -84,47 +96,31 @@
                 android:layout_width="1dp"
                 android:layout_height="30dp"/>
 
-            <TextView
-                android:id="@+id/lbl_task_add_taskEditors"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bearbeiter"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_gravity="center">
 
-            <de.taracamp.familyplan.Controls.MultiSelectionSpinner
-                android:id="@+id/multiSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/lbl_task_add_taskEditors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bearbeiter"/>
 
-            <Space
-                android:layout_width="1dp"
-                android:layout_height="30dp"/>
+                <de.taracamp.familyplan.Controls.MultiSelectionSpinner
+                    android:id="@+id/multiSpinner_task_add_relatedUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-    </LinearLayout>
+                </LinearLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:orientation="horizontal"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content">
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"/>
 
-            <Button
-                android:id="@+id/button_task_add_addTask"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="10px"
-                android:background="@color/com_facebook_button_background_color_selected"
-                android:text="Hinzufügen"/>
-
-            <Button
-                android:id="@+id/button_task_add_closeDialog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="10px"
-                android:background="@color/com_facebook_button_background_color_selected"
-                android:text="Abbrechen"/>
-
-    </LinearLayout>
+            </LinearLayout>
 
     </LinearLayout>
 

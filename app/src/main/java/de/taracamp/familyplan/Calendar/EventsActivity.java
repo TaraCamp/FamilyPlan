@@ -8,27 +8,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.taracamp.familyplan.Login.LoginFacebookActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.Enums.EventCategory;
 import de.taracamp.familyplan.Models.Event;
-import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
-import de.taracamp.familyplan.Models.User;
-import de.taracamp.familyplan.Models.UserManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 
 public class EventsActivity extends AppCompatActivity {
@@ -173,15 +165,9 @@ public class EventsActivity extends AppCompatActivity {
 		*/
 	}
 
-	private List<Event> getEvents()
-	{
-		return null;
-	}
-
 	private void loadEventsByDate()
 	{
-		String familyToken = firebaseManager.appUser.getUserFamilyToken();
-		firebaseManager.families().child(familyToken).child(firebaseManager.FAMILY_EVENTS).addListenerForSingleValueEvent(new ValueEventListener() {
+		firebaseManager.getEventsReference().addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{

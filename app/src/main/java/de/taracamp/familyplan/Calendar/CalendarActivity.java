@@ -13,19 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.applandeo.materialcalendarview.CalendarView;
-import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.Event;
-import de.taracamp.familyplan.Models.FirebaseManager;
-import de.taracamp.familyplan.Models.Message;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 
 public class CalendarActivity extends AppCompatActivity
@@ -66,7 +56,7 @@ public class CalendarActivity extends AppCompatActivity
 	{
 		CalendarViewPagerAdapter adapter = new CalendarViewPagerAdapter(getSupportFragmentManager());
 		adapter.addFrag(CalendarFragment.newInstance(firebaseManager),"Kalender");
-		adapter.addFrag(CalendarFragment.newInstance(firebaseManager),"Events");
+		adapter.addFrag(EventsFragment.newInstance(firebaseManager),"Ereignise");
 		viewPager.setAdapter(adapter);
 	}
 

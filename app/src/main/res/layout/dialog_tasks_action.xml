@@ -1,0 +1,180 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/border"
+              android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_showevent"
+                    android:layout_gravity="center"/>
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/tasks_task_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Aufgabe Anzeigen"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_finish"
+                    android:layout_gravity="center"/>
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/tasks_task_setFinish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Auf 'Erledigt' setzen"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_inprocess"
+                    android:layout_gravity="center"/>
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/tasks_task_setInProcess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Auf 'In Bearbeitung' setzen"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_in_process"
+                    android:layout_gravity="center"/>
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/tasks_task_setOnWaiting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Auf 'Warten' setzen"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_remove"
+                    android:layout_gravity="center"/>
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/tasks_task_remove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Aufgabe Entfernen"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_end"
+                    android:layout_gravity="center"/>
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="20dp"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/tasks_task_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:text="Schließen"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -13,7 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
 import de.taracamp.familyplan.Task.Details.History.TaskHistoryFragment;
@@ -43,8 +43,8 @@ public class TaskDetailsActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_detail_tabs);
 
-		this.Firebase();
-
+		firebaseManager = new FirebaseManager();
+		firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
 
 		viewPager = (ViewPager) findViewById(R.id.task_detail_viewpager);
 		setupViewPager(viewPager);
@@ -52,15 +52,6 @@ public class TaskDetailsActivity extends AppCompatActivity
 		tabLayout = (TabLayout) findViewById(R.id.task_detail_tabs);
 		tabLayout.setupWithViewPager(viewPager);
 		setupTabIcons();
-	}
-
-	/**
-	 * Alle Firebase relevanten Daten werden geladen.
-	 */
-	private void Firebase()
-	{
-		this.firebaseManager = new FirebaseManager();
-		this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
 	}
 
 	private void setupTabIcons()

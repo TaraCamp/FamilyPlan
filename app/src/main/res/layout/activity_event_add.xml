@@ -15,7 +15,7 @@
             android:theme="@style/MyMaterialTheme.AppBarOverlay">
 
             <include
-                layout="@layout/toolbar_event_add">
+                layout="@layout/toolbar_add">
             </include>
 
         </android.support.design.widget.AppBarLayout>

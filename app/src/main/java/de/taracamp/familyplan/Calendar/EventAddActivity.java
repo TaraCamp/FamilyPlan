@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,7 +42,7 @@ import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Enums.EventCategory;
 import de.taracamp.familyplan.Models.Event;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -187,7 +186,6 @@ public class EventAddActivity extends AppCompatActivity implements MultiSelectio
 		editTextEventName = (EditText) findViewById(R.id.input_event_add_eventName);
 		editTextEventDescription = (EditText) findViewById(R.id.input_event_add_eventDescription);
 		spinnerEventCategory = (Spinner) findViewById(R.id.spinner_event_add_eventCategory);
-
 		editTextEventTime = (EditText) findViewById(R.id.input_event_add_eventTime);
 		multiSelectionSpinnerEventRelatedUsers = (MultiSelectionSpinner) findViewById(R.id.multiSpinner_event_add_relatedUsers);
 		imageViewEventCategory = (ImageView) findViewById(R.id.imageview_event_add_eventCategoryImage);
@@ -268,8 +266,11 @@ public class EventAddActivity extends AppCompatActivity implements MultiSelectio
 
 	public void initializeToolbar()
 	{
-		toolbar = (Toolbar) findViewById(R.id.toolbar_event_add);
+		toolbar = (Toolbar) findViewById(R.id.toolbar_add);
 		setSupportActionBar(toolbar);
+
+		getSupportActionBar().setTitle("Ereigniss Erstellen");
+		getSupportActionBar().setLogo(R.drawable.ic_action_owntasks);
 	}
 
 	private void initializeDateEvents()
@@ -306,7 +307,7 @@ public class EventAddActivity extends AppCompatActivity implements MultiSelectio
 	{
 		if (isValid())
 		{
-			if (firebaseManager.saveEvent(createEvent()))
+			if (firebaseManager.saveObject(createEvent()))
 			{
 				Message.show(getApplicationContext(),"Event wurde angelegt", Message.Mode.SUCCES);
 

@@ -1,12 +1,19 @@
 package de.taracamp.familyplan.Models.Enums;
 
-/**
- * Created by wowa on 22.09.2017.
- */
+public enum TaskState
+{
+	OPEN("Offen"),
+	IN_PROCESS("In Bearbeitung"),
+	FINISH("Fertig"),
+	WAITING("Warten");
 
-public enum TaskState {
-	OPEN,
-	IN_PROCESS,
-	FINISH
+	private String state;
 
+	private TaskState(String category){
+		this.state = state;
+	}
+
+	@Override public String toString(){
+		return state;
+	}
 }

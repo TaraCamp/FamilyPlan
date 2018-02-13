@@ -23,15 +23,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUser;
-import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.R;
 

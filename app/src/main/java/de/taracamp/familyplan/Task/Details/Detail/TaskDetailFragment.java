@@ -33,7 +33,7 @@ import java.util.List;
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
@@ -213,8 +213,7 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 					{
 						if (update(_task))
 						{
-							loadHeader(_task.getTaskState());
-							Message.show(getContext().getApplicationContext(),"Die Aufgabe wurde geändert!", Message.Mode.INFO);
+
 						}
 						else
 						{
@@ -227,9 +226,6 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 			@Override
 			public void onCancelled(DatabaseError databaseError) {}
 		});
-
-		this.loadHeader(_task.getTaskState());
-		this.loadSpinner(_task.getTaskState());
 
 		this.editTextTaskCreator.setText(_task.getTaskCreator().getUserName());
 		this.editTextTaskTitle.setText(_task.getTaskTitle());
@@ -400,7 +396,6 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 
 		updateTask.setTaskTitle(editTextTaskTitle.getText().toString()); // Setze Aufgabentitel
 		updateTask.setTaskDescription(editTextTaskDescription.getText().toString()); // Setze Aufgabenbeschreibung
-		updateTask.setTaskState(state);
 
 		updateTask.setTaskCreatedOn(DateUtils.formatDateTime(getContext(),calendar.getTimeInMillis(),DateUtils.FORMAT_SHOW_DATE));
 		if (dateCalendar!=null) _task.setTaskDate(editTextTaskDate.getText().toString()); // Setzt Datum als String

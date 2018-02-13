@@ -1,8 +1,6 @@
 package de.taracamp.familyplan.Calendar;
 
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -11,14 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.Calendar;
 
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 import de.taracamp.familyplan.Task.List.TaskAddActivity;
 

@@ -12,16 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import de.taracamp.familyplan.Models.Event;
-import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.R;
 
@@ -128,7 +120,7 @@ public class EventsActionDialog extends DialogFragment
 
 	private void remove()
 	{
-		if (firebaseManager.removeEvent(event))
+		if (firebaseManager.removeObject(event))
 		{
 			Message.show(getActivity().getApplicationContext(),"Ereignis wurde entfernt", Message.Mode.SUCCES);
 

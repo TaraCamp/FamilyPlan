@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import de.taracamp.familyplan.Family.FamilyAddActivity;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.Models.UserManager;

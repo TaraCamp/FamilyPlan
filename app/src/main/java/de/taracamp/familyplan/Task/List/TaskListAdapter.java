@@ -37,6 +37,7 @@ import de.taracamp.familyplan.Task.Details.TaskDetailsActivity;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder>
 {
 	private static final String TAG = "familyplan.debug";
+	private static final String CLASS = "TaskListAdapter";
 
 	private List<Task> TaskList = null;
 	private Context ThisContext = null;
@@ -86,26 +87,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
 		final CardView cardViewTask = _holder.cardViewListItem;
 
-		// show task status
-		final ImageView imageViewTaskStatusIcon = _holder.imageViewTaskStatusIcon;
-		switch (task.getTaskState())
-		{
-			case "OPEN": imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_open);
-				break;
-			case "IN_PROCESS":{
-				imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_in_process);
-				cardViewTask.setCardBackgroundColor(Color.argb(255,255,253,175));
-			}
-				break;
-			case "FINISH": {
-					imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_finish);
-					cardViewTask.setCardBackgroundColor(Color.argb(255,204,255,153));
-				}
-				break;
-			default: imageViewTaskStatusIcon.setImageResource(R.drawable.ic_action_open);
-				break;
-		}
-
 		// show task favorite state
 		final ImageView imageViewTaskFavorite = _holder.imageViewTaskFavorite;
 
@@ -120,10 +101,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			@Override
 			public void onClick(View v)
 			{
+
 				if(task.isTaskFavorite())
 				{
-					Log.d(TAG,":TaskListAdapter.onClick() -> favorite=false");
-
 					imageViewTaskFavorite.setImageResource(R.drawable.ic_action_favorite_off);
 
 					task.setTaskFavorite(false);
@@ -141,53 +121,34 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 			}
 		});
 
-		// check whether action mode is active
-		if (!_holder.taskListActivity.isActionModeEnable)
-		{
-			_holder.checkBoxTaskDone.setVisibility(View.GONE);
-
-			_holder.imageViewTaskFavorite.setVisibility(View.VISIBLE);
-		}
-		else
-		{
-			_holder.checkBoxTaskDone.setVisibility(View.VISIBLE);
-			_holder.checkBoxTaskDone.setChecked(false);
-
-			_holder.imageViewTaskFavorite.setVisibility(View.GONE);
-		}
-
 		_holder.itemView.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View _v)
 			{
-				if (_holder.checkBoxTaskDone.getVisibility()!=View.VISIBLE)
-				{
-					Log.d(TAG,":TaskListAdapter.onClick() -> item with value = " + textViewName.getText().toString());
+				Log.d(TAG,CLASS+".onClick() -> open detail view");
 
-					if(taskListActivity.isMasterDetailEnable)
-					{
-						Log.d(TAG,":TaskListAdapter.onClick() -> tablet mode");
+				//Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailsActivity.class);
+				//intent.putExtra("TASK_KEY",task.getTaskToken());
+				//taskListActivity.startActivity(AppUserManager.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
 
-						TaskDetailFragment fragment = TaskDetailFragment.newInstance(task.getTaskToken(),_holder.taskListActivity.firebaseManager);
-
-						taskListActivity.getSupportFragmentManager()
-								.beginTransaction()
-								.replace(R.id.item_detail_container,fragment)
-								.commit();
-
-					}
-					else
-					{
-						Log.d(TAG,":TaskListAdapter.onClick() -> smart mode");
-
-						Intent intent = new Intent(taskListActivity.getApplicationContext(),TaskDetailsActivity.class);
-						intent.putExtra("TASK_KEY",task.getTaskToken());
-						taskListActivity.startActivity(AppUserManager.setAppUser(intent,_holder.taskListActivity.firebaseManager.appUser));
-					}
-				}
 			}
 		});
+
+		_holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v)
+			{
+				Log.d(TAG,CLASS+".onLongClick() -> open task action dialog");
+
+				TasksActionDialog dialog = TasksActionDialog.newInstance(_holder.taskListActivity.firebaseManager,task);
+				dialog.show(_holder.taskListActivity.getFragmentManager(),"taskaction");
+
+				return true;
+			}
+		});
+
 	}
 
 	@Override
@@ -196,30 +157,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 		return this.TaskList.size();
 	}
 
-	public void updateAdapter(ArrayList<Task> _list)
-	{
-		for (Task task : _list)
-		{
-			TaskList.remove(task);
-		}
-
-		notifyDataSetChanged();
-	}
-
-
 	/**
 	 * Eine Innere Klasse, mit dieser wird ein Behälter für die Steuerelemente eines Items definiert.
 	 */
-	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+	public class ViewHolder extends RecyclerView.ViewHolder
 	{
 		private TaskListActivity taskListActivity;
 
 		private TextView nameTextView;
 		private TextView descriptionTextView;
 		private TextView textViewTaskCreator = null;
-		private CheckBox checkBoxTaskDone;
 		private CardView cardViewListItem;
-		private ImageView imageViewTaskStatusIcon = null;
 		private ImageView imageViewTaskFavorite = null;
 
 		public ViewHolder(View _itemView, TaskListActivity taskListActivity)
@@ -234,21 +182,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
 			this.textViewTaskCreator = (TextView) _itemView.findViewById(R.id.item_task_editors);
 
-			this.checkBoxTaskDone = (CheckBox) _itemView.findViewById(R.id.checkBox_task);
-			this.checkBoxTaskDone.setOnClickListener(this);
-
-			this.imageViewTaskStatusIcon = (ImageView) _itemView.findViewById(R.id.imageView_taskItem);
-
 			this.imageViewTaskFavorite = (ImageView) _itemView.findViewById(R.id.imageView_task_favorite);
 
 			this.cardViewListItem = (CardView) _itemView.findViewById(R.id.cardView_task);
-			this.cardViewListItem.setOnLongClickListener(taskListActivity);
-		}
-
-		@Override
-		public void onClick(View v)
-		{
-			this.taskListActivity.prepareSelection(v,getAdapterPosition());
 		}
 	}
 }

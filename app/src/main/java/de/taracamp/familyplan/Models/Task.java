@@ -8,12 +8,14 @@ package de.taracamp.familyplan.Models;
 
 import java.util.List;
 
+import de.taracamp.familyplan.Models.Enums.TaskState;
+
 public class Task
 {
 	private String taskToken = null;
 	private String taskTitle = null;
 	private String taskDescription = null;
-	private String taskState = null;
+	private TaskState taskState = null;
 	private User taskCreator = null;
 	private String taskTime = null;
 	private String taskDate = null;
@@ -63,11 +65,11 @@ public class Task
 		this.taskDescription = taskDescription;
 	}
 
-	public String getTaskState() {
+	public TaskState getTaskState() {
 		return taskState;
 	}
 
-	public void setTaskState(String taskState) {
+	public void setTaskState(TaskState taskState) {
 		this.taskState = taskState;
 	}
 

@@ -19,9 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import de.taracamp.familyplan.Login.LoginActivity;
-import de.taracamp.familyplan.Models.AppUser;
 import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.User;
 
 /**

@@ -11,7 +11,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -36,17 +35,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
-import de.taracamp.familyplan.Models.AppUser;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Enums.EventCategory;
 import de.taracamp.familyplan.Models.Event;
 import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
@@ -112,17 +108,15 @@ public class EventDetailActivity extends AppCompatActivity implements MultiSelec
 		{
 			currentToken = getIntent().getStringExtra("EVENT_TOKEN");
 			// ./families/<token>/familyEvents/<token>/ get event
-			final String familyToken = firebaseManager.appUser.getUserFamilyToken();
-			firebaseManager.families().child(familyToken).child(firebaseManager.FAMILY_EVENTS).child(currentToken).addListenerForSingleValueEvent(new ValueEventListener() {
+			firebaseManager.getEventsReference().child(currentToken).addListenerForSingleValueEvent(new ValueEventListener() {
 
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot)
 				{
 					currentEvent = dataSnapshot.getValue(Event.class);
-
 					Log.d(TAG,CLASS+"load event with token: " + currentEvent.getEventToken());
 
-					firebaseManager.families().child(familyToken).addListenerForSingleValueEvent(new ValueEventListener() {
+					firebaseManager.getFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
 
 						@Override
 						public void onDataChange(DataSnapshot dataSnapshot)
@@ -385,20 +379,13 @@ public class EventDetailActivity extends AppCompatActivity implements MultiSelec
 
 	private void remove(Event _event)
 	{
-		if (firebaseManager.appUser.getUserToken().equals(currentEvent.getEventCreator().getUserToken()))
+		if (firebaseManager.removeObject(_event))
 		{
-			if (firebaseManager.removeEvent(_event))
-			{
-				Message.show(getApplicationContext(),"Event wurde entfernt.", Message.Mode.SUCCES);
+			Message.show(getApplicationContext(),"Event wurde entfernt.", Message.Mode.SUCCES);
 
-				Intent intent = new Intent(getApplicationContext(),CalendarActivity.class);
-				intent.putExtra("USER",firebaseManager.appUser);
-				startActivity(intent);
-			}
-		}
-		else
-		{
-			Message.show(getApplicationContext(),"Event kann nur vom Ersteller entfernt werden.", Message.Mode.INFO);
+			Intent intent = new Intent(getApplicationContext(),CalendarActivity.class);
+			intent.putExtra("USER",firebaseManager.appUser);
+			startActivity(intent);
 		}
 	}
 
@@ -406,8 +393,7 @@ public class EventDetailActivity extends AppCompatActivity implements MultiSelec
 	{
 		if (isValid())
 		{
-			Event event = createEvent();
-			if (firebaseManager.updateEvent(event))
+			if (firebaseManager.saveObject(createEvent()))
 			{
 				Message.show(getApplicationContext(),"Event wurde geändert.", Message.Mode.SUCCES);
 
@@ -503,6 +489,21 @@ public class EventDetailActivity extends AppCompatActivity implements MultiSelec
 
 	private boolean isValid()
 	{
+		String name = editTextEventName.getText().toString();
+		String date = editTextEventDate.getText().toString();
+
+		if (name.isEmpty())
+		{
+			editTextEventName.setError("Es darf nicht leer sein!");
+			return false;
+		}
+
+		if (date.isEmpty())
+		{
+			editTextEventDate.setError("Es darf nicht leer sein!");
+			return false;
+		}
+
 		return true;
 	}
 

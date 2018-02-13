@@ -1,12 +1,15 @@
+/**
+ * @file CalendarFragment.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Calendar;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,18 +24,16 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import de.taracamp.familyplan.Family.FamilyAddActivity;
-import de.taracamp.familyplan.Models.AppUser;
 import de.taracamp.familyplan.Models.Enums.EventCategory;
 import de.taracamp.familyplan.Models.Event;
-import de.taracamp.familyplan.Models.Family;
-import de.taracamp.familyplan.Models.FirebaseManager;
-import de.taracamp.familyplan.Models.Message;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 
+/**
+ * Die Kalendar Ansicht mit Vorschaubilder zu einzelnen Ereignissen.
+ */
 public class CalendarFragment extends Fragment {
 
 	private static final String TAG = "familyplan.debug";
@@ -43,23 +44,13 @@ public class CalendarFragment extends Fragment {
 
 	private static FirebaseManager firebaseManager;
 
-	public CalendarFragment()
-	{
-	}
+	public CalendarFragment() {}
 
 	public static CalendarFragment newInstance(FirebaseManager _firebaseManager)
 	{
 		CalendarFragment fragment = new CalendarFragment();
 		firebaseManager = _firebaseManager;
 		return fragment;
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-
-		Log.d(TAG,CLASS+".onCreate()");
 	}
 
 	@Override
@@ -101,56 +92,21 @@ public class CalendarFragment extends Fragment {
 		return view;
 	}
 
+	/**
+	 * Alle Events einer Familie werden in den Kalendar geladen.
+	 */
 	private void loadEvents()
 	{
-		String familyToken = firebaseManager.appUser.getUserFamilyToken();
-		firebaseManager.families().child(familyToken).child(firebaseManager.FAMILY_EVENTS).addListenerForSingleValueEvent(new ValueEventListener() {
+		// ./families/<token>/familyEvents -> get all events
+		firebaseManager.getEventsReference().addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
 				List<EventDay> events = new ArrayList<>();
 				for (DataSnapshot eventSnap : dataSnapshot.getChildren())
 				{
-					Event event = eventSnap.getValue(Event.class);
-
-					Calendar calendar = Calendar.getInstance();
-					calendar.set(event.getEventYear(),event.getEventMonth(),event.getEventDay());
-
-					EventCategory eventCategory = event.getEventCategory();
-					if (eventCategory.equals(EventCategory.BIRTHDAY))
-					{
-						events.add(new EventDay(calendar, R.drawable.birthday));
-					}
-					else if (eventCategory.equals(EventCategory.DATE))
-					{
-						events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
-					}
-					else if (eventCategory.equals(EventCategory.SPORT))
-					{
-						events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
-					}
-					else if (eventCategory.equals(EventCategory.SCHOOL))
-					{
-						events.add(new EventDay(calendar, R.drawable.school));
-					}
-					else if (eventCategory.equals(EventCategory.NOTHING))
-					{
-						events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
-					}
-					else if (eventCategory.equals(EventCategory.PARTY))
-					{
-						events.add(new EventDay(calendar, R.drawable.party));
-					}
-					else if (eventCategory.equals(EventCategory.JOB))
-					{
-						events.add(new EventDay(calendar, R.drawable.work));
-					}
-					else if (eventCategory.equals(EventCategory.EXCURSION))
-					{
-						events.add(new EventDay(calendar, R.drawable.excursion));
-					}
+					events = addEventToCalendar(events,eventSnap.getValue(Event.class));
 				}
-
 				calendarView.setEvents(events);
 			}
 
@@ -158,7 +114,47 @@ public class CalendarFragment extends Fragment {
 			public void onCancelled(DatabaseError databaseError) {
 			}
 		});
-
 	}
 
+	private List<EventDay> addEventToCalendar(List<EventDay> events,Event event)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(event.getEventYear(),event.getEventMonth(),event.getEventDay());
+
+		EventCategory eventCategory = event.getEventCategory();
+		if (eventCategory.equals(EventCategory.BIRTHDAY))
+		{
+			events.add(new EventDay(calendar, R.drawable.birthday));
+		}
+		else if (eventCategory.equals(EventCategory.DATE))
+		{
+			events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
+		}
+		else if (eventCategory.equals(EventCategory.SPORT))
+		{
+			events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
+		}
+		else if (eventCategory.equals(EventCategory.SCHOOL))
+		{
+			events.add(new EventDay(calendar, R.drawable.school));
+		}
+		else if (eventCategory.equals(EventCategory.NOTHING))
+		{
+			events.add(new EventDay(calendar, R.drawable.ic_action_calendar));
+		}
+		else if (eventCategory.equals(EventCategory.PARTY))
+		{
+			events.add(new EventDay(calendar, R.drawable.party));
+		}
+		else if (eventCategory.equals(EventCategory.JOB))
+		{
+			events.add(new EventDay(calendar, R.drawable.work));
+		}
+		else if (eventCategory.equals(EventCategory.EXCURSION))
+		{
+			events.add(new EventDay(calendar, R.drawable.excursion));
+		}
+
+		return events;
+	}
 }

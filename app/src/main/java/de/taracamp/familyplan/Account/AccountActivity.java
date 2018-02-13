@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
-import de.taracamp.familyplan.Models.FirebaseManager;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 
 public class AccountActivity extends AppCompatActivity

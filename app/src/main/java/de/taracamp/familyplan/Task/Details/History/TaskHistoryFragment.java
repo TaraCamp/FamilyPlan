@@ -17,8 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-import de.taracamp.familyplan.Models.FirebaseManager;
-import de.taracamp.familyplan.Models.History;
+import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.HistoryManager;
 import de.taracamp.familyplan.Models.HistoryMessage;
 import de.taracamp.familyplan.Models.Task;
