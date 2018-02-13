@@ -116,7 +116,7 @@ public class EventDetailActivity extends AppCompatActivity implements MultiSelec
 					currentEvent = dataSnapshot.getValue(Event.class);
 					Log.d(TAG,CLASS+"load event with token: " + currentEvent.getEventToken());
 
-					firebaseManager.getFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
+					firebaseManager.getCurrentFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
 
 						@Override
 						public void onDataChange(DataSnapshot dataSnapshot)

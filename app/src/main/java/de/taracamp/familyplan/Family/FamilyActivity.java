@@ -201,7 +201,7 @@ public class FamilyActivity extends AppCompatActivity
 				}
 				firebaseManager.families().child(family.getFamilyToken()).child(firebaseManager.familyMembers()).setValue(updateMembers);
 
-				firebaseManager.users().child(firebaseManager.appUser.getUserToken()).addListenerForSingleValueEvent(new ValueEventListener() {
+				firebaseManager.getCurrentUserReference().addListenerForSingleValueEvent(new ValueEventListener() {
 					@Override
 					public void onDataChange(DataSnapshot dataSnapshot)
 					{
@@ -211,7 +211,7 @@ public class FamilyActivity extends AppCompatActivity
 						user.setUserFamilyToken("");
 						user.setUserFamilyName("");
 
-						firebaseManager.users().child(firebaseManager.appUser.getUserToken()).setValue(user);
+						firebaseManager.saveObject(user);
 
 						firebaseManager.appUser = AppUserManager.getAppUser(user);
 

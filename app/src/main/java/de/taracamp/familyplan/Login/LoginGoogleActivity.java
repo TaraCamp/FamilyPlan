@@ -151,7 +151,7 @@ public class LoginGoogleActivity extends AppCompatActivity implements GoogleApiC
                                             UserManager.Platform.GOOGLE,false,"","");
 
                                     // ./users/<token> -> set new user
-                                    firebaseManager.users().child(task.getResult().getUser().getUid()).setValue(newUser);
+                                    firebaseManager.getUsersReference().child(task.getResult().getUser().getUid()).setValue(newUser);
 
                                     firebaseManager.appUser = AppUserManager.getAppUser(newUser);
 

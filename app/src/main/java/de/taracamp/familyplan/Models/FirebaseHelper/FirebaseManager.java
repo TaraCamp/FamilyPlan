@@ -1,7 +1,7 @@
 /**
  * @file FirebaseManager.java
  * @version 1.0
- * @copyright 2017 TaraCamp Community
+ * @copyright 2018 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
 package de.taracamp.familyplan.Models.FirebaseHelper;
@@ -62,6 +62,12 @@ public class FirebaseManager
 		this.database = FirebaseDatabase.getInstance();
 	}
 
+	/**
+	 * Remove a task, event, family or user object from FireBase database.
+	 *
+	 * @param object
+	 * @return
+	 */
 	public boolean removeObject(Object object)
 	{
 		if (object instanceof Event)
@@ -104,7 +110,8 @@ public class FirebaseManager
 		}
 		else if (object instanceof User)
 		{
-			return false;
+			UserNode node = new UserNode(getUsersReference());
+			return node.save(object);
 		}
 		else if (object instanceof Task)
 		{
@@ -123,17 +130,12 @@ public class FirebaseManager
 		}
 	}
 
-	public DatabaseReference getRootReference()
-	{
-		return database.getReference();
-	}
-
 	public DatabaseReference getFamiliesReference()
 	{
 		return database.getReference("families").getRef();
 	}
 
-	public DatabaseReference getFamilyReference()
+	public DatabaseReference getCurrentFamilyReference()
 	{
 		if (appUser!=null)
 		{
@@ -189,22 +191,30 @@ public class FirebaseManager
 		}
 	}
 
+	public DatabaseReference getCurrentUserReference()
+	{
+		if (appUser!=null)
+		{
+			return getUsersReference().child(appUser.getUserToken()).getRef();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	/**
 	 * Get current user by FireBase token.
 	 *
 	 * @param token
 	 * @return
 	 */
-	public DatabaseReference getCurrentUser(String token)
+	public DatabaseReference getCurrentUserReference(String token)
 	{
 		return getUsersReference().child(token).getRef();
 	}
 
 	public DatabaseReference root(){return this.database.getReference();}
-	public DatabaseReference users()
-	{
-		return this.database.getReference("users").getRef();
-	}
 	public DatabaseReference families()
 	{
 		return this.database.getReference("families").getRef();

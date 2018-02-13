@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
                         if (user!=null)
                         {
                             // ./users/<token> wird zurückgegeben.
-                            firebaseManager.users().child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            firebaseManager.getCurrentUserReference(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot)

@@ -45,8 +45,6 @@ import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
-import static java.lang.annotation.RetentionPolicy.CLASS;
-
 /**
  * Diese Activity wird genutzt eine neue Aufgabe zu erstellen. Folgende Felder sind anzugeben:
  *
@@ -269,7 +267,7 @@ public class TaskAddActivity extends AppCompatActivity implements MultiSelection
 	private void getFamily()
 	{
 		// ./families/<token>
-		firebaseManager.getFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
+		firebaseManager.getCurrentFamilyReference().addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)

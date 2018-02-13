@@ -148,13 +148,24 @@ public class LoginSignupActivity extends AppCompatActivity
     public void onSignupSuccess(FirebaseUser _user,String token,String name,String email)
     {
         // Ein neuer Benutzer wird erstellt
-        final User newUser = UserManager.createUser(token,name,"","",email,"",true, UserManager.Platform.EMAIL,false,"","");
+        final User user = UserManager.createUser(token,
+                                                    name,
+                                                    "",
+                                                    "",
+                                                    email,
+                                                    "",
+                                                    true,
+                                                    UserManager.Platform.EMAIL,
+                                                    false,
+                                                    "",
+                                                    "");
 
         // ./users/<token> -> save user
-        this.firebaseManager.users().child(_user.getUid()).setValue(newUser);
+        //this.firebaseManager.users().child(_user.getUid()).setValue(newUser);
+        firebaseManager.saveObject(user);
 
         Intent intent = new Intent(getApplicationContext(),FamilyAddActivity.class);
-        intent.putExtra("USER",AppUserManager.getAppUser(newUser));
+        intent.putExtra("USER",AppUserManager.getAppUser(user));
         startActivity(intent);
     }
 

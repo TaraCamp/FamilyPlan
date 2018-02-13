@@ -56,7 +56,7 @@ public class SplashActivity extends AppCompatActivity
                 if (user!=null)
                 {
                     //
-                    firebaseManager.getCurrentUser(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    firebaseManager.getCurrentUserReference(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
                         {

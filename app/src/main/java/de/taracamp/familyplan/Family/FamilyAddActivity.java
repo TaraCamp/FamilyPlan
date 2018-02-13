@@ -139,7 +139,7 @@ public class FamilyAddActivity extends AppCompatActivity
 					family.getFamilyToken(),
 					"");
 
-			firebaseManager.users().child(firebaseManager.appUser.getUserToken()).setValue(updateUser);
+			firebaseManager.saveObject(updateUser);
 
 			// App User wird aktualisiert.
 			firebaseManager.appUser.setHasFamily(true);
@@ -222,7 +222,7 @@ public class FamilyAddActivity extends AppCompatActivity
 					family.getFamilyToken(),
 					"");
 
-			firebaseManager.users().child(firebaseManager.appUser.getUserToken()).setValue(updateUser);
+			firebaseManager.saveObject(updateUser);
 
 			firebaseManager.appUser.setHasFamily(true);
 			firebaseManager.appUser.setNewMember(false);
