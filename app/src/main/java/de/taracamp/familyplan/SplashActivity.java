@@ -1,7 +1,7 @@
 /**
  * @file SplashActivity.java
  * @version 1.0
- * @copyright 2017 TaraCamp Community
+ * @copyright 20178 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
 package de.taracamp.familyplan;
@@ -34,12 +34,6 @@ public class SplashActivity extends AppCompatActivity
 
     private FirebaseManager firebaseManager = null;
 
-    /**
-     * Firebase wird geladen und es wird geprügt ob ein Benutzer bereits angemedet ist und
-     * dessen Daten werden in einem App User Object abgelegt und an die nächste
-     * Activiy übergeben.
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -48,7 +42,43 @@ public class SplashActivity extends AppCompatActivity
 
         Log.d(TAG,CLASS+".onCreate()");
 
-        this.Firebase(); // Firebase wird geladen
+        this.firebaseManager = new FirebaseManager(); // Fiebase Unterstützungsklasse wird geladen.
+        // Firebase prüft ob ein benutzer vorliegt.
+        this.firebaseManager.mAuth = FirebaseAuth.getInstance();
+        this.firebaseManager.mAuthListener = new FirebaseAuth.AuthStateListener(){
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+            {
+                FirebaseUser user = firebaseAuth.getCurrentUser(); // Gibt aktuellen Firebase Benutzer zurück
+
+                // Prüft on der Firebase Benutzer vorhanden ist.
+                if (user!=null)
+                {
+                    //
+                    firebaseManager.getCurrentUser(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot)
+                        {
+                            // Der aktuelle Firebase Benutzer wird in eine Serialisierte Klasse FamilyUser übertragen.
+                            firebaseManager.appUser =  AppUserManager.getAppUser(dataSnapshot.getValue(User.class));
+                            // Sendet den App user an die nächste Activity und startet diese.
+                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                            intent.putExtra("USER", firebaseManager.appUser);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
+                }
+                else
+                {
+                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                    startActivity(intent);
+                }
+            }
+        };
     }
 
     @Override
@@ -63,59 +93,5 @@ public class SplashActivity extends AppCompatActivity
     {
         super.onStop();
         this.firebaseManager.onStop(); // Firebase Listner wird gestoppt.
-    }
-
-    /**
-     * Der aktuelle Benutzer wird ermitellt und an die nächste Activit weitergegeben.
-     */
-    private void Firebase()
-    {
-        this.firebaseManager = new FirebaseManager(); // Fiebase Unterstützungsklasse wird geladen.
-
-        // Firebase prüft ob ein benutzer vorliegt.
-        this.firebaseManager.mAuth = FirebaseAuth.getInstance();
-        this.firebaseManager.mAuthListener = new FirebaseAuth.AuthStateListener(){
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
-            {
-                FirebaseUser user = firebaseAuth.getCurrentUser(); // Gibt aktuellen Firebase Benutzer zurück
-
-                // Prüft on der Firebase Benutzer vorhanden ist.
-                if (user!=null)
-                {
-                    loadUserInformation(user.getUid()); // Alle Benutzerinformationen werden geladen.
-                }
-                else
-                {
-                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                    startActivity(intent);
-                }
-            }
-        };
-    }
-
-    /**
-     * Läd alle Daten eines Benutzers und gibt diese weiter.
-     */
-    private void loadUserInformation(String _token)
-    {
-        // ./users/<token> Zugriff
-        firebaseManager.users().child(_token).addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                // Der aktuelle Firebase Benutzer wird in eine Serialisierte Klasse FamilyUser übertragen.
-                firebaseManager.appUser =  AppUserManager.getAppUser(dataSnapshot.getValue(User.class));
-                // Sendet den App user an die nächste Activity und startet diese.
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                intent.putExtra("USER", firebaseManager.appUser);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
     }
 }

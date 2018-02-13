@@ -89,6 +89,12 @@ public class FirebaseManager
 		}
 	}
 
+	/**
+	 * Save a task, event, family or user object in FireBase database.
+	 *
+	 * @param object
+	 * @return
+	 */
 	public boolean saveObject(Object object)
 	{
 		if (object instanceof Event)
@@ -139,11 +145,21 @@ public class FirebaseManager
 		}
 	}
 
+	/**
+	 * Get FireBase path to all users.
+	 *
+	 * @return
+	 */
 	public DatabaseReference getUsersReference()
 	{
 		return database.getReference("users").getRef();
 	}
 
+	/**
+	 *  Get FireBase path to Calendar Events.
+	 *
+	 * @return
+	 */
 	public DatabaseReference getEventsReference()
 	{
 		if (appUser!=null)
@@ -156,6 +172,11 @@ public class FirebaseManager
 		}
 	}
 
+	/**
+	 * Get FireBase path to Tasks.
+	 *
+	 * @return
+	 */
 	public DatabaseReference getTasksReference()
 	{
 		if (appUser!=null)
@@ -166,6 +187,17 @@ public class FirebaseManager
 		{
 			return null;
 		}
+	}
+
+	/**
+	 * Get current user by FireBase token.
+	 *
+	 * @param token
+	 * @return
+	 */
+	public DatabaseReference getCurrentUser(String token)
+	{
+		return getUsersReference().child(token).getRef();
 	}
 
 	public DatabaseReference root(){return this.database.getReference();}
