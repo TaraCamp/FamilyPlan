@@ -1,7 +1,7 @@
 /**
  * @file SplashActivity.java
  * @version 1.0
- * @copyright 20178 TaraCamp Community
+ * @copyright 2018 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
 package de.taracamp.familyplan;
@@ -51,11 +51,9 @@ public class SplashActivity extends AppCompatActivity
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
             {
                 FirebaseUser user = firebaseAuth.getCurrentUser(); // Gibt aktuellen Firebase Benutzer zurück
-
                 // Prüft on der Firebase Benutzer vorhanden ist.
                 if (user!=null)
                 {
-                    //
                     firebaseManager.getCurrentUserReference(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)

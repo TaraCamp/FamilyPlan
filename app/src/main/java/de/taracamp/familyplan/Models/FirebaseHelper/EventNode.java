@@ -27,16 +27,9 @@ public class EventNode implements Node
 	@Override
 	public boolean save(Object object)
 	{
-		if (object instanceof Event)
-		{
-			Event event = (Event) object;
-			eventsReference.child(event.getEventToken()).setValue(event);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		Event event = (Event) object;
+		eventsReference.child(event.getEventToken()).setValue(event);
+		return true;
 	}
 
 	@Override
