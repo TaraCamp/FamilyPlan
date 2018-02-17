@@ -159,7 +159,7 @@ public class FamilyActivity extends AppCompatActivity
 
 		String familyToken = this.firebaseManager.appUser.getUserFamilyToken();
 		// ./families/<token>/familyMembers
-		this.firebaseManager.getCurrentFamilyReference().child(this.firebaseManager.familyMembers()).addValueEventListener(new ValueEventListener() {
+		this.firebaseManager.getCurrentFamilyReference().child("familyMembers").addValueEventListener(new ValueEventListener() {
 
 					@Override
 					public void onDataChange(DataSnapshot dataSnapshot)
@@ -199,7 +199,7 @@ public class FamilyActivity extends AppCompatActivity
 						updateMembers.add(user);
 					}
 				}
-				firebaseManager.getFamiliesReference().child(family.getFamilyToken()).child(firebaseManager.familyMembers()).setValue(updateMembers);
+				firebaseManager.getFamiliesReference().child(family.getFamilyToken()).child("familyMembers").setValue(updateMembers);
 
 				firebaseManager.getCurrentUserReference().addListenerForSingleValueEvent(new ValueEventListener() {
 					@Override

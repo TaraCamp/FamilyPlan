@@ -200,7 +200,7 @@ public class FamilyAddActivity extends AppCompatActivity
 			List<User> members = family.getFamilyMembers();
 			members.add(AppUserManager.getUserByAppUser(firebaseManager.appUser));
 
-			firebaseManager.getFamiliesReference().child(family.getFamilyToken()).child(firebaseManager.familyMembers()).setValue(members);
+			firebaseManager.getFamiliesReference().child(family.getFamilyToken()).child("familyMembers").setValue(members);
 
 			UserManager.Platform platform = null;
 			if (firebaseManager.appUser.isEmailMember())

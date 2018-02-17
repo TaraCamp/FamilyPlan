@@ -32,11 +32,6 @@ public class FirebaseManager
 	// Der aktuell angemeldete App Benutzer
 	public AppUser appUser;
 
-	public String familyMembers() {return "familyMembers";}
-
-	public String id(){return "id";}
-
-
 	public void onStart()
 	{
 		mAuth.addAuthStateListener(mAuthListener);
