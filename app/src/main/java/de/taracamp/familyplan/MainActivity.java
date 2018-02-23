@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import de.taracamp.familyplan.Account.AccountActivity;
 import de.taracamp.familyplan.Calendar.CalendarActivity;
@@ -32,7 +33,8 @@ import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.Notifications.AppBroadcast;
-import de.taracamp.familyplan.Services.TaskCheckerService;
+import de.taracamp.familyplan.Services.FamilyPlanFirebaseInstanceIDService;
+import de.taracamp.familyplan.Services.FamilyPlanFirebaseMessagingService;
 import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
@@ -70,9 +72,8 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG,CLASS+".onCreate()");
 
         this.Firebase(); // Firebase wird geladen
-        //this.startBroadcast();
 
-        TaskCheckerService.startTaskChecker(this);
+
     }
 
     private void startBroadcast()
@@ -92,6 +93,9 @@ public class MainActivity extends AppCompatActivity
         this.firebaseManager = new FirebaseManager(); // Hilft bei gloabalen Firebase Zugriffen.
         // Der Aktuelle App Benutzer wird anhand vom Intent serialisiert übergeben.
         this.firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("familyplan.debug",CLASS+":register token ->"+token);
 
         Debug.debugAppUser(CLASS,firebaseManager.appUser);
 
