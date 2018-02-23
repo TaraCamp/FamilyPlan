@@ -159,7 +159,6 @@ public class LoginSignupActivity extends AppCompatActivity
                                                     false,
                                                     "",
                                                     "");
-
         // ./users/<token> -> save user
         //this.firebaseManager.users().child(_user.getUid()).setValue(newUser);
         firebaseManager.saveObject(user);

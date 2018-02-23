@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -38,6 +39,13 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id"/>
         <!-- [END fcm_default_channel] -->
+
+        <receiver android:name=".Notifications.AppBroadcast">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED"/>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".Login.LoginActivity"
@@ -100,8 +108,19 @@
         </activity>
         <activity android:name=".Calendar.EventsActivity">
         </activity>
-        <activity android:name=".Calendar.EventDetailActivity"
-                  android:windowSoftInputMode="stateHidden">
+        <activity
+            android:name=".Calendar.EventDetailActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <service
+            android:name=".Services.TaskCheckerService"
+            android:exported="false">
+        </service>
+
+        <activity android:name=".Account.FamilyMemberAccountActivity">
+        </activity>
+        <activity android:name=".Account.NotificationActivity">
         </activity>
     </application>
 

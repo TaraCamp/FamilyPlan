@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import de.taracamp.familyplan.Models.AppUser;
 import de.taracamp.familyplan.Models.Event;
 import de.taracamp.familyplan.Models.Family;
+import de.taracamp.familyplan.Models.Notification;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 
@@ -25,6 +26,8 @@ public class FirebaseManager
 	FirebaseDatabase database = null;
 
 	public DatabaseReference currentTaskReference = null;
+
+	public String transferData = null;
 
 	public FirebaseAuth mAuth = null;
 	public FirebaseAuth.AuthStateListener mAuthListener = null;
@@ -51,6 +54,16 @@ public class FirebaseManager
 	public FirebaseManager()
 	{
 		this.database = FirebaseDatabase.getInstance();
+	}
+
+	/**
+	 * Get new token for new leaf.
+	 *
+	 * @return {String} new token.
+	 */
+	public String createToken()
+	{
+		return getRootReference().push().getKey();
 	}
 
 	/**
@@ -109,6 +122,11 @@ public class FirebaseManager
 			FamilyNode node = new FamilyNode(getFamiliesReference());
 			return node.save(object);
 		}
+		else if (object instanceof Notification)
+		{
+			NotificationNode node = new NotificationNode(getUserByTokenReference(this.transferData).child(UserNode.USER_NOTIFICATIONS));
+			return node.save(object);
+		}
 		else
 		{
 			return false;
@@ -116,7 +134,25 @@ public class FirebaseManager
 	}
 
 	/**
+	 *
+	 * /users/{token}
+	 *
+	 * @param token
+	 * @return
+	 */
+	public DatabaseReference getUserByTokenReference(String token)
+	{
+		if (transferData != null)
+			return getUsersReference().child(token).getRef();
+		else
+			return null;
+	}
+
+	/**
 	 * Get all families.
+	 *
+	 * /families/{token}
+	 *
 	 */
 	public DatabaseReference getFamiliesReference()
 	{
@@ -131,6 +167,18 @@ public class FirebaseManager
 		if (appUser!=null)
 		{
 			return getFamiliesReference().child(appUser.getUserFamilyToken()).getRef();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public DatabaseReference getFamilyMembersReference()
+	{
+		if (appUser!=null)
+		{
+			return getFamiliesReference().child(appUser.getUserFamilyToken()).child(FamilyNode.FAMILY_MEMBERS).getRef();
 		}
 		else
 		{

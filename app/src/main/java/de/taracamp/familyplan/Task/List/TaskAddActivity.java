@@ -43,6 +43,7 @@ import de.taracamp.familyplan.Models.HistoryManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
+import de.taracamp.familyplan.Notifications.AppNotification;
 import de.taracamp.familyplan.R;
 
 /**
@@ -86,6 +87,8 @@ public class TaskAddActivity extends AppCompatActivity implements MultiSelection
 	private int month;
 	private int day;
 	private String time;
+
+	AppNotification notification = null;
 
 	@Override
 	protected void onCreate(@Nullable Bundle _savedInstanceState)

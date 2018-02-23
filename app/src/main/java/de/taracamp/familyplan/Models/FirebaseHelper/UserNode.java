@@ -8,7 +8,10 @@ import de.taracamp.familyplan.Models.User;
  * Created by wowa on 22.11.2017.
  */
 
-public class UserNode implements Node {
+public class UserNode implements Node
+{
+
+	public final static String USER_NOTIFICATIONS = "userNotifications";
 
 	private DatabaseReference reference;
 

@@ -1,0 +1,62 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="de.taracamp.familyplan.Account.FamilyMemberAccountActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:background="@drawable/fragment_background">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleimageview_familymember_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/default_profile"></de.hdodenhof.circleimageview.CircleImageView>
+
+        <Button
+            android:id="@+id/button_familymember_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_familymember_task"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/primary_color_button"
+            android:fontFamily="@font/app"
+            android:text="Nachricht schicken"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/button_familymember_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/primary_color_button"
+            android:fontFamily="@font/app"
+            android:text="Aufgabe zuordnen"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/textview_familymember_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/circleimageview_familymember_photo"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/app"
+            android:text="user"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
