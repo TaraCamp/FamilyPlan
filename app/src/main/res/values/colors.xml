@@ -36,4 +36,11 @@
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#c8e8ff</color>
 
+    <!-- For Account Tab menu -->
+
+    <color name="textTabLight">#FFB08B</color>
+    <color name="textTabBright">#ffffff</color>
+
+    <color name="outline_gray">#cccccc</color>
+
 </resources>

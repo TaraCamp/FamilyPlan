@@ -7,6 +7,8 @@
 package de.taracamp.familyplan;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ import de.taracamp.familyplan.Models.Debug;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
+import de.taracamp.familyplan.Notifications.AppBroadcast;
+import de.taracamp.familyplan.Services.TaskCheckerService;
 import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity
 
     private FirebaseManager firebaseManager = null;
 
+    private AppBroadcast broadcast = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -64,6 +70,18 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG,CLASS+".onCreate()");
 
         this.Firebase(); // Firebase wird geladen
+        //this.startBroadcast();
+
+        TaskCheckerService.startTaskChecker(this);
+    }
+
+    private void startBroadcast()
+    {
+        broadcast = new AppBroadcast();
+
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        this.registerReceiver(broadcast,filter);
     }
 
     /**
