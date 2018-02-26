@@ -106,7 +106,6 @@
 
         </RelativeLayout>
 
-
         <RelativeLayout
             android:background="@color/tran_colorOrange"
             android:layout_height="fill_parent"
@@ -117,13 +116,11 @@
 
             <ImageView
                 android:id="@+id/categoria_image_23"
-                android:src="@drawable/logo"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"/>
 
             <TextView
-                android:text="Familie"
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:gravity="center"

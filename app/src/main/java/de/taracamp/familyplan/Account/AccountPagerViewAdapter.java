@@ -4,6 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import de.taracamp.familyplan.Account.family.FamilyFragment;
+import de.taracamp.familyplan.Account.notification.NotificationsFragment;
+import de.taracamp.familyplan.Account.profile.ProfileFragment;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 
 class AccountPagerViewAdapter extends FragmentPagerAdapter
@@ -29,7 +32,7 @@ class AccountPagerViewAdapter extends FragmentPagerAdapter
 				FamilyFragment familyFragment = FamilyFragment.newInstance(this.firebaseManager);
 				return  familyFragment;
 			case 2 :
-				NotificationsFragment notificationsFragment = new NotificationsFragment();
+				NotificationsFragment notificationsFragment = NotificationsFragment.newInstance(this.firebaseManager);
 				return notificationsFragment;
 			default:
 				return null;

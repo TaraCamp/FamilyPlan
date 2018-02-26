@@ -1,4 +1,4 @@
-package de.taracamp.familyplan.Account;
+package de.taracamp.familyplan.Account.family;
 
 
 import android.content.Context;

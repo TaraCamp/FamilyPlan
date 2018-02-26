@@ -2,10 +2,28 @@ package de.taracamp.familyplan.Models;
 
 public class Notification
 {
-	private String notifificationFrom;
-	private String notifificationMessage;
-	private String notificationTo;
 	private String notificationToken;
+	private String notifificationFrom;
+	private String notificationTo;
+	private String notifificationMessage;
+	private String notificationDate;
+	private String notificationOwner;
+
+	public String getNotificationDate() {
+		return notificationDate;
+	}
+
+	public void setNotificationDate(String notificationDate) {
+		this.notificationDate = notificationDate;
+	}
+
+	public String getNotificationOwner() {
+		return notificationOwner;
+	}
+
+	public void setNotificationOwner(String notificationOwner) {
+		this.notificationOwner = notificationOwner;
+	}
 
 	public String getNotificationTo() {
 		return notificationTo;

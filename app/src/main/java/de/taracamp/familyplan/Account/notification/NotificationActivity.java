@@ -4,7 +4,7 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan.Account;
+package de.taracamp.familyplan.Account.notification;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Date;
+
+import de.taracamp.familyplan.Account.family.FamilyMemberAccountActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
@@ -55,23 +58,33 @@ public class NotificationActivity extends AppCompatActivity
 			@Override
 			public void onClick(View view)
 			{
-				Notification notification = new Notification();
-				notification.setNotifificationMessage(editTextMessage.getText().toString());
-				notification.setNotifificationFrom(firebaseManager.appUser.getUserToken());
-				notification.setNotificationTo(memberToken);
-				notification.setNotificationToken(firebaseManager.createToken());
+				// Check if message is not empty.
+				if (!editTextMessage.getText().equals(""))
+				{
+					Notification notification = new Notification();
+					notification.setNotifificationMessage(editTextMessage.getText().toString());
+					notification.setNotifificationFrom(firebaseManager.appUser.getUserToken());
+					notification.setNotificationTo(memberToken);
+					notification.setNotificationToken(firebaseManager.createToken());
+					notification.setNotificationOwner(firebaseManager.appUser.getUserName());
+					notification.setNotificationDate(new Date().toString());
 
-				// Needs for search the user.
-				firebaseManager.transferData = memberToken;
+					// Needs for search the user.
+					firebaseManager.transferData = memberToken;
 
-				// save notification in /users/{token}/userNotifications/{token}
-				if (firebaseManager.saveObject(notification)) Message.show(getApplicationContext(),"Nachricht wurde versendet", Message.Mode.SUCCES);
-				else Message.show(getApplicationContext(),"Nachricht konnte nicht versendet werden", Message.Mode.ERROR);
+					// save notification in /users/{token}/userNotifications/{token}
+					if (firebaseManager.saveObject(notification)) Message.show(getApplicationContext(),"Nachricht wurde versendet", Message.Mode.SUCCES);
+					else Message.show(getApplicationContext(),"Nachricht konnte nicht versendet werden", Message.Mode.ERROR);
 
-				Intent intent = new Intent(getApplicationContext(),FamilyMemberAccountActivity.class);
-				intent.putExtra("USER",firebaseManager.appUser);
-				intent.putExtra("MEMBER_ID",memberToken);
-				startActivity(intent);
+					Intent intent = new Intent(getApplicationContext(),FamilyMemberAccountActivity.class);
+					intent.putExtra("USER",firebaseManager.appUser);
+					intent.putExtra("MEMBER_ID",memberToken);
+					startActivity(intent);
+				}
+				else
+				{
+					Message.show(getApplicationContext(),"Sie haben keine Nachricht geschrieben.", Message.Mode.INFO);
+				}
 			}
 		});
 	}

@@ -4,7 +4,7 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan.Account;
+package de.taracamp.familyplan.Account.profile;
 
 import android.content.Intent;
 import android.os.Bundle;

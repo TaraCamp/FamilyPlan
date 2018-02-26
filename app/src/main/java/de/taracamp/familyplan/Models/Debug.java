@@ -7,6 +7,8 @@ public class Debug
 {
 	private static final String TAG = "familyplan.debug";
 
+	private static boolean isActive = true;
+
 	public static void debugAppUser(String classname,AppUser appUser)
 	{
 		if (appUser!=null)
@@ -29,5 +31,10 @@ public class Debug
 		{
 			Log.d(TAG,classname + " Appuser is null");
 		}
+	}
+
+	public static void log(String classname,String message)
+	{
+		if (isActive) Log.d(TAG,classname+" : "+message);
 	}
 }

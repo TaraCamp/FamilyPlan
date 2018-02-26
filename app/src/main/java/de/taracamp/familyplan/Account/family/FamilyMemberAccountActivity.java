@@ -1,9 +1,8 @@
-package de.taracamp.familyplan.Account;
+package de.taracamp.familyplan.Account.family;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +11,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import de.taracamp.familyplan.Account.AccountActivity;
+import de.taracamp.familyplan.Account.notification.NotificationActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.User;

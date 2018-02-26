@@ -15,7 +15,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
@@ -114,23 +113,22 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
-        <service
-            android:name=".Services.FamilyPlanFirebaseMessagingService">
+        <service android:name=".Services.FamilyPlanFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
-        <service
-            android:name=".Services.FamilyPlanFirebaseInstanceIDService">
+        <service android:name=".Services.FamilyPlanFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
-        <activity android:name=".Account.FamilyMemberAccountActivity">
+        <activity android:name=".Account.family.FamilyMemberAccountActivity">
         </activity>
-        <activity android:name=".Account.NotificationActivity">
+        <activity android:name=".Account.notification.NotificationActivity">
+        </activity>
+        <activity android:name=".FamilyActivity">
         </activity>
     </application>
 

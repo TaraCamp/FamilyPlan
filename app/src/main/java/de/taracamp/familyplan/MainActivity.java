@@ -69,11 +69,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG,CLASS+".onCreate()");
+        Debug.log(getApplicationContext().getClass().toString(),"Create activity");
 
         this.Firebase(); // Firebase wird geladen
-
-
     }
 
     private void startBroadcast()
@@ -217,9 +215,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(getApplicationContext(), FamilyActivity.class);
-                intent.putExtra("USER",firebaseManager.appUser);
-                startActivity(AppUserManager.setAppUser(intent,firebaseManager.appUser));
+
             }
         });
 

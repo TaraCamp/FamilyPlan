@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
-                tools:context="de.taracamp.familyplan.Account.FamilyFragment">
+                tools:context="de.taracamp.familyplan.Account.family.FamilyFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,10 +11,92 @@
         android:background="@drawable/fragment_background"
         android:padding="15dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_family_members"
+        <LinearLayout
+            android:id="@+id/section_family_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView_family_family"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Familie : "
+                android:textSize="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_family_familytoken"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.75"
+                    android:background="@drawable/accept_color_button"
+                    android:text="Token "
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:id="@+id/button_family_familylogout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/exit_color_button"
+                    android:textAllCaps="false"/>
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_family_members"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                ></android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/section_family_nofamily"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView_family_nofamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:padding="15dp"
+                android:text="Noch keine Familie"
+                android:textSize="20dp"
+                android:visibility="visible"/>
+
+            <Button
+                android:id="@+id/button_family_addFamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/accept_color_button"
+                android:fontFamily="@font/app"
+                android:text="Familie Beitreten"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 
