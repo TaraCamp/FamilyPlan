@@ -34,7 +34,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.taracamp.familyplan.Controls.MultiSelectionSpinner;
-import de.taracamp.familyplan.Family.FamilyAddActivity;
+import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Enums.TaskState;
 import de.taracamp.familyplan.Models.Family;
@@ -304,7 +304,7 @@ public class TaskAddActivity extends AppCompatActivity implements MultiSelection
 				.setCancelable(false)
 				.setPositiveButton("Ja",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
-						Intent intent = new Intent(getApplicationContext(), FamilyAddActivity.class);
+						Intent intent = new Intent(getApplicationContext(), FamilyActivity.class);
 						intent.putExtra("USER",firebaseManager.appUser);
 						startActivity(intent);
 					}

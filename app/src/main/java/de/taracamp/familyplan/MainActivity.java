@@ -25,7 +25,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import de.taracamp.familyplan.Account.AccountActivity;
 import de.taracamp.familyplan.Calendar.CalendarActivity;
-import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Login.LoginActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Debug;
@@ -33,8 +32,6 @@ import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.Notifications.AppBroadcast;
-import de.taracamp.familyplan.Services.FamilyPlanFirebaseInstanceIDService;
-import de.taracamp.familyplan.Services.FamilyPlanFirebaseMessagingService;
 import de.taracamp.familyplan.Task.List.TaskListActivity;
 
 /**
@@ -206,16 +203,6 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
                 intent.putExtra("USER",firebaseManager.appUser);
                 startActivity(intent);
-            }
-        });
-
-        button_menu_family = (RelativeLayout)findViewById(R.id.button_menu_4);
-        button_menu_family.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v)
-            {
-
             }
         });
 

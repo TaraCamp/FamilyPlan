@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.taracamp.familyplan.Family.FamilyAddActivity;
+import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
@@ -69,7 +69,7 @@ public class FamilyFragment extends Fragment
 				@Override
 				public void onClick(View view)
 				{
-					Intent intent = new Intent(getActivity().getApplicationContext(), FamilyAddActivity.class);
+					Intent intent = new Intent(getActivity().getApplicationContext(), FamilyActivity.class);
 					intent.putExtra("USER",firebaseManager.appUser);
 					getActivity().startActivity(intent);
 				}
@@ -137,7 +137,6 @@ public class FamilyFragment extends Fragment
 				@Override
 				public void onCancelled(DatabaseError databaseError) {}
 			});
-
 		}
 		return view;
 	}

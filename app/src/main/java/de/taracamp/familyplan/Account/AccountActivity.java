@@ -22,7 +22,6 @@ import de.taracamp.familyplan.R;
 /**
  * Die AccountActivity zeigt Informationen über den angemeldeten Benutzer, die zugehörige Familie sowie privat Nachrichten an.
  * Es wird eine Tabnavigation hierzu verwendet.
- *
  */
 public class AccountActivity extends AppCompatActivity
 {

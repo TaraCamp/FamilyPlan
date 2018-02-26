@@ -16,7 +16,6 @@ class AccountPagerViewAdapter extends FragmentPagerAdapter
 	public AccountPagerViewAdapter(FragmentManager fragmentManager, FirebaseManager firebaseManager)
 	{
 		super(fragmentManager);
-
 		this.firebaseManager = firebaseManager;
 	}
 

@@ -95,36 +95,11 @@
                 android:gravity="center"/>
 
             <TextView
-                android:text="Kalender"
+                android:text="Familien Kalender"
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:gravity="center"
                 android:layout_below="@+id/categoria_image_13"
-                android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:background="@color/tran_colorOrange"
-            android:layout_height="fill_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/button_menu_4">
-
-            <ImageView
-                android:id="@+id/categoria_image_23"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:gravity="center"
-                android:layout_below="@+id/categoria_image_23"
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>

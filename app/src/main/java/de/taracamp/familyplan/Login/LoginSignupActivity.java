@@ -22,13 +22,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.Models.UserManager;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Family.FamilyAddActivity;
 
 /**
  *
@@ -163,7 +163,7 @@ public class LoginSignupActivity extends AppCompatActivity
         //this.firebaseManager.users().child(_user.getUid()).setValue(newUser);
         firebaseManager.saveObject(user);
 
-        Intent intent = new Intent(getApplicationContext(),FamilyAddActivity.class);
+        Intent intent = new Intent(getApplicationContext(),FamilyActivity.class);
         intent.putExtra("USER",AppUserManager.getAppUser(user));
         startActivity(intent);
     }

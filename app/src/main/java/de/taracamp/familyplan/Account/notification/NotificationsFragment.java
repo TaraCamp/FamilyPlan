@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.taracamp.familyplan.Family.FamilyAddActivity;
+import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Notification;
 import de.taracamp.familyplan.R;
@@ -66,7 +66,7 @@ public class NotificationsFragment extends Fragment
 				@Override
 				public void onClick(View view)
 				{
-					Intent intent = new Intent(getActivity().getApplicationContext(), FamilyAddActivity.class);
+					Intent intent = new Intent(getActivity().getApplicationContext(), FamilyActivity.class);
 					intent.putExtra("USER",firebaseManager.appUser);
 					getActivity().startActivity(intent);
 				}

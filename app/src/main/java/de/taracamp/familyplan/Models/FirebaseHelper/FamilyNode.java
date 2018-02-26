@@ -3,6 +3,8 @@ package de.taracamp.familyplan.Models.FirebaseHelper;
 
 import com.google.firebase.database.DatabaseReference;
 
+import de.taracamp.familyplan.Models.Family;
+
 public class FamilyNode implements Node
 {
 	public static String FAMILY_NAME = "familyName";
@@ -21,7 +23,16 @@ public class FamilyNode implements Node
 	@Override
 	public boolean save(Object object)
 	{
-		return false;
+		if (object instanceof Family)
+		{
+			Family family = (Family) object;
+			familiesRef.child(family.getFamilyToken()).setValue(family);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override

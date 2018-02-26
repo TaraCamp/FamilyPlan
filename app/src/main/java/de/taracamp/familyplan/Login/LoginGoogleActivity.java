@@ -28,7 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import de.taracamp.familyplan.Family.FamilyAddActivity;
+import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
@@ -156,7 +156,7 @@ public class LoginGoogleActivity extends AppCompatActivity implements GoogleApiC
 
                                     firebaseManager.appUser = AppUserManager.getAppUser(newUser);
 
-                                    Intent intent = new Intent(getApplicationContext(),FamilyAddActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(),FamilyActivity.class);
                                     intent.putExtra("USER",firebaseManager.appUser);
                                     startActivity(intent);
                                 }
