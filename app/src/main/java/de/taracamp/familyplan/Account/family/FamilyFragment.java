@@ -39,7 +39,6 @@ public class FamilyFragment extends Fragment
 	private FamilyMembersRecyclerAdapter familyMembersRecyclerAdapter = null;
 	private TextView textViewFamilyName = null;
 	private Button buttonFamilyToken = null;
-	private Button buttonFamilyLogout = null;
 	//Section No Family
 	private LinearLayout sectionNoFamily = null;
 	private Button buttonAddFamily = null;
@@ -85,34 +84,6 @@ public class FamilyFragment extends Fragment
 
 			buttonFamilyToken = (Button) view.findViewById(R.id.button_family_familytoken);
 			buttonFamilyToken.setText(buttonFamilyToken.getText().toString()+firebaseManager.appUser.getUserFamilyToken());
-
-			buttonFamilyLogout = (Button) view.findViewById(R.id.button_family_familylogout);
-			buttonFamilyLogout.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view)
-				{
-					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-					alertDialogBuilder.setTitle("Familie Verlassen!");
-					alertDialogBuilder.setIcon(R.drawable.logo);
-					alertDialogBuilder
-							.setMessage("Aus Familie austreten?")
-							.setCancelable(false)
-							.setPositiveButton("Ja",new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,int id)
-								{
-									leaveFamily();
-								}
-							})
-							.setNegativeButton("Nein",new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,int id)
-								{
-									dialog.cancel();
-								}
-							});
-					AlertDialog alertDialog = alertDialogBuilder.create();
-					alertDialog.show();
-				}
-			});
 
 			recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_family_members);
 			users = new ArrayList<>();
