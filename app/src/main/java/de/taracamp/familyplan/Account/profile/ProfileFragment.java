@@ -6,6 +6,8 @@
  */
 package de.taracamp.familyplan.Account.profile;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -67,10 +69,29 @@ public class ProfileFragment extends Fragment
 			@Override
 			public void onClick(View view)
 			{
-				firebaseAuth.signOut(); // logout
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+				alertDialogBuilder.setTitle("Abmelden?");
+				alertDialogBuilder.setIcon(R.drawable.logo);
+				alertDialogBuilder.setMessage("Benutzer " + firebaseManager.appUser.getUserName() + " abmelden?")
+						.setCancelable(false)
+						.setPositiveButton("Abmelden", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialogInterface, int i)
+							{
+								firebaseAuth.signOut(); // logout
 
-				Intent intent = new Intent(container.getContext(), LoginActivity.class);
-				startActivity(intent);
+								Intent intent = new Intent(container.getContext(), LoginActivity.class);
+								startActivity(intent);
+							}
+						}).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i)
+					{
+						dialogInterface.cancel();
+					}
+				});
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
 			}
 		});
 

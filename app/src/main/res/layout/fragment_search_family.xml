@@ -25,12 +25,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="100dp"
-                android:textColor="#000000"
-                android:textAllCaps="false"
-                android:textSize="20dp"
                 android:fontFamily="@font/app"
-                android:text="Geben Sie den Familientoken ein"/>
+                android:text="Familientoken eingeben"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:textSize="20dp"/>
 
             <EditText
                 android:id="@+id/edittext_searchfam_familyname"
@@ -63,6 +65,22 @@
                 android:background="@drawable/accept_color_button"
                 android:fontFamily="@font/app"
                 android:text="Suchen"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/button_searchfam_toMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/button_searchfam_search"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/accept_color_button"
+                android:fontFamily="@font/app"
+                android:text="Weiter ohne Familie"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"/>

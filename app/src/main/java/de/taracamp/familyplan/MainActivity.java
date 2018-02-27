@@ -6,6 +6,8 @@
  */
 package de.taracamp.familyplan;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity
     private RelativeLayout button_menu_task = null;
     private RelativeLayout button_menu_account = null;
     private RelativeLayout button_menu_calendar = null;
-    private RelativeLayout button_menu_family = null;
     private RelativeLayout button_menu_settings = null;
     private RelativeLayout button_menu_logout = null;
 
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity
                         else
                         {
                             // Wenn kein Firebase Benutzer vorhanden ist wird automatisch ins Loginmenu gewechselt.
-                            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                         }
                     }
@@ -222,10 +223,30 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                FirebaseAuth.getInstance().signOut();
 
-                Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
-                startActivity(loginIntent);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                alertDialogBuilder.setTitle("Abmelden?");
+                alertDialogBuilder.setIcon(R.drawable.logo);
+                alertDialogBuilder.setMessage("Benutzer " + firebaseManager.appUser.getUserName() + " abmelden?")
+                        .setCancelable(false)
+                        .setPositiveButton("Abmelden", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i)
+                            {
+                                FirebaseAuth.getInstance().signOut();
+
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        }).setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        dialogInterface.cancel();
+                    }
+                });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
     }

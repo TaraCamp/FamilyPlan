@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blue_background"
+    tools:context="de.taracamp.familyplan.Login.LoginActivity">
+
+    <TextView
+        android:id="@+id/textview_login_loginHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="100dp"
+        android:text="Starte die Allround Lösung um deine Familie zu organisieren"
+        android:textColor="@color/colorText"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/edittext_login_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textview_login_loginHeading"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/input_background"
+        android:ems="10"
+        android:hint="Email ..."
+        android:inputType="textEmailAddress"
+        android:paddingBottom="15dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="15dp"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/edittext_login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/edittext_login_email"
+        android:layout_below="@+id/edittext_login_email"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_background"
+        android:ems="10"
+        android:hint="Passwort ..."
+        android:inputType="textPassword"
+        android:paddingBottom="15dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="15dp"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/button_login_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edittext_login_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_background"
+        android:fontFamily="@font/app"
+        android:text="Anmelden"
+        android:textColor="@color/dark_blue"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/button_login_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button_login_send"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/border_button"
+        android:text="Noch kein FamilyPlan Nutzer?"
+        android:textAllCaps="false"
+        android:textColor="@color/colorText"
+        android:textSize="16sp"/>
+
+</RelativeLayout>

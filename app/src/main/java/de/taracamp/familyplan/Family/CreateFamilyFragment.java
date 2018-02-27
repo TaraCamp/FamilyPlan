@@ -33,6 +33,7 @@ public class CreateFamilyFragment extends Fragment
 	private TextView textViewInformation = null;
 	private EditText editTextFamilyName = null;
 	private Button buttonCreateFamily = null;
+	private Button buttonToMain = null;
 
 	public CreateFamilyFragment() {}
 
@@ -85,6 +86,17 @@ public class CreateFamilyFragment extends Fragment
 			}
 		});
 
+		buttonToMain = (Button) view.findViewById(R.id.button_fam_toMain);
+		buttonToMain.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view)
+			{
+				Intent intent = new Intent(getActivity(),MainActivity.class);
+				intent.putExtra("USER",firebaseManager.appUser);
+				startActivity(intent);
+			}
+		});
+
 		return view;
 	}
 
@@ -115,6 +127,7 @@ public class CreateFamilyFragment extends Fragment
 						currentUser.setUserFamilyToken(token);
 						currentUser.setUserFamilyName(familyName);
 						currentUser.setHasFamily(true);
+						currentUser.setNewMember(false);
 
 						firebaseManager.saveObject(currentUser);
 

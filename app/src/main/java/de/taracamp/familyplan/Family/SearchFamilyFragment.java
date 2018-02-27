@@ -36,6 +36,7 @@ public class SearchFamilyFragment extends Fragment
 	private TextView textViewInformation = null;
 	private EditText editTextFamilyToken = null;
 	private Button buttonSearchFamily = null;
+	private Button buttonToMain = null;
 
 	public SearchFamilyFragment() {}
 
@@ -62,6 +63,17 @@ public class SearchFamilyFragment extends Fragment
 					searchFamily(editTextFamilyToken.getText().toString());
 				else
 					Message.show(getActivity(),"Der Token muss 6 zeichen enthalten", Message.Mode.ERROR);
+			}
+		});
+
+		buttonToMain = (Button) view.findViewById(R.id.button_searchfam_toMain);
+		buttonToMain.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view)
+			{
+				Intent intent = new Intent(getActivity(),MainActivity.class);
+				intent.putExtra("USER",firebaseManager.appUser);
+				startActivity(intent);
 			}
 		});
 
@@ -105,6 +117,7 @@ public class SearchFamilyFragment extends Fragment
 											currentUser.setUserFamilyToken(token);
 											currentUser.setUserFamilyName(family.getFamilyName());
 											currentUser.setHasFamily(true);
+											currentUser.setNewMember(false);
 
 											firebaseManager.saveObject(currentUser);
 
