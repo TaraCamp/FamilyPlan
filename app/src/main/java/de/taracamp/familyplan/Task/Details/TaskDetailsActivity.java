@@ -17,7 +17,7 @@ import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
 import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
 import de.taracamp.familyplan.Task.Details.History.TaskHistoryFragment;
-import de.taracamp.familyplan.Task.List.TaskListActivity;
+import de.taracamp.familyplan.Task.TasksActivity;
 
 /**
  * Diese Klasse beinhaltet eine Tabübersicht für eine einzelne Aufgabe.
@@ -75,7 +75,7 @@ public class TaskDetailsActivity extends AppCompatActivity
 	{
 		super.onBackPressed();
 
-		Intent mainIntent = new Intent(getApplicationContext(), TaskListActivity.class);
+		Intent mainIntent = new Intent(getApplicationContext(), TasksActivity.class);
 		mainIntent.putExtra("USER",firebaseManager.appUser);
 		startActivity(mainIntent);
 	}

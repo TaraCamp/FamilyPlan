@@ -1,3 +1,9 @@
+/**
+ * @file NotificationsFragment.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Account.notification;
 
 import android.content.Intent;
@@ -24,6 +30,9 @@ import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Notification;
 import de.taracamp.familyplan.R;
 
+/**
+ * NotificationsFragment : Represent a fragment for write a notification to other user.
+ */
 public class NotificationsFragment extends Fragment
 {
 	private static FirebaseManager firebaseManager = null;

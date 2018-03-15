@@ -1,4 +1,4 @@
-package de.taracamp.familyplan.Task.List;
+package de.taracamp.familyplan.Task;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -139,7 +139,7 @@ public class TasksActionDialog extends DialogFragment
 				})
 				.setNegativeButton("Nein",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
-						Intent intent = new Intent(getActivity().getApplicationContext(),TaskListActivity.class);
+						Intent intent = new Intent(getActivity().getApplicationContext(),TasksActivity.class);
 						intent.putExtra("USER",firebaseManager.appUser);
 						startActivity(intent);
 					}

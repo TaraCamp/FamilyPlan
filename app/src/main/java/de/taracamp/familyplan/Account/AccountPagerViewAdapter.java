@@ -1,3 +1,9 @@
+/**
+ * @file AccountPagerViewAdapter.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Account;
 
 import android.support.v4.app.Fragment;
@@ -9,6 +15,13 @@ import de.taracamp.familyplan.Account.notification.NotificationsFragment;
 import de.taracamp.familyplan.Account.profile.ProfileFragment;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 
+/**
+ * AccountPagerViewAdapter : Needed for using tab navigation in account activity.
+ *
+ * - tab to pfofile overview.
+ * - tab to family overview.
+ * - tab to notifications.
+ */
 class AccountPagerViewAdapter extends FragmentPagerAdapter
 {
 	private FirebaseManager firebaseManager = null;

@@ -35,6 +35,7 @@ public class ProfileFragment extends Fragment
 	private CircleImageView circleImageViewUserPhoto = null;
 	private TextView textViewUsername = null;
 	private Button buttonLogout = null;
+	private Button buttonEditProfile = null;
 
 	public ProfileFragment(){}
 
@@ -63,6 +64,17 @@ public class ProfileFragment extends Fragment
 
 		textViewUsername = (TextView) view.findViewById(R.id.textview_profile_name);
 		textViewUsername.setText(firebaseManager.appUser.getUserName());
+
+		buttonEditProfile = (Button) view.findViewById(R.id.button_profile_edit);
+		buttonEditProfile.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view)
+			{
+				Intent intent = new Intent(getActivity(),EditProfileActivity.class);
+				intent.putExtra("USER",firebaseManager.appUser);
+				getActivity().startActivity(intent);
+			}
+		});
 
 		buttonLogout = (Button) view.findViewById(R.id.button_profile_logout);
 		buttonLogout.setOnClickListener(new View.OnClickListener() {

@@ -1,3 +1,9 @@
+/**
+ * @file FamilyMemberAccountActivity.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Account.family;
 
 import android.content.Intent;
@@ -17,8 +23,11 @@ import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.List.TaskAddActivity;
+import de.taracamp.familyplan.Task.TaskAddActivity;
 
+/**
+ * FamilyMemberAccountActivity : Reprsent an activity for show more informations about a user.
+ */
 public class FamilyMemberAccountActivity extends AppCompatActivity
 {
 	private FirebaseManager firebaseManager = null;
@@ -92,4 +101,5 @@ public class FamilyMemberAccountActivity extends AppCompatActivity
 
 		startActivity(intent);
 	}
+
 }

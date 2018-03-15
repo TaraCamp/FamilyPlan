@@ -9,11 +9,14 @@ public enum TaskState
 
 	private String state;
 
-	private TaskState(String category){
+	private TaskState(String category)
+	{
 		this.state = state;
 	}
 
-	@Override public String toString(){
+	@Override
+	public String toString()
+	{
 		return state;
 	}
 }

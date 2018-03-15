@@ -50,20 +50,27 @@ public class SplashActivity extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
             {
-                FirebaseUser user = firebaseAuth.getCurrentUser(); // Gibt aktuellen Firebase Benutzer zurück
-                // Prüft on der Firebase Benutzer vorhanden ist.
+                final FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user!=null)
                 {
-                    firebaseManager.getCurrentUserReference(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    firebaseManager.getRootReference().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot)
                         {
-                            // Der aktuelle Firebase Benutzer wird in eine Serialisierte Klasse FamilyUser übertragen.
-                            firebaseManager.appUser =  AppUserManager.getAppUser(dataSnapshot.getValue(User.class));
-                            // Sendet den App user an die nächste Activity und startet diese.
-                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                            intent.putExtra("USER", firebaseManager.appUser);
-                            startActivity(intent);
+                            if (dataSnapshot.child("users").child(user.getUid()).exists())
+                            {
+                                // Der aktuelle Firebase Benutzer wird in eine Serialisierte Klasse FamilyUser übertragen.
+                                firebaseManager.appUser =  AppUserManager.getAppUser(dataSnapshot.getValue(User.class));
+                                // Sendet den App user an die nächste Activity und startet diese.
+                                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                                intent.putExtra("USER", firebaseManager.appUser);
+                                startActivity(intent);
+                            }
+                            else
+                            {
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
+                            }
                         }
 
                         @Override

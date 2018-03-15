@@ -25,20 +25,23 @@
 
             <ImageView
                 android:id="@+id/categoria_image_12"
-                android:src="@drawable/tasks"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:src="@drawable/tasks"/>
 
             <TextView
-                android:text="Aufgaben"
-                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/categoria_image_12"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:text="Aufgaben"
                 android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 
@@ -59,14 +62,17 @@
                 android:gravity="center"/>
 
             <TextView
-                android:text="Profil"
-                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/categoria_image_22"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:text="Profil"
                 android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 
@@ -95,14 +101,17 @@
                 android:gravity="center"/>
 
             <TextView
-                android:text="Familien Kalender"
-                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/categoria_image_13"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:text="Familien Kalender"
                 android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 
@@ -131,14 +140,17 @@
                 android:gravity="center"/>
 
             <TextView
-                android:text="Einstellungen"
-                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/categoria_image_1"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:text="Einstellungen"
                 android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 
@@ -160,14 +172,17 @@
                 android:gravity="center"/>
 
             <TextView
-                android:text="Abmelden"
-                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
-                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/categoria_image_2"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/app"
+                android:gravity="center"
+                android:text="Beenden"
                 android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
         </RelativeLayout>
 

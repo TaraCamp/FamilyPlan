@@ -38,7 +38,7 @@ import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.List.TaskListActivity;
+import de.taracamp.familyplan.Task.TasksActivity;
 
 public class TaskDetailFragment extends Fragment implements MultiSelectionSpinner.OnMultipleItemsSelectedListener
 {
@@ -126,7 +126,7 @@ public class TaskDetailFragment extends Fragment implements MultiSelectionSpinne
 			@Override
 			public void onClick(View v)
 			{
-				Intent intent = new Intent(getActivity().getApplicationContext(),TaskListActivity.class);
+				Intent intent = new Intent(getActivity().getApplicationContext(),TasksActivity.class);
 				startActivity(AppUserManager.setAppUser(intent,firebaseManager.appUser));
 			}
 		});

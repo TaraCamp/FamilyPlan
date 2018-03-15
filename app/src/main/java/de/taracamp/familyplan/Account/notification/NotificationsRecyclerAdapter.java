@@ -1,3 +1,9 @@
+/**
+ * @file NotificationsRecyclerAdapter.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Account.notification;
 
 import android.content.Context;
@@ -14,6 +20,9 @@ import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Notification;
 import de.taracamp.familyplan.R;
 
+/**
+ * NotificationsRecyclerAdapter fill notification list with items and fill items with content.
+ */
 public class NotificationsRecyclerAdapter extends RecyclerView.Adapter<NotificationsRecyclerAdapter.ViewHolder>
 {
 	private List<Notification> notifications;

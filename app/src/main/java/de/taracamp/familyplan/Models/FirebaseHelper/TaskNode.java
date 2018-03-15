@@ -3,7 +3,11 @@ package de.taracamp.familyplan.Models.FirebaseHelper;
 import com.google.firebase.database.DatabaseReference;
 import de.taracamp.familyplan.Models.Task;
 
-public class TaskNode implements Node {
+public class TaskNode implements Node
+{
+
+	public static String TASK_HISTORY = "taskHistory";
+	public static String TASK_MESSAGES = "messages";
 
 	DatabaseReference tasksRef;
 

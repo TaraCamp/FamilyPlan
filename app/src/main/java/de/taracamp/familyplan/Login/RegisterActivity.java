@@ -14,17 +14,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
 import de.taracamp.familyplan.Family.FamilyActivity;
-import de.taracamp.familyplan.Login.LoginActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
+import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
+import de.taracamp.familyplan.Progress;
 import de.taracamp.familyplan.R;
 
 public class RegisterActivity extends AppCompatActivity
 {
 	private FirebaseManager firebaseManager = null;
+
+	public Progress progress = null;
 
 	private EditText editTextName = null;
 	private EditText editTextEmail = null;
@@ -66,6 +71,13 @@ public class RegisterActivity extends AppCompatActivity
 		});
 	}
 
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+		if (progress!=null) progress.hideProgressDialog();
+	}
+
 	/**
 	 * Anmeldung an der Firebase.
 	 * Vorgehen:
@@ -77,6 +89,9 @@ public class RegisterActivity extends AppCompatActivity
 		// Es wird geprüft ob alle Eingaben korrekt sind.
 		if(validate())
 		{
+			progress = new Progress(this);
+			progress.showProgressDialog("Benutzer wird erstellt...");
+
             /* Benutzerdaten zusammenfassen */
 			final String name = this.editTextName.getText().toString();
 			final String email = this.editTextEmail.getText().toString();
@@ -93,8 +108,11 @@ public class RegisterActivity extends AppCompatActivity
 								FirebaseUser fUser = task.getResult().getUser();
 								onSignupSuccess(fUser,fUser.getUid(),name,email);
 							}
-							else Message.show(getApplicationContext(),task.getException().getMessage(), Message.Mode.ERROR);
-
+							else
+							{
+								progress.hideProgressDialog();
+								Message.show(getApplicationContext(),task.getException().getMessage(), Message.Mode.ERROR);
+							}
 						}
 					});
 		}
@@ -123,6 +141,8 @@ public class RegisterActivity extends AppCompatActivity
 		// ./users/<token> -> save user
 		//this.firebaseManager.users().child(_user.getUid()).setValue(newUser);
 		firebaseManager.saveObject(user);
+
+		progress.hideProgressDialog();
 
 		Intent intent = new Intent(getApplicationContext(),FamilyActivity.class);
 		intent.putExtra("USER", AppUserManager.getAppUser(user));
@@ -159,8 +179,8 @@ public class RegisterActivity extends AppCompatActivity
 			editTextEmail.setError(null);
 		}
 
-		if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-			editTextPassword.setError("Es müssen zwischen 4 - 10 Zeichen verwendet werden.");
+		if (password.isEmpty() || password.length() < 6) {
+			editTextPassword.setError("Es müssen mindestens 6 Zeichen verwendet werden.");
 			valid = false;
 		}
 		else
@@ -168,8 +188,8 @@ public class RegisterActivity extends AppCompatActivity
 			editTextPassword.setError(null);
 		}
 
-		if (passwordRepeat.isEmpty() || passwordRepeat.length() < 4 || passwordRepeat.length() > 10) {
-			editTextPasswordAgain.setError("Es müssen zwischen 4 - 10 Zeichen verwendet werden.");
+		if (passwordRepeat.isEmpty() || passwordRepeat.length() < 6) {
+			editTextPasswordAgain.setError("Es müssen mindestens 6 Zeichen verwendet werden.");
 			valid = false;
 		}
 		else

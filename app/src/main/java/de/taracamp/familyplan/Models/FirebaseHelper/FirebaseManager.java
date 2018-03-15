@@ -252,6 +252,11 @@ public class FirebaseManager
 		return getUsersReference().child(token).getRef();
 	}
 
+	public DatabaseReference getCurrentTaskNodes(String token)
+	{
+		return getCurrentTask(token).child(TaskNode.TASK_HISTORY).child(TaskNode.TASK_MESSAGES).getRef();
+	}
+
 	/**
 	 * Get FireBase DataBase root path.
 	 * @return

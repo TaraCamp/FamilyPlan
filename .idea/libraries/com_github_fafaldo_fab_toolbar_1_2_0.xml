@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.github.fafaldo:fab-toolbar-1.2.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/fab-toolbar-1.2.0.aar/b4b0f9f26d736970637759d6a6a88f05/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/fab-toolbar-1.2.0.aar/b4b0f9f26d736970637759d6a6a88f05/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.fafaldo/fab-toolbar/1.2.0/d83c4ff7df8a89aa6bc8d1d13f77f4b04bba26b0/fab-toolbar-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

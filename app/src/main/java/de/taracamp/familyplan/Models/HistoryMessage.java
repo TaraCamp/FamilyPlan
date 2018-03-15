@@ -15,6 +15,7 @@ public class HistoryMessage
 	private String messageDate; // Datum der Nachricht.
 	private String messageTime; // Zeitpunkt der Nachricht.
 	private String messageData; // Inhalt der Nachricht.
+	private HistoryMode messageMode;
 
 	/**
 	 *  Konstrukor: gibt den Ersteller der Nachricht zurück
@@ -49,5 +50,13 @@ public class HistoryMessage
 
 	public void setMessageData(String messageData) {
 		this.messageData = messageData;
+	}
+
+	public HistoryMode getMessageMode() {
+		return messageMode;
+	}
+
+	public void setMessageMode(HistoryMode messageMode) {
+		this.messageMode = messageMode;
 	}
 }

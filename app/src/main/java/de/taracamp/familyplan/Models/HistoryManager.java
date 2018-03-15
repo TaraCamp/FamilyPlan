@@ -29,7 +29,6 @@ public class HistoryManager
 		else this.history = this.task.getTaskHistory();
 	}
 
-
 	public List<HistoryMessage> getMessages()
 	{
 		return task.getTaskHistory().getMessages();

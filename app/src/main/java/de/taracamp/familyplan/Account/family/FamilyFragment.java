@@ -1,7 +1,11 @@
+/**
+ * @file FamilyFragment.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Account.family;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +34,15 @@ import de.taracamp.familyplan.Models.Message;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
+/**
+ * FamilyFragment : Represent a fragment for listing all familymembers. If the user click on
+ * a member, an member overview activity start.
+ *
+ * Events:
+ *
+ * - imageButtonAddFamily.setOnClick()
+ * - imageButtonListFamilies.setOnClick()
+ */
 public class FamilyFragment extends Fragment
 {
 	private static FirebaseManager firebaseManager = null;
@@ -37,11 +51,15 @@ public class FamilyFragment extends Fragment
 	private RecyclerView recyclerView = null;
 	private List<User> users = null;
 	private FamilyMembersRecyclerAdapter familyMembersRecyclerAdapter = null;
+
 	private TextView textViewFamilyName = null;
 	private Button buttonFamilyToken = null;
 	//Section No Family
 	private LinearLayout sectionNoFamily = null;
 	private Button buttonAddFamily = null;
+
+	private ImageButton imageButtonAddFamily = null;
+	private ImageButton imageButtonListFamilies = null;
 
 	public FamilyFragment(){}
 
@@ -87,6 +105,39 @@ public class FamilyFragment extends Fragment
 
 			recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_family_members);
 			users = new ArrayList<>();
+
+			imageButtonAddFamily = view.findViewById(R.id.imagebutton_family_addfamily);
+			imageButtonAddFamily.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view)
+				{
+					Intent intent = new Intent(getActivity().getApplicationContext(), FamilyActivity.class);
+					intent.putExtra("USER",firebaseManager.appUser);
+					getActivity().startActivity(intent);
+				}
+			});
+
+			imageButtonListFamilies = view.findViewById(R.id.imagebutton_family_listfamilies);
+			imageButtonListFamilies.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view)
+				{
+					firebaseManager.getCurrentUserReference().addListenerForSingleValueEvent(new ValueEventListener() {
+						@Override
+						public void onDataChange(DataSnapshot dataSnapshot)
+						{
+							User currentUser = dataSnapshot.getValue(User.class);
+							List<Family> list = currentUser.getUserFamilies();
+
+							FamilyActionDialog dialog = FamilyActionDialog.newInstance(firebaseManager,list,currentUser.getUserFamilyToken());
+							dialog.show(getActivity().getFragmentManager(),"familiesaction");
+						}
+
+						@Override
+						public void onCancelled(DatabaseError databaseError) {}
+					});
+				}
+			});
 
 			firebaseManager.getFamilyMembersReference().addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override

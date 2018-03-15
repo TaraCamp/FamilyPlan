@@ -4,7 +4,7 @@
  * @copyright 2017 TaraCamp Community
  * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
  */
-package de.taracamp.familyplan.Task.List;
+package de.taracamp.familyplan.Task;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -21,22 +21,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import de.taracamp.familyplan.Family.FamilyActivity;
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.Enums.TaskState;
-import de.taracamp.familyplan.Models.Family;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Task;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.Details.Detail.TaskDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,27 +53,40 @@ import java.util.List;
  * 	-> ActionMode: In bearbeitungsmodus wechseln.
  * - Aufgaben Bearbeiten, über einen Klick auf ein Item -> TaskDetailActivity.
  *
- * Information: Die Liste ist eine RecyclerView und wird über einen Adapter (TaskListAdapter) geladen.
+ * Information: Die Liste ist eine RecyclerView und wird über einen Adapter (TasksRecyclerAdapter) geladen.
  * 				Je nach Gerät wird die Master/Detail Ansicht genutzt.
  *
+ *
+ * Events:
+ *
+ * - buttonAddFamily.onClick() // Add family to current user.
+ * - floatingActionButton.onClick() // Open TaskAddActivity.
+ * - buttonNoTasks.onClick() // Add first task. Open TaskAddActivity.
  */
-public class TaskListActivity extends AppCompatActivity
+public class TasksActivity extends AppCompatActivity
 {
+	public FirebaseManager firebaseManager = null;
+
 	private static final String TAG = "familyplan.debug";
-	private static final String CLASS = "TaskListActivity";
+	private static final String CLASS = "TasksActivity";
+
+	// no family section.
+	private LinearLayout sectionNoFamily = null;
+	private TextView textViewNoFamily = null;
+	private Button buttonAddFamily = null;
+
+	// no tasks section.
+	private LinearLayout sectionNoTasks = null;
+	private TextView textViewNoTasks = null;
+	private Button buttonNoTasks = null;
 
 	private Toolbar toolbar = null;
 	private FloatingActionButton floatingActionButton = null;
 	private RecyclerView recyclerView = null;
-	private TextView textViewInformation = null;
 	private TextView textViewMode = null;
 
 	private ArrayList<Task> tasks = null;
-	private TaskListAdapter adapter = null;
-
-	public FirebaseManager firebaseManager = null;
-
-	public Family family = null;
+	private TasksRecyclerAdapter adapter = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -86,75 +99,94 @@ public class TaskListActivity extends AppCompatActivity
 		firebaseManager = new FirebaseManager();
 		firebaseManager.appUser = AppUserManager.getIntentAppUser(getIntent());
 
-		loadTasks();
+		// check if current user has a family
+		if (firebaseManager.appUser.isHasFamily())
+		{
+			// initialize toolbar
+			toolbar = (Toolbar) findViewById(R.id.toolbar_task);
+			setSupportActionBar(toolbar);
+			getSupportActionBar().setLogo(R.drawable.ic_action_add);
+			getSupportActionBar().setTitle("Übersicht");
+
+			textViewMode = (TextView) findViewById(R.id.textview_tasks_mode);
+			textViewMode.setText(firebaseManager.appUser.getUserName() + "'s Aufgaben");
+
+			recyclerView = (RecyclerView) findViewById(R.id.item_list);
+			recyclerView.setLayoutManager(new LinearLayoutManager(this));
+			recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
+			recyclerView.setHasFixedSize(true);
+
+			sectionNoTasks = findViewById(R.id.section_tasks_noTasks);
+			textViewNoTasks = findViewById(R.id.textView_tasks_noTasks);
+			buttonNoTasks = findViewById(R.id.button_tasks_addTask);
+			buttonNoTasks.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view)
+				{
+					Intent intent = new Intent(getApplicationContext(),TaskAddActivity.class);
+					intent.putExtra("USER",firebaseManager.appUser);
+					startActivity(intent);
+				}
+			});
+
+			// Der Runde Button um eine neue Aufgabe anzulegen
+			this.floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_task_openDialog);
+			this.floatingActionButton.setVisibility(View.VISIBLE);
+			this.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v)
+				{
+					Log.d(TAG,":TaskActivity.click()-> open new task window");
+
+					Intent intent = new Intent(getApplicationContext(),TaskAddActivity.class);
+					intent.putExtra("USER",firebaseManager.appUser);
+					startActivity(intent);
+				}
+			});
+
+			this.loadTasks();
+		}
+		else
+		{
+			// no family section declaration
+			sectionNoFamily = findViewById(R.id.section_tasks_nofamily);
+			sectionNoFamily.setVisibility(View.VISIBLE);
+			textViewNoFamily = findViewById(R.id.textView_tasks_nofamily);
+			buttonAddFamily = findViewById(R.id.button_tasks_addFamily);
+			buttonAddFamily.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view)
+				{
+					Intent intent = new Intent(getApplicationContext(), FamilyActivity.class);
+					intent.putExtra("USER",firebaseManager.appUser);
+					startActivity(intent);
+				}
+			});
+		}
 	}
 
+	/**
+	 * Load tasks by firebase database
+	 */
 	private void loadTasks()
 	{
-		tasks = new ArrayList<>(); // Leere Aufgabenliste wird erstellt.
-		firebaseManager.getTasksReference().addValueEventListener(new ValueEventListener() {
-
+		this.tasks = new ArrayList<>(); // Leere Aufgabenliste wird erstellt.
+		this.firebaseManager.getTasksReference().addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot)
 			{
-				tasks.clear();
-
+				tasks.clear(); // clear list
 				for (DataSnapshot taskSnap : dataSnapshot.getChildren())
 				{
 					tasks.add(taskSnap.getValue(Task.class));
 				}
 
-				initializeViews();
 				loadTasksByCreator();
 			}
 
 			@Override
 			public void onCancelled(DatabaseError databaseError) {}
-		});
-	}
-
-	private void initializeViews()
-	{
-		initializeToolbar();
-
-		// Anzeige für die Information wenn keine Aufgaben vorhanden sind.
-		textViewInformation = (TextView) findViewById(R.id.textView_task_noWork2);
-		textViewInformation.setVisibility(View.GONE);
-
-		textViewMode = (TextView) findViewById(R.id.textview_tasks_mode);
-
-		recyclerView = (RecyclerView) findViewById(R.id.item_list);
-		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
-		recyclerView.setHasFixedSize(true);
-
-		initializeActionButton();
-	}
-
-	private void initializeToolbar()
-	{
-		toolbar = (Toolbar) findViewById(R.id.toolbar_task);
-		setSupportActionBar(toolbar);
-
-		getSupportActionBar().setLogo(R.drawable.ic_action_add);
-		getSupportActionBar().setTitle("Aufgaben Übersicht");
-	}
-
-	private void initializeActionButton()
-	{
-		// Der Runde Button um eine neue Aufgabe anzulegen
-		this.floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingActionButton_task_openDialog);
-		this.floatingActionButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v)
-			{
-				Log.d(TAG,":TaskActivity.click()-> open new task window");
-
-				Intent intent = new Intent(getApplicationContext(),TaskAddActivity.class);
-				intent.putExtra("USER",firebaseManager.appUser);
-				startActivity(intent);
-			}
 		});
 	}
 
@@ -218,7 +250,7 @@ public class TaskListActivity extends AppCompatActivity
 		if(_item.getItemId()==R.id.item_task_ownTasks)
 		{
 			loadTasksByRelated();
-			textViewMode.setText("Zugeteilte Aufgaben");
+			textViewMode.setText(firebaseManager.appUser.getUserName()+ "'s Aufgaben");
 		}
 		else if(_item.getItemId()==R.id.item_task_createTasks)
 		{
@@ -246,6 +278,7 @@ public class TaskListActivity extends AppCompatActivity
 		}
 
 		setAdapter(selectTasks);
+
 	}
 
 	// Zeigt alle Aufgaben an die einem zugeordnet sind.
@@ -263,6 +296,7 @@ public class TaskListActivity extends AppCompatActivity
 		}
 
 		setAdapter(selectTasks);
+
 	}
 
 	// zeigt alle Aufgaben an die gesucht wurden.
@@ -276,16 +310,23 @@ public class TaskListActivity extends AppCompatActivity
 		}
 
 		setAdapter(selectTasks);
+
 	}
 
 	private void setAdapter(List<Task> list)
 	{
-		// Wenn die Liste leer ist wird eine Meldung angezeigt.
-		if (list.size()==0) textViewInformation.setText("Keine Aufgaben gefunden");
-		else textViewInformation.setVisibility(View.GONE);
+		// check if list is empty. if true -> show no tasks section
+		if (list.size()==0) sectionNoTasks.setVisibility(View.VISIBLE);
+		else  sectionNoTasks.setVisibility(View.GONE);
 
 		// Adapter wird geladen.
-		adapter = new TaskListAdapter(TaskListActivity.this, list); // Liste wird an Adapter weitergegeben
+		adapter = new TasksRecyclerAdapter(TasksActivity.this, list); // Liste wird an Adapter weitergegeben
 		recyclerView.setAdapter(adapter); // Liste wird durch Adapter befüllt
+	}
+
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
 	}
 }

@@ -2,6 +2,8 @@ package de.taracamp.familyplan.Models;
 
 import android.net.Uri;
 
+import java.util.List;
+
 public class User
 {
     private String userToken; //
@@ -16,9 +18,20 @@ public class User
     private boolean isFacebookMember; //
     private boolean isEmailMember; //
     private String userFamilyToken;
+    private List<Family> userFamilies;
     private String userPhoto;
 
     public User(){}
+
+    public List<Family> getUserFamilies()
+    {
+        return userFamilies;
+    }
+
+    public void setUserFamilies(List<Family> userFamilies)
+    {
+        this.userFamilies = userFamilies;
+    }
 
     public String getUserFamilyName() {
         return userFamilyName;

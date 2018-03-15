@@ -1,5 +1,10 @@
+/**
+ * @file FamilyMembersRecyclerAdapter.java
+ * @version 1.0
+ * @copyright 2017 TaraCamp Community
+ * @author Wladimir Tarasov <wladimir.tarasov@tarakap.de>
+ */
 package de.taracamp.familyplan.Account.family;
-
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +21,9 @@ import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.User;
 import de.taracamp.familyplan.R;
 
+/**
+ * FamilyMembersRecyclerAdapter : Fill the family list with items and fill the items with content.
+ */
 public class FamilyMembersRecyclerAdapter extends RecyclerView.Adapter<FamilyMembersRecyclerAdapter.ViewHolder>
 {
 	private List<User> users;
@@ -53,6 +61,14 @@ public class FamilyMembersRecyclerAdapter extends RecyclerView.Adapter<FamilyMem
 
 		//CircleImageView circleImageViewUserImage = holder.circleImageViewUserImage;
 		// // TODO: 21.02.2018 Hier muss dnamisch das Profilbild geladen werden.
+
+		holder.view.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view)
+			{
+
+			}
+		});
 	}
 
 	@Override

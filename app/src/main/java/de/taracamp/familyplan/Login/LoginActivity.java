@@ -6,7 +6,9 @@
  */
 package de.taracamp.familyplan.Login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,16 +16,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.concurrent.TimeUnit;
+
 import de.taracamp.familyplan.MainActivity;
 import de.taracamp.familyplan.Models.AppUserManager;
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.Models.Message;
+import de.taracamp.familyplan.Progress;
 import de.taracamp.familyplan.R;
 
 /**
@@ -35,6 +41,8 @@ public class LoginActivity extends AppCompatActivity
 	private static final String TAG = "familyplan.debug";
 
 	private FirebaseManager firebaseManager = null;
+
+	public Progress progress = null;
 
 	private EditText editTextEmail = null;
 	private EditText editTextPassword = null;
@@ -98,12 +106,16 @@ public class LoginActivity extends AppCompatActivity
 	{
 		super.onStop();
 		this.firebaseManager.onStop();
+		if (progress!=null) progress.hideProgressDialog();
 	}
 
 	private void signInWithEmailAndPassword(String email, String password)
 	{
 		if(validate())
 		{
+			progress = new Progress(this);
+			progress.showProgressDialog("Wird geladen...");
+
 			this.firebaseManager.mAuth.signInWithEmailAndPassword(email,password)
 					.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
@@ -114,11 +126,14 @@ public class LoginActivity extends AppCompatActivity
 
 							if (task.isSuccessful())
 							{
+								progress.hideProgressDialog();
+
 								Intent intent = new Intent(getApplicationContext(),MainActivity.class);
 								startActivity(intent);
 							}
 							else
 							{
+								progress.hideProgressDialog();
 								Message.show(getApplicationContext(),task.getException().getMessage(), Message.Mode.ERROR);
 							}
 						}
@@ -154,4 +169,7 @@ public class LoginActivity extends AppCompatActivity
 
 		return valid;
 	}
+
 }
+
+

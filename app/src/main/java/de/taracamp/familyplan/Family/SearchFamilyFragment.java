@@ -119,9 +119,25 @@ public class SearchFamilyFragment extends Fragment
 											currentUser.setHasFamily(true);
 											currentUser.setNewMember(false);
 
+											// get all families by current user
+											List<Family> families = currentUser.getUserFamilies();
+
+											if (families==null) families = new ArrayList<>(); // create a new list of families
+
+											Family fam = new Family();
+											fam.setFamilyName(family.getFamilyName());
+											fam.setFamilyToken(token);
+											families.add(fam); // add new family to list
+
 											firebaseManager.saveObject(currentUser);
 
+											firebaseManager.appUser.setUserFamilyToken(token);
+											firebaseManager.appUser.setUserFamilyName(family.getFamilyName());
+											firebaseManager.appUser.setHasFamily(true);
+											firebaseManager.appUser.setNewMember(false);
+
 											Intent intent = new Intent(getActivity(), MainActivity.class);
+											intent.putExtra("USER",firebaseManager.appUser);
 											startActivity(intent);
 
 											Message.show(getActivity(),"Der Familie " + family.getFamilyName() + " beigetreten!", Message.Mode.SUCCES);

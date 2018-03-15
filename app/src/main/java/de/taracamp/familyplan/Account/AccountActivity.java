@@ -37,7 +37,6 @@ public class AccountActivity extends AppCompatActivity
     private TextView textViewNotification = null;
 
     private ViewPager viewPager = null;
-
     private AccountPagerViewAdapter accountPagerViewAdapter = null;
 
     private FirebaseManager firebaseManager = null;

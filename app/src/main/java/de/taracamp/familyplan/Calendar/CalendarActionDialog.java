@@ -15,7 +15,7 @@ import java.util.Calendar;
 
 import de.taracamp.familyplan.Models.FirebaseHelper.FirebaseManager;
 import de.taracamp.familyplan.R;
-import de.taracamp.familyplan.Task.List.TaskAddActivity;
+import de.taracamp.familyplan.Task.TaskAddActivity;
 
 public class CalendarActionDialog extends DialogFragment
 {

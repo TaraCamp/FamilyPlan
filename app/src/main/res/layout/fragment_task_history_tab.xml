@@ -6,7 +6,7 @@
                                                  android:layout_height="match_parent"
                                                  android:padding="10dp"
                                                  android:fitsSystemWindows="true"
-                                                 tools:context="de.taracamp.familyplan.Task.Details.TaskDetailsActivity">
+                                                 tools:context=".Task.Details.TaskDetailsActivity">
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
                                             xmlns:app="http://schemas.android.com/apk/res-auto"

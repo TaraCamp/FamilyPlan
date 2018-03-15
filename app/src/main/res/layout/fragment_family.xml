@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
@@ -18,15 +19,41 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <TextView
-                android:id="@+id/textView_family_family"
+            <LinearLayout
+                android:id="@+id/section_family_listheader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/app"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="Familie : "
-                android:textSize="15dp"/>
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/imagebutton_family_addfamily"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/cardview_light_background"
+                    android:src="@android:drawable/ic_input_add"/>
+
+                <ImageButton
+                    android:id="@+id/imagebutton_family_listfamilies"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@color/cardview_light_background"
+                    android:src="@drawable/ic_action_list"/>
+
+                <TextView
+                    android:id="@+id/textView_family_family"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/app"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp"
+                    android:paddingTop="15dp"
+                    android:text="Familie : "
+                    android:textSize="15dp"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,10 +65,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:background="@drawable/accept_color_button"
-                    android:text="Token "
+                    android:background="@drawable/border_button"
+                    android:text="Token : "
                     android:textAllCaps="false"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/dark_blue"
                     android:textSize="16sp"/>
 
             </LinearLayout>

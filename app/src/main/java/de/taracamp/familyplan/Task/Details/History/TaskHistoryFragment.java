@@ -43,9 +43,7 @@ public class TaskHistoryFragment extends Fragment
 
 	private String taskKey = null; // Aufgaben Token
 
-	public TaskHistoryFragment() {
-		// Required empty public constructor
-	}
+	public TaskHistoryFragment() {}
 
 	public static TaskHistoryFragment newInstance(String _taskKey, FirebaseManager _firebaseManager)
 	{
